@@ -1,0 +1,2 @@
+com.happylifeplat.transaction.core.spi.repository.JdbcTransactionRecoverRepository
+com.happylifeplat.transaction.core.spi.repository.FileTransactionRecoverRepository

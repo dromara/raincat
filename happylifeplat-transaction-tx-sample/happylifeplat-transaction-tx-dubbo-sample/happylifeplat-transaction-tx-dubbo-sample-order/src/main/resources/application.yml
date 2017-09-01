@@ -1,0 +1,32 @@
+server:
+  port: 8083
+  contextPath: /
+  address: 0.0.0.0
+
+spring:
+    datasource:
+        driver-class-name:  com.mysql.jdbc.Driver
+        url: jdbc:mysql://192.168.1.78:3306/order?useUnicode=true&characterEncoding=utf8
+        username: xiaoyu
+        password: Wgj@555888
+    application:
+      name: order-service
+
+mybatis:
+  type-aliases-package: com.happylifeplat.transaction.tx.dubbo.sample.order.api.entity
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+
+logging:
+    level:
+        root: error
+        org.springframework.web: info
+        org.apache.ibatis: info
+        com.happylifeplat.bonuspoint: info
+        com.happylifeplat.lottery: debug
+        com.happylifeplat: debug
+        io.netty: info
+
+    path: "./logs"
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.happylifeplat.transaction.tx.dubbo.sample.consume.mapper.Test1Mapper" >
+
+  <resultMap id="BaseResultMap" type="com.happylifeplat.transaction.tx.dubbo.sample.consume.entity.Test1" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="userName" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <insert id="save" parameterType="com.happylifeplat.transaction.tx.dubbo.sample.consume.entity.Test1" >
+    insert into t_test(id, name)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR})
+  </insert>
+
+</mapper>

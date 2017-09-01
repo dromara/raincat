@@ -1,0 +1,4 @@
+com.happylifeplat.transaction.core.spi.serializer.KryoSerializer
+com.happylifeplat.transaction.core.spi.serializer.ProtostuffSerializer
+com.happylifeplat.transaction.core.spi.serializer.HessianSerializer
+com.happylifeplat.transaction.core.spi.serializer.JavaSerializer

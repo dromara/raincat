@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="tx-dubbo-consume"/>
+
+
+    <dubbo:registry protocol="zookeeper" address="192.168.1.66:2181" />
+
+    <dubbo:protocol accesslog="true" name="dubbo" port="20881" host="192.168.1.66" />
+
+
+    <dubbo:reference timeout="5000"
+                     interface="com.happylifeplat.transaction.tx.dubbo.sample.stock.api.service.StockService"
+                     id="stockService"
+                     retries="0" check="false" />
+    <dubbo:reference timeout="5000"
+                     interface="com.happylifeplat.transaction.tx.dubbo.sample.order.api.service.OrderService"
+                     id="orderService"
+                     retries="0" check="false" />
+
+
+
+</beans>

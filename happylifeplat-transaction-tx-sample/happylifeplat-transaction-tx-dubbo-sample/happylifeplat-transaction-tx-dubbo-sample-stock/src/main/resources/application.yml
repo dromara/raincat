@@ -1,0 +1,31 @@
+server:
+  port: 8082
+  contextPath: /
+  address: 0.0.0.0
+
+spring:
+    datasource:
+        driver-class-name:  com.mysql.jdbc.Driver
+        url: jdbc:mysql://192.168.1.78:3306/stock?useUnicode=true&characterEncoding=utf8
+        username: xiaoyu
+        password: Wgj@555888
+    application:
+      name: stock-service
+
+mybatis:
+  type-aliases-package: com.happylifeplat.transaction.tx.dubbo.sample.stock.api.entity
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+logging:
+    level:
+        root: error
+        org.springframework.web: info
+        org.apache.ibatis: debug
+        com.happylifeplat.bonuspoint: debug
+        com.happylifeplat.lottery: debug
+        com.happylifeplat: debug
+
+    path: "./logs"
+
+

@@ -1,0 +1,5 @@
+com.happylifeplat.transaction.core.spi.repository.JdbcTransactionRecoverRepository
+com.happylifeplat.transaction.core.spi.repository.FileTransactionRecoverRepository
+com.happylifeplat.transaction.core.spi.repository.MongoTransactionRecoverRepository
+com.happylifeplat.transaction.core.spi.repository.RedisTransactionRecoverRepository
+com.happylifeplat.transaction.core.spi.repository.ZookeeperTransactionRecoverRepository

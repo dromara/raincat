@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.happylifeplat.transaction.tx.dubbo.sample.stock.mapper.StockMapper" >
+
+  <resultMap id="BaseResultMap" type="com.happylifeplat.transaction.tx.dubbo.sample.stock.api.entity.Stock" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+    <result column="name" property="type" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    CREATE_TIME,NUMBER,NAME
+  </sql>
+
+  <insert id="save" parameterType="com.happylifeplat.transaction.tx.dubbo.sample.stock.api.entity.Stock" >
+    INSERT INTO stock (<include refid="Base_Column_List" />)
+    values (#{createTime,jdbcType=TIMESTAMP}, #{number,jdbcType=INTEGER},#{name,jdbcType=VARCHAR})
+  </insert>
+
+</mapper>
