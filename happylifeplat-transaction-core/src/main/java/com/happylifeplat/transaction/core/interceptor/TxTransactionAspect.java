@@ -34,7 +34,7 @@ public abstract class TxTransactionAspect {
     @Around("txTransactionInterceptor()")
     public Object interceptCompensableMethod(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         return txTransactionInterceptor.interceptor(proceedingJoinPoint);
-    }
+}
 
     public abstract int getOrder();
 }

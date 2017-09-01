@@ -6,6 +6,8 @@ happylifeplat-transaction
 基于java语言来开发（JDK1.8），事务发起者，参与者与协调者底层基于netty长连接通信.
 支持dubbo，springcloud进行分布式事务。
 
+<font color=#FF4500 size=20>因为文件名太长，大家在拉取代码的时候执git命令：git config core.longpaths true</font>
+
  # Features
 
  * ***事务角色***
