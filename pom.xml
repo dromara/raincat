@@ -17,7 +17,7 @@
         </license>
     </licenses>
     <scm>
-        <url>http://git.wang-guanjia.com/platform/transaction</url>
+        <url>https://github.com/yu199195/happylifeplat-transaction.git</url>
     </scm>
 
     <parent>
