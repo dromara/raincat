@@ -1,5 +1,5 @@
 happylifeplat-transaction
-================
+=================
 
 碧桂园旺生活平台强一致性分布式事务，是基于三阶段提交+本地事务补偿机制来实现。[原理介绍](http://www.hollischuang.com/archives/681)
 
