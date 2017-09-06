@@ -24,3 +24,9 @@ wechat-service :
    ribbon.NFLoadBalancerRuleClassName : com.netflix.loadbalancer.RandomRule
 
 
+logging:
+            level:
+                root: info
+                com.happylifeplat.transaction.core : debug
+            path: "./logs"
+

@@ -20,3 +20,12 @@ endpoints:
     sensitive: false
 
 
+
+logging:
+            level:
+                root: info
+                com.happylifeplat.transaction.tx.manager : debug
+            path: "./logs"
+
+
+
