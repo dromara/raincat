@@ -5,7 +5,7 @@
     <parent>
         <artifactId>happylifeplat-transaction</artifactId>
         <groupId>com.happylifeplat.transaction</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
@@ -137,7 +137,7 @@
             <resource>
                 <directory>src/main/java</directory>
                 <includes>
-                    <include>**/*.xml</include>
+                    <include>**/*</include>
                 </includes>
             </resource>
         </resources>
