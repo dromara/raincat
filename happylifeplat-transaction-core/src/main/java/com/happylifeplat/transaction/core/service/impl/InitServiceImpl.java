@@ -93,9 +93,11 @@ public class InitServiceImpl implements InitService {
         final ServiceLoader<TransactionRecoverRepository> recoverRepositories = ServiceBootstrap.loadAll(TransactionRecoverRepository.class);
 
 
-        final Optional<TransactionRecoverRepository> repositoryOptional = StreamSupport.stream(recoverRepositories.spliterator(), false)
+        final Optional<TransactionRecoverRepository> repositoryOptional =
+                StreamSupport.stream(recoverRepositories.spliterator(), false)
                 .filter(recoverRepository ->
-                        Objects.equals(recoverRepository.getScheme(), compensationCacheTypeEnum.getCompensationCacheType())).findFirst();
+                        Objects.equals(recoverRepository.getScheme(), compensationCacheTypeEnum.getCompensationCacheType()))
+                        .findFirst();
         //将compensationCache实现注入到spring容器
         repositoryOptional.ifPresent(repository -> {
             serializer.ifPresent(repository::setSerializer);

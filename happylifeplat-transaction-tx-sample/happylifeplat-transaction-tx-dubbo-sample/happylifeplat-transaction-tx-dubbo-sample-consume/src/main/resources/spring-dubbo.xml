@@ -10,9 +10,9 @@
     <dubbo:application name="tx-dubbo-consume"/>
 
 
-    <dubbo:registry protocol="zookeeper" address="192.168.1.66:2181" />
+    <dubbo:registry protocol="zookeeper" address="192.168.1.73:2181" />
 
-    <dubbo:protocol accesslog="true" name="dubbo" port="20881" host="192.168.1.66" />
+    <dubbo:protocol accesslog="true" name="dubbo" port="20881" host="192.168.1.73" />
 
 
     <dubbo:reference timeout="5000"

@@ -15,12 +15,6 @@
         <dependency>
             <groupId>com.happylifeplat.transaction</groupId>
             <artifactId>happylifeplat-transaction-tx-springcloud</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.mongodb</groupId>
-                    <artifactId>mongo-java-driver</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
