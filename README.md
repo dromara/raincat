@@ -64,7 +64,7 @@ happylifeplat-transaction
   
 
  # Support
-   ##### 如有任何问题欢迎加入QQ群：162614487 进行讨论
+   #####  如有任何问题欢迎加入QQ群：162614487 进行讨论
   
 
  # Contribution
