@@ -18,7 +18,9 @@
 package com.happylifeplat.transaction.tx.springcloud.sample.pay.controller;
 
 import com.happylifeplat.transaction.tx.springcloud.sample.pay.service.PayService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,13 +36,14 @@ public class PayController {
         this.payService = payService;
     }
 
-    @RequestMapping("/orderPay")
+    @PostMapping("/orderPay")
     public String save() {
         payService.orderPay();
         return "success";
     }
 
-    @RequestMapping("/aliPayFail")
+    @PostMapping("/aliPayFail")
+    @ApiOperation("当alipay支付异常的时候，pay表的数据不会新增 alipay表不会新增 wechat表不会新增" )
     public String aliPayFail() {
 
         try {
@@ -54,7 +57,8 @@ public class PayController {
     }
 
 
-    @RequestMapping("/aliPayTimeOut")
+    @PostMapping("/aliPayTimeOut")
+    @ApiOperation("当alipay支付超时的时候，pay表的数据不会新增  alipay表不会新增 wechat表不会新增" )
     public String aliPayTimeOut() {
         try {
             payService.payWithAliPayTimeOut();
@@ -68,7 +72,8 @@ public class PayController {
 
 
 
-    @RequestMapping("/wechatPayFail")
+    @PostMapping("/wechatPayFail")
+    @ApiOperation("当wechat支付失败的时候，pay表的数据不会新增  alipay表不会新增 wechat表不会新增" )
     public String wechatPayFail() {
         try {
             payService.payWithWechatPayFail();
@@ -81,7 +86,8 @@ public class PayController {
     }
 
 
-    @RequestMapping("/wechatPayTimeOut")
+    @PostMapping("/wechatPayTimeOut")
+    @ApiOperation("当wechat支付超时的时候，pay表的数据不会新增  alipay表不会新增 wechat表不会新增" )
     public String wechatPayTimeOut() {
         try {
             payService.payWithWechatPayTimeOut();

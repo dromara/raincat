@@ -25,8 +25,10 @@ import com.happylifeplat.transaction.core.bean.TransactionInvocation;
 import com.happylifeplat.transaction.core.bean.TransactionRecover;
 import com.happylifeplat.transaction.core.config.TxConfig;
 import com.happylifeplat.transaction.core.config.TxDbConfig;
+import com.happylifeplat.transaction.core.helper.SqlHelper;
 import com.happylifeplat.transaction.core.spi.ObjectSerializer;
 import com.happylifeplat.transaction.core.spi.TransactionRecoverRepository;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,25 +121,27 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
         String selectSql = "select * from " + tableName;
         List<Map<String, Object>> list = executeQuery(selectSql);
         List<TransactionRecover> recovers = new ArrayList<>();
-        for (Map<String, Object> map : list) {
-            TransactionRecover recover = new TransactionRecover();
-
-            recover.setId((String) map.get("id"));
-            recover.setRetriedCount((Integer) map.get("retried_count"));
-            recover.setCreateTime((Date) map.get("create_time"));
-            recover.setLastTime((Date) map.get("last_time"));
-            recover.setTaskId((String) map.get("task_id"));
-            recover.setGroupId((String) map.get("group_id"));
-            recover.setVersion((Integer) map.get("version"));
-            byte[] bytes = (byte[]) map.get("invocation");
-            try {
-                final TransactionInvocation transactionInvocation = serializer.deSerialize(bytes, TransactionInvocation.class);
-                recover.setTransactionInvocation(transactionInvocation);
-            } catch (TransactionException e) {
-                e.printStackTrace();
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (Map<String, Object> map : list) {
+                TransactionRecover recover = new TransactionRecover();
+                recover.setId((String) map.get("id"));
+                recover.setRetriedCount((Integer) map.get("retried_count"));
+                recover.setCreateTime((Date) map.get("create_time"));
+                recover.setLastTime((Date) map.get("last_time"));
+                recover.setTaskId((String) map.get("task_id"));
+                recover.setGroupId((String) map.get("group_id"));
+                recover.setVersion((Integer) map.get("version"));
+                byte[] bytes = (byte[]) map.get("invocation");
+                try {
+                    final TransactionInvocation transactionInvocation = serializer.deSerialize(bytes, TransactionInvocation.class);
+                    recover.setTransactionInvocation(transactionInvocation);
+                } catch (TransactionException e) {
+                    e.printStackTrace();
+                }
+                recovers.add(recover);
             }
-            recovers.add(recover);
         }
+
         return recovers;
     }
 
@@ -164,69 +168,7 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
         dataSource.setTestWhileIdle(true);
         dataSource.setPoolPreparedStatements(false);
         this.tableName = "tx_transaction_" + modelName.replaceAll("-", "_");
-        executeUpdate(buildCreateTableSql(txDbConfig.getDriverClassName()));
-    }
-
-    private String buildCreateTableSql(String driverClassName) {
-        String createTableSql;
-        String dbType = "mysql";
-        if (driverClassName.contains("mysql")) {
-            dbType = "mysql";
-        } else if (driverClassName.contains("sqlserver")) {
-            dbType = "sqlserver";
-        } else if (driverClassName.contains("oracle")) {
-            dbType = "oracle";
-        }
-        switch (dbType) {
-            case "mysql": {
-                createTableSql = "CREATE TABLE `" + tableName + "` (\n" +
-                        "  `id` varchar(64) NOT NULL,\n" +
-                        "  `retried_count` int(3) NOT NULL,\n" +
-                        "  `create_time` datetime NOT NULL,\n" +
-                        "  `last_time` datetime NOT NULL,\n" +
-                        "  `version` int(6) NOT NULL,\n" +
-                        "  `group_id` varchar(64) NOT NULL,\n" +
-                        "  `task_id` varchar(64) NOT NULL,\n" +
-                        "  `invocation` longblob NOT NULL,\n" +
-                        "  PRIMARY KEY (`id`)\n" +
-                        ")";
-                break;
-            }
-            case "oracle": {
-                createTableSql = "CREATE TABLE `" + tableName + "` (\n" +
-                        "  `id` varchar(64) NOT NULL,\n" +
-                        "  `retried_count` int(3) NOT NULL,\n" +
-                        "  `create_time` date NOT NULL,\n" +
-                        "  `last_time` date NOT NULL,\n" +
-                        "  `version` int(6) NOT NULL,\n" +
-                        "  `group_id` varchar2(64) NOT NULL,\n" +
-                        "  `task_id` varchar2(64) NOT NULL,\n" +
-                        "  `invocation` BLOB NOT NULL,\n" +
-                        "  PRIMARY KEY (`id`)\n" +
-                        ")";
-                break;
-            }
-            case "sqlserver": {
-                createTableSql = "CREATE TABLE `" + tableName + "` (\n" +
-                        "  `id` varchar(64) NOT NULL,\n" +
-                        "  `retried_count` int(3) NOT NULL,\n" +
-                        "  `create_time` datetime NOT NULL,\n" +
-                        "  `last_time` datetime NOT NULL,\n" +
-                        "  `version` int(6) NOT NULL,\n" +
-                        "  `group_id` nchar(64) NOT NULL,\n" +
-                        "  `task_id` nchar(64) NOT NULL,\n" +
-                        "  `invocation` varbinary NOT NULL,\n" +
-                        "  PRIMARY KEY (`id`)\n" +
-                        ")";
-                break;
-            }
-            default: {
-                throw new RuntimeException("dbType类型不支持,目前仅支持mysql oracle sqlserver.");
-            }
-        }
-        return createTableSql;
-
-
+        executeUpdate(SqlHelper.buildCreateTableSql(tableName, txDbConfig.getDriverClassName()));
     }
 
 

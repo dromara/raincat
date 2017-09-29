@@ -15,7 +15,7 @@
     <context:component-scan base-package="com.happylifeplat.transaction.*"/>
     <aop:aspectj-autoproxy expose-proxy="true"/>
     <bean id="txTransactionBootstrap" class="com.happylifeplat.transaction.core.bootstrap.TxTransactionBootstrap">
-        <property name="txManagerUrl" value="http://192.168.1.66:8761"/>
+        <property name="txManagerUrl" value="http://192.168.1.73:8761"/>
         <property name="serializer" value="kryo"/>
         <property name="nettySerializer" value="kryo"/>
         <property name="blockingQueueType" value="Linked"/>

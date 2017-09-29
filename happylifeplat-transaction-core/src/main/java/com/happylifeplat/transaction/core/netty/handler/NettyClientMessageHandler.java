@@ -79,8 +79,8 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, final Object msg) throws Exception {
         net_state = true;
         HeartBeat heartBeat = (HeartBeat) msg;
-        LogUtil.debug(LOGGER,"接收服务端据命令为,执行的动作为:{}", heartBeat::getAction);
         final NettyMessageActionEnum actionEnum = NettyMessageActionEnum.acquireByCode(heartBeat.getAction());
+        LogUtil.debug(LOGGER,"接收服务端据命令为,执行的动作为:{}", actionEnum::getDesc);
        /* executorService.execute(() -> {*/
         try {
             switch (actionEnum) {
