@@ -3,12 +3,26 @@ happylifeplat-transaction
 
 碧桂园旺生活平台强一致性分布式事务，是基于二阶段提交+本地事务补偿机制来实现。[原理介绍](http://www.hollischuang.com/archives/681)
 
-基于java语言来开发（JDK1.8），事务发起者，参与者与协调者底层基于netty长连接通信.
-支持dubbo，springcloud进行分布式事务。
+基于java语言来开发（JDK1.8），支持dubbo，springcloud进行分布式事务。
 
 <font color=#FF4500 size=20>因为文件名太长，大家在拉取代码的时候执git命令：git config core.longpaths true</font>
 
  # Features
+ 
+  * **框架特性**
+ 
+      * 支持dubbo，springcloud等rpc框架进行分布式事务。
+      
+      * 事务发起者，参与者与协调者底层基于netty长连接通信,稳定高效。
+      
+      * 协调者采用eureka做注册中心，支持集群模式。
+ 
+      * 采用Aspect AOP 切面思想与Spring无缝集成。
+ 
+      * 配置简单，集成简单，源码简洁，稳定性高，已在生产环境使用。
+ 
+      * 内置经典的分布式事务场景demo工程，并有swagger-ui可视化界面可以快速体验。
+
 
  * ***事务角色***
 
@@ -43,9 +57,9 @@ happylifeplat-transaction
 
 # Usage  
 
-   ### [快速体检(dubbo)](https://github.com/yu199195/happylifeplat-transaction/wiki/quick-start-%EF%BC%88dubbo%EF%BC%89)
+   ### [快速体验(dubbo)](https://github.com/yu199195/happylifeplat-transaction/wiki/quick-start-%EF%BC%88dubbo%EF%BC%89)
 
-   ### [快速体检(springcloud)](https://github.com/yu199195/happylifeplat-transaction/wiki/quick-start-%EF%BC%88springcloud%EF%BC%89)
+   ### [快速体验(springcloud)](https://github.com/yu199195/happylifeplat-transaction/wiki/quick-start-%EF%BC%88springcloud%EF%BC%89)
 
   
 

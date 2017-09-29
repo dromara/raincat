@@ -123,12 +123,13 @@ public class FileTransactionRecoverRepository implements TransactionRecoverRepos
         if (files != null && files.length > 0) {
             for (File file : files) {
                 TransactionRecover transaction = readTransaction(file);
-                assert transaction != null;
+                transactionRecoverList.add(transaction);
+             /*   assert transaction != null;
                 if (transaction.getVersion() == 1) {
                     transactionRecoverList.add(transaction);
                     transaction.setVersion(transaction.getVersion() + 1);
                     writeFile(transaction);
-                }
+                }*/
             }
         }
         return transactionRecoverList;

@@ -14,12 +14,6 @@
         <dependency>
             <groupId>com.happylifeplat.transaction</groupId>
             <artifactId>happylifeplat-transaction-tx-springcloud</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.mongodb</groupId>
-                    <artifactId>mongo-java-driver</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -87,19 +81,6 @@
             <version>1.0.29</version>
         </dependency>
 
-<!--
-        &lt;!&ndash; mybatis核心包 &ndash;&gt;
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>3.2.6</version>
-        </dependency>
-        &lt;!&ndash; mybatis/spring包 &ndash;&gt;
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis-spring</artifactId>
-            <version>1.2.2</version>
-        </dependency>-->
 
         <dependency>
             <groupId>junit</groupId>
