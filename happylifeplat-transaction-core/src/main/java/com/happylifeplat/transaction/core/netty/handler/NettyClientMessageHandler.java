@@ -80,7 +80,7 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
         net_state = true;
         HeartBeat heartBeat = (HeartBeat) msg;
         final NettyMessageActionEnum actionEnum = NettyMessageActionEnum.acquireByCode(heartBeat.getAction());
-        LogUtil.debug(LOGGER,"接收服务端据命令为,执行的动作为:{}", actionEnum::getDesc);
+        LogUtil.debug(LOGGER, "接收服务端据命令为,执行的动作为:{}", actionEnum::getDesc);
        /* executorService.execute(() -> {*/
         try {
             switch (actionEnum) {
@@ -90,6 +90,9 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
                     receivedCommand(heartBeat.getKey(), heartBeat.getResult());
                     break;
                 case ROLLBACK://收到服务端的回滚指令
+                    notify(heartBeat);
+                    break;
+                case COMPLETE_COMMIT:
                     notify(heartBeat);
                     break;
                 case GET_TRANSACTION_GROUP_STATUS:
@@ -179,7 +182,7 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
                 //表示已经多久没有发送数据了
                 heartBeat.setAction(NettyMessageActionEnum.HEART.getCode());
                 ctx.writeAndFlush(heartBeat);
-                LogUtil.debug(LOGGER,"向服务端发送的心跳，动作为:{}", heartBeat::getAction);
+                LogUtil.debug(LOGGER, () -> "向服务端发送的心跳");
             } else if (event.state() == IdleState.ALL_IDLE) {
                 //表示已经多久既没有收到也没有发送数据了
                 SpringBeanUtils.getInstance().getBean(NettyClientService.class).doConnect();

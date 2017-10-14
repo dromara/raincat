@@ -73,10 +73,10 @@ public class NettyServerMessageHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         HeartBeat hb = (HeartBeat) msg;
-        LogUtil.debug(LOGGER,"接收的客户端数据,执行的动作为:{}", hb::getAction);
         TxTransactionGroup txTransactionGroup = hb.getTxTransactionGroup();
         try {
             final NettyMessageActionEnum actionEnum = NettyMessageActionEnum.acquireByCode(hb.getAction());
+            LogUtil.debug(LOGGER,"接收的客户端数据,执行的动作为:{}", actionEnum::getDesc);
             Boolean success;
             switch (actionEnum) {
                 case HEART:

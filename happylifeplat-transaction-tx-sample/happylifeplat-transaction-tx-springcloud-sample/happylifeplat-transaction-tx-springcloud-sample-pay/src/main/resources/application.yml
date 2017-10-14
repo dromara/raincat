@@ -27,3 +27,8 @@ pay-service :
      MaxAutoRetriesNextServer : 0
 
 
+logging:
+            level:
+                root: info
+                com.happylifeplat.transaction.core : debug
+            path: "./logs"
