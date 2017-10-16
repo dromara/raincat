@@ -18,6 +18,9 @@
 package com.happylifeplat.transaction.core.concurrent.threadlocal;
 
 
+/**
+ * @author xiaoyu
+ */
 public class TxTransactionLocal {
 
     private static final TxTransactionLocal TX_TRANSACTION_LOCAL = new TxTransactionLocal();
@@ -31,19 +34,19 @@ public class TxTransactionLocal {
     }
 
 
-    private static final ThreadLocal<String> currentLocal = new ThreadLocal<>();
+    private static final ThreadLocal<String> CURRENT_LOCAL = new ThreadLocal<>();
 
 
     public void setTxGroupId(String txGroupId) {
-        currentLocal.set(txGroupId);
+        CURRENT_LOCAL.set(txGroupId);
     }
 
     public String getTxGroupId() {
-        return currentLocal.get();
+        return CURRENT_LOCAL.get();
     }
 
     public void removeTxGroupId() {
-        currentLocal.remove();
+        CURRENT_LOCAL.remove();
     }
 
 

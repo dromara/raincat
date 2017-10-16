@@ -29,6 +29,9 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Map;
 
+/**
+ * @author xiaoyu
+ */
 public class OkHttpTools {
 
     private static final OkHttpTools OK_HTTP_TOOLS = new OkHttpTools();
@@ -92,7 +95,6 @@ public class OkHttpTools {
     private <T> T execute(Request request, Class<T> classOfT) throws IOException {
         OkHttpClient client = new OkHttpClient();
         Response response = client.newCall(request).execute();
-        // System.out.println(response.body().string());
         return gson.fromJson(response.body().string(), classOfT);
     }
 

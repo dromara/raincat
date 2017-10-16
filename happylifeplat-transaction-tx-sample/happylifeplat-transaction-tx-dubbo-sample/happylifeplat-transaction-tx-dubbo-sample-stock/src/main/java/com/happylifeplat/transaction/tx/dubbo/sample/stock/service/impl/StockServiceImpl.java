@@ -24,6 +24,9 @@ import com.happylifeplat.transaction.tx.dubbo.sample.stock.mapper.StockMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author xiaoyu
+ */
 @Service("stockService")
 public class StockServiceImpl implements StockService {
 

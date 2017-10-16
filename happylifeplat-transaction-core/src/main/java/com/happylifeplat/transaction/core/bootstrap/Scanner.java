@@ -23,6 +23,9 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 
 import java.util.Set;
 
+/**
+ * @author xiaoyu
+ */
 public class Scanner extends ClassPathBeanDefinitionScanner {
     public Scanner(BeanDefinitionRegistry registry) {
         super(registry);

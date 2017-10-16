@@ -21,6 +21,9 @@ package com.happylifeplat.transaction.core.bean;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * @author xiaoyu
+ */
 public class TransactionRecover implements Serializable {
 
     private static final long serialVersionUID = -3262858695515766275L;
@@ -68,7 +71,7 @@ public class TransactionRecover implements Serializable {
 
 
     /**
-     *  {@linkplain com.happylifeplat.transaction.common.enums.TransactionStatusEnum}
+     * {@linkplain com.happylifeplat.transaction.common.enums.TransactionStatusEnum}
      */
     private int status;
 
@@ -79,7 +82,6 @@ public class TransactionRecover implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
-
 
 
     public int getRetriedCount() {

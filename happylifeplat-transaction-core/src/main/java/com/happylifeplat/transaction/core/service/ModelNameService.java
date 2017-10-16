@@ -17,8 +17,16 @@
  */
 package com.happylifeplat.transaction.core.service;
 
+/**
+ * @author xiaoyu
+ */
 @FunctionalInterface
 public interface ModelNameService {
 
+    /**
+     * 获取模块名称
+     *
+     * @return applicationName
+     */
     String findModelName();
 }

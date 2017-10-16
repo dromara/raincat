@@ -27,16 +27,19 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.ImportResource;
 
-@SpringBootApplication(exclude = {MongoAutoConfiguration.class,MongoDataAutoConfiguration.class})
+/**
+ * @author xiaoyu
+ */
+@SpringBootApplication(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 @EnableEurekaClient
 @EnableFeignClients
 @ImportResource({"classpath:applicationContext.xml"})
 @MapperScan("com.happylifeplat.transaction.tx.springcloud.sample.pay.mapper")
 public class PayApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PayApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(PayApplication.class, args);
+    }
 
 
 }

@@ -28,6 +28,9 @@ import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.RpcException;
 import com.happylifeplat.transaction.core.concurrent.threadlocal.TxTransactionLocal;
 
+/**
+ * @author xiaoyu
+ */
 @Activate(group = {Constants.SERVER_KEY, Constants.CONSUMER})
 public class TxTransactionFilter implements Filter {
 

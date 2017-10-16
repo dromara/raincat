@@ -23,8 +23,11 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
+/**
+ * @author xiaoyu
+ */
 @Aspect
-public abstract class TxTransactionAspect {
+public abstract class AbstractTxTransactionAspect {
 
     private TxTransactionInterceptor txTransactionInterceptor;
 
@@ -40,7 +43,12 @@ public abstract class TxTransactionAspect {
     @Around("txTransactionInterceptor()")
     public Object interceptCompensableMethod(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         return txTransactionInterceptor.interceptor(proceedingJoinPoint);
-}
+    }
 
+    /**
+     * 该方法返回的值为springBean的优先级别
+     *
+     * @return 优先级
+     */
     public abstract int getOrder();
 }

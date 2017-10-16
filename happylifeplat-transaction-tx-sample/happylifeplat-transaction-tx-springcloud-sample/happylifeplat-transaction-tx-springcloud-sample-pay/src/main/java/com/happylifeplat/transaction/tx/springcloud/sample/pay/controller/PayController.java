@@ -25,6 +25,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * @author xiaoyu
+ */
 @RestController
 @RequestMapping("/pay")
 public class PayController {
@@ -43,7 +46,7 @@ public class PayController {
     }
 
     @PostMapping("/aliPayFail")
-    @ApiOperation("当alipay支付异常的时候，pay表的数据不会新增 alipay表不会新增 wechat表不会新增" )
+    @ApiOperation("当alipay支付异常的时候，pay表的数据不会新增 alipay表不会新增 wechat表不会新增")
     public String aliPayFail() {
 
         try {
@@ -58,7 +61,7 @@ public class PayController {
 
 
     @PostMapping("/aliPayTimeOut")
-    @ApiOperation("当alipay支付超时的时候，pay表的数据不会新增  alipay表不会新增 wechat表不会新增" )
+    @ApiOperation("当alipay支付超时的时候，pay表的数据不会新增  alipay表不会新增 wechat表不会新增")
     public String aliPayTimeOut() {
         try {
             payService.payWithAliPayTimeOut();
@@ -71,9 +74,8 @@ public class PayController {
     }
 
 
-
     @PostMapping("/wechatPayFail")
-    @ApiOperation("当wechat支付失败的时候，pay表的数据不会新增  alipay表不会新增 wechat表不会新增" )
+    @ApiOperation("当wechat支付失败的时候，pay表的数据不会新增  alipay表不会新增 wechat表不会新增")
     public String wechatPayFail() {
         try {
             payService.payWithWechatPayFail();
@@ -87,7 +89,7 @@ public class PayController {
 
 
     @PostMapping("/wechatPayTimeOut")
-    @ApiOperation("当wechat支付超时的时候，pay表的数据不会新增  alipay表不会新增 wechat表不会新增" )
+    @ApiOperation("当wechat支付超时的时候，pay表的数据不会新增  alipay表不会新增 wechat表不会新增")
     public String wechatPayTimeOut() {
         try {
             payService.payWithWechatPayTimeOut();
@@ -98,8 +100,6 @@ public class PayController {
 
         return "success";
     }
-
-
 
 
 }

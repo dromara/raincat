@@ -35,6 +35,9 @@ import java.nio.channels.FileChannel;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author xiaoyu
+ */
 @SuppressWarnings("unchecked")
 public class FileTransactionRecoverRepository implements TransactionRecoverRepository {
 
@@ -124,12 +127,6 @@ public class FileTransactionRecoverRepository implements TransactionRecoverRepos
             for (File file : files) {
                 TransactionRecover transaction = readTransaction(file);
                 transactionRecoverList.add(transaction);
-             /*   assert transaction != null;
-                if (transaction.getVersion() == 1) {
-                    transactionRecoverList.add(transaction);
-                    transaction.setVersion(transaction.getVersion() + 1);
-                    writeFile(transaction);
-                }*/
             }
         }
         return transactionRecoverList;
@@ -179,7 +176,6 @@ public class FileTransactionRecoverRepository implements TransactionRecoverRepos
             ByteBuffer buffer = ByteBuffer.allocate(content.length);
             buffer.put(content);
             buffer.flip();
-
             while (buffer.hasRemaining()) {
                 channel.write(buffer);
             }

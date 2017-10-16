@@ -19,12 +19,28 @@ package com.happylifeplat.transaction.tx.springcloud.sample.wechat.service;
 
 import com.happylifeplat.transaction.tx.springcloud.sample.wechat.entity.Wechat;
 
+/**
+ * @author xiaoyu
+ */
 public interface WechatService {
 
-
+    /**
+     * 微信付款
+     *
+     * @param wechat 实体对象
+     * @return rows
+     */
     int payment(Wechat wechat);
 
+    /**
+     * 支付失败
+     */
     void payFail();
 
+    /**
+     * 支付超时
+     *
+     * @param wechat 实体对象
+     */
     void payTimeOut(Wechat wechat);
 }

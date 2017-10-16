@@ -20,13 +20,16 @@ package com.happylifeplat.transaction.common.netty.serizlize.protostuff;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
+/**
+ * @author xiaoyu
+ */
 public class ProtostuffSerializePool {
 
-    private GenericObjectPool<ProtostuffSerialize> ProtostuffPool;
+    private GenericObjectPool<ProtostuffSerialize> protostuffpool;
     private static volatile ProtostuffSerializePool poolFactory = null;
 
     private ProtostuffSerializePool() {
-        ProtostuffPool = new GenericObjectPool<>(new ProtostuffSerializeFactory());
+        protostuffpool = new GenericObjectPool<>(new ProtostuffSerializeFactory());
     }
 
     public static ProtostuffSerializePool getProtostuffPoolInstance() {
@@ -41,7 +44,7 @@ public class ProtostuffSerializePool {
     }
 
     public ProtostuffSerializePool(final int maxTotal, final int minIdle, final long maxWaitMillis, final long minEvictableIdleTimeMillis) {
-        ProtostuffPool = new GenericObjectPool<>(new ProtostuffSerializeFactory());
+        protostuffpool = new GenericObjectPool<>(new ProtostuffSerializeFactory());
 
         GenericObjectPoolConfig config = new GenericObjectPoolConfig();
 
@@ -50,12 +53,12 @@ public class ProtostuffSerializePool {
         config.setMaxWaitMillis(maxWaitMillis);
         config.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
 
-        ProtostuffPool.setConfig(config);
+        protostuffpool.setConfig(config);
     }
 
     public ProtostuffSerialize borrow() {
         try {
-            return getProtostuffPool().borrowObject();
+            return getProtostuffpool().borrowObject();
         } catch (final Exception ex) {
             ex.printStackTrace();
             return null;
@@ -63,11 +66,11 @@ public class ProtostuffSerializePool {
     }
 
     public void restore(final ProtostuffSerialize object) {
-        getProtostuffPool().returnObject(object);
+        getProtostuffpool().returnObject(object);
     }
 
-    public GenericObjectPool<ProtostuffSerialize> getProtostuffPool() {
-        return ProtostuffPool;
+    public GenericObjectPool<ProtostuffSerialize> getProtostuffpool() {
+        return protostuffpool;
     }
 }
 

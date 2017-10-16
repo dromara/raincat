@@ -18,7 +18,6 @@
 
 package com.happylifeplat.transaction.tx.springcloud.sample.pay.configuration;
 
-import com.google.common.collect.Lists;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +37,9 @@ import java.time.LocalDate;
 
 import static com.google.common.collect.Lists.newArrayList;
 
+/**
+ * @author xiaoyu
+ */
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {

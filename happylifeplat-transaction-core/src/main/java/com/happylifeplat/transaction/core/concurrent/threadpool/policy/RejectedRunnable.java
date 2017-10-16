@@ -17,6 +17,13 @@
  */
 package com.happylifeplat.transaction.core.concurrent.threadpool.policy;
 
+/**
+ * @author xiaoyu
+ */
 public interface RejectedRunnable extends Runnable {
+
+    /**
+     * 线程池拒绝策略
+     */
     void rejected();
 }

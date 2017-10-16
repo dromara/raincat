@@ -17,6 +17,10 @@
  */
 package com.happylifeplat.transaction.common.enums;
 
+
+/**
+ * @author xiaoyu
+ */
 public enum PropagationEnum {
 
     /**

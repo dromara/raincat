@@ -20,6 +20,9 @@ package com.happylifeplat.transaction.tx.manager.entity;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * @author xiaoyu
+ */
 public class TxManagerInfo implements Serializable {
 
 

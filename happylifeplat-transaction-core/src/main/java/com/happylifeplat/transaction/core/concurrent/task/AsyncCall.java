@@ -17,6 +17,9 @@
  */
 package com.happylifeplat.transaction.core.concurrent.task;
 
+/**
+ * @author xiaoyu
+ */
 @FunctionalInterface
 public interface AsyncCall {
 

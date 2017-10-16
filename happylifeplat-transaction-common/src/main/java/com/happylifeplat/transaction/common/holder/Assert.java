@@ -21,6 +21,9 @@ package com.happylifeplat.transaction.common.holder;
 import com.happylifeplat.transaction.common.exception.TransactionRuntimeException;
 
 
+/**
+ * @author xiaoyu
+ */
 public class Assert {
 
     private Assert() {

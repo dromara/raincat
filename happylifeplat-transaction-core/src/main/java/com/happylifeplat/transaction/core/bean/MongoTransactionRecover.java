@@ -22,7 +22,10 @@ import org.bson.types.ObjectId;
 import java.io.Serializable;
 import java.util.Date;
 
-public class MongoTransactionRecover  implements Serializable{
+/**
+ * @author xiaoyu
+ */
+public class MongoTransactionRecover implements Serializable {
 
     private static final long serialVersionUID = 7920817865031921102L;
 
@@ -73,7 +76,7 @@ public class MongoTransactionRecover  implements Serializable{
     private byte[] contents;
 
     /**
-     *  {@linkplain com.happylifeplat.transaction.common.enums.TransactionStatusEnum}
+     * {@linkplain com.happylifeplat.transaction.common.enums.TransactionStatusEnum}
      */
     private int status;
 

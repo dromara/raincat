@@ -17,8 +17,11 @@
  */
 package com.happylifeplat.transaction.tx.manager.config;
 
+/**
+ * @author xiaoyu
+ */
 public class Address {
-    private static final Address ourInstance = new Address();
+    private static final Address OUR_INSTANCE = new Address();
 
     /**
      * 自身的ip
@@ -37,9 +40,8 @@ public class Address {
     private String domain;
 
 
-
     public static Address getInstance() {
-        return ourInstance;
+        return OUR_INSTANCE;
     }
 
     private Address() {
@@ -54,6 +56,7 @@ public class Address {
         this.host = host;
         return this;
     }
+
     public Integer getPort() {
         return port;
     }

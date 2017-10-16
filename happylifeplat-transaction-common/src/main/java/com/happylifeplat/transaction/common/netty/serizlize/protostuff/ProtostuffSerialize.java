@@ -28,6 +28,9 @@ import org.objenesis.ObjenesisStd;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * @author xiaoyu
+ */
 public class ProtostuffSerialize implements NettyTransferSerialize {
     private static SchemaCache cachedSchema = SchemaCache.getInstance();
     private static Objenesis objenesis = new ObjenesisStd(true);
@@ -36,6 +39,7 @@ public class ProtostuffSerialize implements NettyTransferSerialize {
         return (Schema<T>) cachedSchema.get(cls);
     }
 
+    @Override
     public Object deserialize(InputStream input) {
         try {
             HeartBeat message = objenesis.newInstance(HeartBeat.class);
@@ -47,6 +51,7 @@ public class ProtostuffSerialize implements NettyTransferSerialize {
         }
     }
 
+    @Override
     public void serialize(OutputStream output, Object object) {
         Class cls = object.getClass();
         LinkedBuffer buffer = LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE);

@@ -17,6 +17,9 @@
  */
 package com.happylifeplat.transaction.core.config;
 
+/**
+ * @author xiaoyu
+ */
 public class TxConfig {
 
     /**
@@ -51,7 +54,7 @@ public class TxConfig {
     /**
      * 心跳时间 默认10秒
      */
-    private int  heartTime =10;
+    private int heartTime = 10;
 
 
     /**
@@ -88,13 +91,13 @@ public class TxConfig {
     /**
      * 补偿恢复时间 单位秒
      */
-    private int compensationRecoverTime=60;
+    private int compensationRecoverTime = 60;
 
 
     /**
      * 更新tmInfo 的时间间隔
      */
-    private int refreshInterval=60;
+    private int refreshInterval = 60;
 
 
     /**

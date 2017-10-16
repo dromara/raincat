@@ -20,15 +20,29 @@ package com.happylifeplat.transaction.tx.springcloud.sample.pay.client;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@FeignClient(value = "alipay-service",configuration =MyConfiguration.class)
+/**
+ * @author xiaoyu
+ */
+@FeignClient(value = "alipay-service", configuration = MyConfiguration.class)
 public interface AlipayClient {
 
+    /**
+     * 保存操作
+     *
+     * @return rows
+     */
     @RequestMapping("/alipay-service/alipay/save")
     int save();
 
+    /**
+     * 支付失败情况测试
+     */
     @RequestMapping("/alipay-service/alipay/payFail")
     void payFail();
 
+    /**
+     * 支付超时情况测试
+     */
     @RequestMapping("/alipay-service/alipay/payTimeOut")
     void payTimeOut();
 }

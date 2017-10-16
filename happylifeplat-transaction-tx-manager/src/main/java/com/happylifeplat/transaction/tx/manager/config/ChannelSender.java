@@ -22,15 +22,18 @@ import io.netty.channel.Channel;
 
 import java.util.List;
 
+/**
+ * @author xiaoyu
+ */
 public class ChannelSender {
 
     /**
      * 模块netty 长连接渠道
      */
-    private  Channel channel;
+    private Channel channel;
 
 
-    private  String tmDomain;
+    private String tmDomain;
 
     private List<TxTransactionItem> itemList;
 

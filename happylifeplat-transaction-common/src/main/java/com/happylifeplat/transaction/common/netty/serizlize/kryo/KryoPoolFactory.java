@@ -30,6 +30,9 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import java.util.ArrayList;
 
+/**
+ * @author xiaoyu
+ */
 public class KryoPoolFactory {
 
     private static volatile KryoPoolFactory poolFactory = null;
@@ -38,20 +41,7 @@ public class KryoPoolFactory {
         Kryo kryo = new Kryo();
         kryo.setReferences(false);
         kryo.register(HeartBeat.class);
-       /* kryo.setRegistrationRequired(true);
-        kryo.register(TxTransactionGroup.class);
-        kryo.register(TxTransactionItem.class);
-        kryo.register(ArrayList.class);*/
         kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
-        // kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
-/*
-        FieldSerializer someClassSerializer = new FieldSerializer(kryo, TxTransactionGroup.class);
-        CollectionSerializer listSerializer = new CollectionSerializer();
-        listSerializer.setElementClass(TxTransactionItem.class, kryo.getSerializer(TxTransactionItem.class));
-        listSerializer.setElementsCanBeNull(false);
-        someClassSerializer.getField("itemList").setClass(ArrayList.class, listSerializer);
-        kryo.register(TxTransactionGroup.class, someClassSerializer);*/
-
         return kryo;
     };
 

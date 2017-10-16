@@ -29,12 +29,12 @@ import java.util.Date;
  */
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TxCompensationServiceImplTest {
 
 
     @Autowired
-    private  TxCompensationCommand txCompensationCommand;
+    private TxCompensationCommand txCompensationCommand;
 
 
     @Test

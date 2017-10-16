@@ -14,20 +14,22 @@ import java.util.stream.StreamSupport;
 
 public class ServiceBootstrapTest {
 
-    /** logger */
+    /**
+     * logger
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceBootstrapTest.class);
 
 
     @Test
     public void loadFirst() throws Exception {
         final ObjectSerializer objectSerializer = ServiceBootstrap.loadFirst(ObjectSerializer.class);
-        LOGGER.info("加载的序列化名称为：{}",objectSerializer.getClass().getName());
+        LOGGER.info("加载的序列化名称为：{}", objectSerializer.getClass().getName());
 
     }
 
 
     @Test
-    public void  loadAll(){
+    public void loadAll() {
         //spi  serialize
         final SerializeProtocolEnum serializeProtocolEnum =
                 SerializeProtocolEnum.HESSIAN;
@@ -40,9 +42,8 @@ public class ServiceBootstrapTest {
         serializer.ifPresent(objectSerializer -> LOGGER.info("加载的序列化名称为：{}", objectSerializer.getClass().getName()));
 
 
-
         //spi  RecoverRepository support
-        final CompensationCacheTypeEnum compensationCacheTypeEnum =CompensationCacheTypeEnum.DB;
+        final CompensationCacheTypeEnum compensationCacheTypeEnum = CompensationCacheTypeEnum.DB;
         final ServiceLoader<TransactionRecoverRepository> recoverRepositories = ServiceBootstrap.loadAll(TransactionRecoverRepository.class);
 
 

@@ -17,15 +17,18 @@
  */
 package com.happylifeplat.transaction.common.exception;
 
-public class TransactionIOException extends RuntimeException {
+/**
+ * @author xiaoyu
+ */
+public class TransactionIoException extends RuntimeException {
 
     private static final long serialVersionUID = 6508064607297986329L;
 
-    public TransactionIOException(String message) {
+    public TransactionIoException(String message) {
         super(message);
     }
 
-    public TransactionIOException(Throwable e) {
+    public TransactionIoException(Throwable e) {
         super(e);
     }
 }

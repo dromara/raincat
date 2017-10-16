@@ -32,11 +32,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author xiaoyu
+ */
 public class SerializeTest {
+
+    private static final int MAX=1000;
 
     public static void main(String[] args) throws IOException {
         final long start = System.currentTimeMillis();
-        for (int i = 0; i <1000000 ; i++) {
+        for (int i = 0; i <MAX ; i++) {
             KryoSerialize kryoSerialization = new KryoSerialize(KryoPoolFactory.getKryoPoolInstance());
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             String groupId = IdWorkerUtils.getInstance().createGroupId();
@@ -46,8 +51,10 @@ public class SerializeTest {
             List<TxTransactionItem> items = new ArrayList<>(2);
             //tmManager 用redis hash 结构来存储 整个事务组的状态做为hash结构的第一条数据
             TxTransactionItem groupItem = new TxTransactionItem();
-            groupItem.setStatus(TransactionStatusEnum.BEGIN.getCode());//整个事务组状态为开始
-            groupItem.setTransId(groupId); //设置事务id为组的id  即为 hashKey
+            //整个事务组状态为开始
+            groupItem.setStatus(TransactionStatusEnum.BEGIN.getCode());
+            //设置事务id为组的id  即为 hashKey
+            groupItem.setTransId(groupId);
             groupItem.setTaskKey(groupId);
             items.add(groupItem);
             TxTransactionItem item = new TxTransactionItem();

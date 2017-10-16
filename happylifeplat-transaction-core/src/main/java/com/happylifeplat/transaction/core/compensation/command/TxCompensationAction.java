@@ -22,6 +22,9 @@ import com.happylifeplat.transaction.core.bean.TransactionRecover;
 
 import java.io.Serializable;
 
+/**
+ * @author xiaoyu
+ */
 public class TxCompensationAction implements Serializable {
 
     private static final long serialVersionUID = 7474184793963072848L;

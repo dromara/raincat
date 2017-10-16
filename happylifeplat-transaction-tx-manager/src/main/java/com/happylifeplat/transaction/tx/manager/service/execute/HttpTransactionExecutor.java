@@ -32,6 +32,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * @author xiaoyu
+ */
 @Component
 public class HttpTransactionExecutor {
 

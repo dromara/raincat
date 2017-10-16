@@ -20,10 +20,19 @@ package com.happylifeplat.transaction.tx.springcloud.sample.pay.mapper;
 import com.happylifeplat.transaction.tx.springcloud.sample.pay.entiy.Pay;
 import org.apache.ibatis.annotations.Insert;
 
+/**
+ * @author xiaoyu
+ */
 public interface PayMapper {
 
 
+    /**
+     * 保存支付信息
+     *
+     * @param pay 实体
+     * @return row 条数
+     */
     @Insert("INSERT INTO pay(name,total_amount,create_time) VALUES(#{name}, #{totalAmount},#{createTime})")
-    int  save(Pay pay);
+    int save(Pay pay);
 
 }

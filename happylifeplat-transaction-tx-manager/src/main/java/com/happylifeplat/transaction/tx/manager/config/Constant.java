@@ -17,17 +17,20 @@
  */
 package com.happylifeplat.transaction.tx.manager.config;
 
+/**
+ * @author xiaoyu
+ */
 public interface Constant {
 
-    String applicationName = "tx-manager";
+    String APPLICATION_NAME = "tx-manager";
 
     String REDIS_PRE_FIX = "transaction:group:%s";
 
     String REDIS_KEYS = "transaction:group:*";
 
-    String httpCommit = "http://%s/tx/manager/httpCommit";
+    String HTTP_COMMIT = "http://%s/tx/manager/HTTP_COMMIT";
 
-    String httpRollback = "http://%s/tx/manager/httpRollback";
+    String HTTP_ROLLBACK = "http://%s/tx/manager/HTTP_ROLLBACK";
 
 
 }

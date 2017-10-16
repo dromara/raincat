@@ -19,16 +19,39 @@ package com.happylifeplat.transaction.tx.dubbo.sample.stock.api.service;
 
 import com.happylifeplat.transaction.tx.dubbo.sample.stock.api.entity.Stock;
 
+/**
+ * @author xiaoyu
+ */
 public interface StockService {
 
 
+    /**
+     * 保存库存
+     *
+     * @param stock 库存实体
+     */
     void save(Stock stock);
 
 
+    /**
+     * 更新
+     *
+     * @param stock 库存实体
+     */
     void updateNumber(Stock stock);
 
 
+    /**
+     * 保存库存失败
+     *
+     * @param stock 库存实体
+     */
     void fail(Stock stock);
 
+    /**
+     * 保存库存超时
+     *
+     * @param stock 库存实体
+     */
     void timeOut(Stock stock);
 }

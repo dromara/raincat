@@ -20,9 +20,18 @@ package com.happylifeplat.transaction.tx.springcloud.sample.wechat.mapper;
 import com.happylifeplat.transaction.tx.springcloud.sample.wechat.entity.Wechat;
 import org.apache.ibatis.annotations.Insert;
 
+/**
+ * @author xiaoyu
+ */
 public interface WechatMapper {
 
 
+    /**
+     * 保存
+     *
+     * @param wechat 实体对象
+     * @return rows
+     */
     @Insert("INSERT INTO wechat(name,amount,create_time) VALUES(#{name}, #{amount},#{createTime})")
     int save(Wechat wechat);
 

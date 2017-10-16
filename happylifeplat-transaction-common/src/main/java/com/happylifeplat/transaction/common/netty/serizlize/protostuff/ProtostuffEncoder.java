@@ -19,9 +19,12 @@ package com.happylifeplat.transaction.common.netty.serizlize.protostuff;
 
 
 import com.happylifeplat.transaction.common.netty.MessageCodecService;
-import com.happylifeplat.transaction.common.netty.serizlize.MessageEncoder;
+import com.happylifeplat.transaction.common.netty.serizlize.AbstractMessageEncoder;
 
-public class ProtostuffEncoder extends MessageEncoder {
+/**
+ * @author xiaoyu
+ */
+public class ProtostuffEncoder extends AbstractMessageEncoder {
 
     public ProtostuffEncoder(MessageCodecService util) {
         super(util);

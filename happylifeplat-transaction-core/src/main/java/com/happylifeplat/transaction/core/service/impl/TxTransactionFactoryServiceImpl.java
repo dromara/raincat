@@ -29,6 +29,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
+/**
+ * @author xiaoyu
+ */
 @Service
 public class TxTransactionFactoryServiceImpl implements TxTransactionFactoryService {
 

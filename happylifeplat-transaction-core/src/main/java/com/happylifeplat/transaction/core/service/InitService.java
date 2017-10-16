@@ -19,8 +19,16 @@ package com.happylifeplat.transaction.core.service;
 
 import com.happylifeplat.transaction.core.config.TxConfig;
 
+/**
+ * @author xiaoyu
+ */
 @FunctionalInterface
 public interface InitService {
 
-    void  initialization(TxConfig txConfig);
+    /**
+     * 框架的初始化
+     *
+     * @param txConfig 配置信息{@linkplain com.happylifeplat.transaction.core.config.TxConfig}
+     */
+    void initialization(TxConfig txConfig);
 }

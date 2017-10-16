@@ -26,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * @author xiaoyu
+ */
 @RestController
 @RequestMapping("/wechat")
 public class WechatController {
@@ -39,7 +42,7 @@ public class WechatController {
     }
 
     @RequestMapping("/save")
-    public int save(){
+    public int save() {
         Wechat wechat = new Wechat();
         wechat.setAmount(BigDecimal.valueOf(100));
         wechat.setName("wechat");
@@ -49,13 +52,13 @@ public class WechatController {
 
 
     @RequestMapping("/payFail")
-    public void payFail(){
-         wechatService.payFail();
+    public void payFail() {
+        wechatService.payFail();
     }
 
 
     @RequestMapping("/payTimeOut")
-    public void payTimeOut(){
+    public void payTimeOut() {
         Wechat wechat = new Wechat();
         wechat.setAmount(BigDecimal.valueOf(100));
         wechat.setName("wechat");

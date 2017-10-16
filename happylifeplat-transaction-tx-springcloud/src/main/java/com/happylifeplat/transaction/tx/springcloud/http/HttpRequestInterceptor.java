@@ -25,11 +25,14 @@ import org.springframework.http.client.ClientHttpResponse;
 
 import java.io.IOException;
 
+/**
+ * @author xiaoyu
+ */
 public class HttpRequestInterceptor implements ClientHttpRequestInterceptor {
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         request.getHeaders().add("tx-group", TxTransactionLocal.getInstance().getTxGroupId());
-        return execution.execute(request,body);
+        return execution.execute(request, body);
     }
 }

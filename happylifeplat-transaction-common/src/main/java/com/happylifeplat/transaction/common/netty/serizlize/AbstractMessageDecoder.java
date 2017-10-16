@@ -27,17 +27,21 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public  abstract class MessageDecoder extends ByteToMessageDecoder {
+/**
+ * @author xiaoyu
+ */
+public  abstract class AbstractMessageDecoder extends ByteToMessageDecoder {
 
     final private static int MESSAGE_LENGTH = MessageCodecService.MESSAGE_LENGTH;
     private MessageCodecService util = null;
 
-    public MessageDecoder(final MessageCodecService service) {
+    public AbstractMessageDecoder(final MessageCodecService service) {
         this.util = service;
     }
 
+    @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-        if (in.readableBytes() < MessageDecoder.MESSAGE_LENGTH) {
+        if (in.readableBytes() < AbstractMessageDecoder.MESSAGE_LENGTH) {
             return;
         }
 
@@ -58,7 +62,7 @@ public  abstract class MessageDecoder extends ByteToMessageDecoder {
                 Object obj = util.decode(messageBody);
                 out.add(obj);
             } catch (IOException ex) {
-                Logger.getLogger(MessageDecoder.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AbstractMessageDecoder.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

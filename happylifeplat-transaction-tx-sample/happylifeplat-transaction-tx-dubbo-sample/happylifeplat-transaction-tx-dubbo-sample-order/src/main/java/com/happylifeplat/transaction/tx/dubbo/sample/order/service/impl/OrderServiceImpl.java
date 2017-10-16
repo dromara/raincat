@@ -24,6 +24,9 @@ import com.happylifeplat.transaction.tx.dubbo.sample.order.mapper.OrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author xiaoyu
+ */
 @Service("orderService")
 public class OrderServiceImpl implements OrderService {
 

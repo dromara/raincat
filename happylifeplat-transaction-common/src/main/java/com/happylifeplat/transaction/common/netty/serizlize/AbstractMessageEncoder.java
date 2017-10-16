@@ -15,17 +15,27 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.happylifeplat.transaction.common.holder.httpclient;
+package com.happylifeplat.transaction.common.netty.serizlize;
+
+import com.happylifeplat.transaction.common.netty.MessageCodecService;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.MessageToByteEncoder;
 
 /**
- * 把httpclient 发送请求的 方法封装成枚举类型
- * 这样可以避免字符串出错的情况
- * GET 代表法get 请求
- * POST代表发post 请求
- * 等等
+ * @author xiaoyu
  */
-public enum MethodType {
+public abstract class AbstractMessageEncoder extends MessageToByteEncoder<Object> {
 
-    GET, POST, DELETE, PUT, TRACE, OPTION
+    private MessageCodecService util = null;
 
+    public AbstractMessageEncoder(final MessageCodecService util) {
+        this.util = util;
+    }
+
+    @Override
+    protected void encode(final ChannelHandlerContext ctx, final Object msg, final ByteBuf out) throws Exception {
+        util.encode(out, msg);
+    }
 }
+

@@ -17,7 +17,6 @@
  */
 package com.happylifeplat.transaction.core.service.handler;
 
-import com.happylifeplat.transaction.common.enums.NettyResultEnum;
 import com.happylifeplat.transaction.common.enums.TransactionRoleEnum;
 import com.happylifeplat.transaction.common.enums.TransactionStatusEnum;
 import com.happylifeplat.transaction.common.exception.TransactionRuntimeException;
@@ -27,8 +26,6 @@ import com.happylifeplat.transaction.common.netty.bean.TxTransactionGroup;
 import com.happylifeplat.transaction.common.netty.bean.TxTransactionItem;
 import com.happylifeplat.transaction.core.bean.TxTransactionInfo;
 import com.happylifeplat.transaction.core.compensation.command.TxCompensationCommand;
-import com.happylifeplat.transaction.core.concurrent.task.BlockTask;
-import com.happylifeplat.transaction.core.concurrent.task.BlockTaskHelper;
 import com.happylifeplat.transaction.core.concurrent.threadlocal.TxTransactionLocal;
 import com.happylifeplat.transaction.core.concurrent.threadpool.TransactionThreadPool;
 import com.happylifeplat.transaction.core.service.TxManagerMessageService;
@@ -40,15 +37,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ScheduledFuture;
 
+/**
+ * @author xiaoyu
+ */
 @Component
 public class StartTxTransactionHandler implements TxTransactionHandler {
 
@@ -115,7 +113,7 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
                     //通知tm完成事务
                     CompletableFuture.runAsync(() ->
                             txManagerMessageService
-                                    .AsyncCompleteCommitTxTransaction(groupId, waitKey,
+                                    .asynccompletecommit(groupId, waitKey,
                                             TransactionStatusEnum.COMMIT.getCode()));
 
 
@@ -142,10 +140,7 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
         } else {
             throw new TransactionRuntimeException("TxManager 连接异常！");
         }
-
-
     }
-
 
     private TxTransactionGroup newTxTransactionGroup(String groupId, String taskKey) {
         //创建事务组信息
@@ -157,8 +152,12 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
         //tmManager 用redis hash 结构来存储 整个事务组的状态做为hash结构的第一条数据
 
         TxTransactionItem groupItem = new TxTransactionItem();
-        groupItem.setStatus(TransactionStatusEnum.BEGIN.getCode());//整个事务组状态为开始
-        groupItem.setTransId(groupId); //设置事务id为组的id  即为 hashKey
+
+        //整个事务组状态为开始
+        groupItem.setStatus(TransactionStatusEnum.BEGIN.getCode());
+
+        //设置事务id为组的id  即为 hashKey
+        groupItem.setTransId(groupId);
         groupItem.setTaskKey(groupId);
         groupItem.setRole(TransactionRoleEnum.START.getCode());
 

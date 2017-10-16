@@ -28,6 +28,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * @author xiaoyu
+ */
 public class KryoSerialize implements NettyTransferSerialize {
 
     private KryoPool pool = null;
@@ -36,6 +39,7 @@ public class KryoSerialize implements NettyTransferSerialize {
         this.pool = pool;
     }
 
+    @Override
     public void serialize(OutputStream output, Object object) throws IOException {
         Kryo kryo = pool.borrow();
         Output out = new Output(output);
@@ -45,6 +49,7 @@ public class KryoSerialize implements NettyTransferSerialize {
         pool.release(kryo);
     }
 
+    @Override
     public Object deserialize(InputStream input) throws IOException {
         Kryo kryo = pool.borrow();
         Input in = new Input(input);

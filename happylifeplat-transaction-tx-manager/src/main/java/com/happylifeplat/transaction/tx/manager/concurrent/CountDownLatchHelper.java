@@ -18,14 +18,21 @@
 package com.happylifeplat.transaction.tx.manager.concurrent;
 
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
+/**
+ * @author xiaoyu
+ */
 public class CountDownLatchHelper<T> {
 
     private static volatile boolean isExecute = false;
@@ -34,10 +41,16 @@ public class CountDownLatchHelper<T> {
     private ExecutorService threadPool = null;
     private List<IExecute<T>> executes = null;
 
+   private  static ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
+            .setNameFormat("demo-pool-%d").build();
+
     public CountDownLatchHelper() {
-        threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         executes = Lists.newCopyOnWriteArrayList();
         data = Lists.newCopyOnWriteArrayList();
+        threadPool= new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), Runtime.getRuntime().availableProcessors(),
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(1024), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+
     }
 
     public CountDownLatchHelper<T> addExecute(IExecute<T> execute) {
@@ -66,8 +79,9 @@ public class CountDownLatchHelper<T> {
     }
 
     public List<T> getData() {
-        if (!isExecute)
+        if (!isExecute) {
             throw new RuntimeException("no execute !");
+        }
         return data;
     }
 

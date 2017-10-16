@@ -26,6 +26,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 
+/**
+ * @author xiaoyu
+ */
 @Component
 public class ApplicationStartListener implements ApplicationListener<EmbeddedServletContainerInitializedEvent> {
 

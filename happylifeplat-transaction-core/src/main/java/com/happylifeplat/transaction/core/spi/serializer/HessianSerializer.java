@@ -27,6 +27,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+/**
+ * @author xiaoyu
+ */
 @SuppressWarnings("unchecked")
 public class HessianSerializer implements ObjectSerializer {
     @Override

@@ -19,6 +19,9 @@ package com.happylifeplat.transaction.common.netty.bean;
 
 import java.io.Serializable;
 
+/**
+ * @author xiaoyu
+ */
 public class HeartBeat implements Serializable {
 
     private static final long serialVersionUID = 4183978848464761529L;

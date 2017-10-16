@@ -27,7 +27,6 @@ import com.happylifeplat.transaction.core.concurrent.threadpool.policy.CallerRun
 import com.happylifeplat.transaction.core.concurrent.threadpool.policy.DiscardedPolicy;
 import com.happylifeplat.transaction.core.concurrent.threadpool.policy.RejectedPolicy;
 import com.happylifeplat.transaction.core.config.TxConfig;
-import com.happylifeplat.transaction.core.helper.SpringBeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,18 +35,21 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+/**
+ * @author xiaoyu
+ */
 @Component
 public class TransactionThreadPool {
 
@@ -56,8 +58,8 @@ public class TransactionThreadPool {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionThreadPool.class);
 
-    private static final String ThreadFactoryName = "txTransaction";
-    private static final int Max_Array_Queue = 1000;
+    private static final String THREAD_FACTORY_NAME = "txTransaction";
+    private static final int MAX_ARRAY_QUEUE = 1000;
 
     private TxConfig txConfig;
 
@@ -65,18 +67,19 @@ public class TransactionThreadPool {
 
     private ExecutorService fixExecutorService;
 
-    private static final ScheduledExecutorService singleThreadScheduledExecutor =
-            Executors.newSingleThreadScheduledExecutor(TxTransactionThreadFactory.create(ThreadFactoryName, false));
+    private static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE =
+            new ScheduledThreadPoolExecutor(1,
+                    TxTransactionThreadFactory.create(THREAD_FACTORY_NAME, false));
 
 
     @PostConstruct
     public void init() {
-        scheduledExecutorService = Executors.newScheduledThreadPool(txConfig.getTransactionThreadMax(),
-                TxTransactionThreadFactory.create(ThreadFactoryName, true));
+        scheduledExecutorService =  new ScheduledThreadPoolExecutor(txConfig.getTransactionThreadMax(),
+                TxTransactionThreadFactory.create(THREAD_FACTORY_NAME, false));
 
         fixExecutorService = new ThreadPoolExecutor(txConfig.getTransactionThreadMax(), txConfig.getTransactionThreadMax(), 0, TimeUnit.MILLISECONDS,
                 createBlockingQueue(),
-                TxTransactionThreadFactory.create(ThreadFactoryName, false), createPolicy());
+                TxTransactionThreadFactory.create(THREAD_FACTORY_NAME, false), createPolicy());
 
     }
 
@@ -102,7 +105,7 @@ public class TransactionThreadPool {
             case DISCARDED_POLICY:
                 return new DiscardedPolicy();
             default:
-                return new AbortPolicy();
+                return new RejectedPolicy();
         }
     }
 
@@ -111,13 +114,13 @@ public class TransactionThreadPool {
 
         switch (queueType) {
             case LINKED_BLOCKING_QUEUE:
-                return new LinkedBlockingQueue<>();
+                return new LinkedBlockingQueue<>(1024);
             case ARRAY_BLOCKING_QUEUE:
-                return new ArrayBlockingQueue<>(Max_Array_Queue);
+                return new ArrayBlockingQueue<>(MAX_ARRAY_QUEUE);
             case SYNCHRONOUS_QUEUE:
                 return new SynchronousQueue<>();
             default:
-                return new LinkedBlockingQueue<>();
+                return new LinkedBlockingQueue<>(1024);
         }
 
     }
@@ -125,7 +128,7 @@ public class TransactionThreadPool {
     public ExecutorService newCustomFixedThreadPool(int threads) {
         return new ThreadPoolExecutor(threads, threads, 0, TimeUnit.MILLISECONDS,
                 createBlockingQueue(),
-                TxTransactionThreadFactory.create(ThreadFactoryName, false), createPolicy());
+                TxTransactionThreadFactory.create(THREAD_FACTORY_NAME, false), createPolicy());
     }
 
     public ExecutorService newFixedThreadPool() {
@@ -135,11 +138,11 @@ public class TransactionThreadPool {
     public ExecutorService newSingleThreadExecutor() {
         return new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS,
                 createBlockingQueue(),
-                TxTransactionThreadFactory.create(ThreadFactoryName, false), createPolicy());
+                TxTransactionThreadFactory.create(THREAD_FACTORY_NAME, false), createPolicy());
     }
 
     public ScheduledExecutorService newSingleThreadScheduledExecutor() {
-        return singleThreadScheduledExecutor;
+        return SCHEDULED_EXECUTOR_SERVICE;
     }
 
     public ScheduledExecutorService newScheduledThreadPool() {
@@ -161,7 +164,7 @@ public class TransactionThreadPool {
     }
 
     public ScheduledFuture singleThreadScheduled(Supplier<Object> supplier) {
-        return singleThreadScheduledExecutor
+        return SCHEDULED_EXECUTOR_SERVICE
                 .schedule(() -> {
                             final Boolean o = (Boolean) supplier.get();
                             if (o) {

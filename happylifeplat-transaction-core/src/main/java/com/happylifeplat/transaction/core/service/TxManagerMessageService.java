@@ -20,6 +20,9 @@ package com.happylifeplat.transaction.core.service;
 import com.happylifeplat.transaction.common.netty.bean.TxTransactionGroup;
 import com.happylifeplat.transaction.common.netty.bean.TxTransactionItem;
 
+/**
+ * @author xiaoyu
+ */
 public interface TxManagerMessageService {
 
     /**
@@ -43,6 +46,7 @@ public interface TxManagerMessageService {
 
     /**
      * 获取事务组状态
+     *
      * @param txGroupId 事务组id
      * @return 事务组状态
      */
@@ -51,11 +55,11 @@ public interface TxManagerMessageService {
 
     /**
      * 获取事务组信息
+     *
      * @param txGroupId 事务组id
      * @return TxTransactionGroup
      */
     TxTransactionGroup findByTxGroupId(String txGroupId);
-
 
 
     /**
@@ -85,7 +89,7 @@ public interface TxManagerMessageService {
      * @param status    状态  {@linkplain com.happylifeplat.transaction.common.enums.TransactionStatusEnum}
      * @return true 成功 false 失败
      */
-    Boolean completeCommitTxTransaction(String txGroupId, String taskKey,int status);
+    Boolean completeCommitTxTransaction(String txGroupId, String taskKey, int status);
 
 
     /**
@@ -95,15 +99,16 @@ public interface TxManagerMessageService {
      * @param taskKey   子事务的taskKey
      * @param status    状态  {@linkplain com.happylifeplat.transaction.common.enums.TransactionStatusEnum}
      */
-    void AsyncCompleteCommitTxTransaction(String txGroupId, String taskKey,int status);
+    void asynccompletecommit(String txGroupId, String taskKey, int status);
 
     /**
      * 提交参与者事务状态
-     * @param txGroupId  事务组id
+     *
+     * @param txGroupId         事务组id
      * @param txTransactionItem 参与者
-     * @param status 状态
+     * @param status            状态
      * @return
      */
-    Boolean commitActorTxTransaction(String txGroupId,TxTransactionItem txTransactionItem,int status);
+    Boolean commitActorTxTransaction(String txGroupId, TxTransactionItem txTransactionItem, int status);
 
 }

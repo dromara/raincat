@@ -20,6 +20,9 @@ package com.happylifeplat.transaction.common.holder;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
+/**
+ * @author xiaoyu
+ */
 public class ConfigHelper {
 
 

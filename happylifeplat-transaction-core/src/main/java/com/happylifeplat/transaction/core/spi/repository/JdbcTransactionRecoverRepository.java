@@ -18,6 +18,7 @@
 package com.happylifeplat.transaction.core.spi.repository;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.google.common.collect.Maps;
 import com.happylifeplat.transaction.common.enums.CompensationCacheTypeEnum;
 import com.happylifeplat.transaction.common.exception.TransactionException;
 import com.happylifeplat.transaction.common.exception.TransactionRuntimeException;
@@ -43,6 +44,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author xiaoyu
+ */
 public class JdbcTransactionRecoverRepository implements TransactionRecoverRepository {
 
 
@@ -229,7 +233,7 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
             int columnCount = md.getColumnCount();
             list = new ArrayList<>();
             while (rs.next()) {
-                Map<String, Object> rowData = new HashMap<>();
+                Map<String, Object> rowData = Maps.newHashMap();
                 for (int i = 1; i <= columnCount; i++) {
                     rowData.put(md.getColumnName(i), rs.getObject(i));
                 }

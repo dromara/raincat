@@ -19,6 +19,7 @@ package com.happylifeplat.transaction.common.enums;
 
 /**
  * The enum Transaction role enum.
+ * @author xiaoyu
  */
 public enum TransactionRoleEnum {
 

@@ -17,11 +17,16 @@
  */
 package com.happylifeplat.transaction.tx.manager.netty;
 
+/**
+ * @author xiaoyu
+ */
 public interface NettyService {
 
 
     /**
      * 启动netty服务
+     *
+     * @throws InterruptedException 异常
      */
     void start() throws InterruptedException;
 

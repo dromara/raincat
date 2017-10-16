@@ -24,6 +24,9 @@ import com.happylifeplat.transaction.tx.springcloud.sample.alipay.service.Alipay
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author xiaoyu
+ */
 @Service
 public class AlipayServiceImpl implements AlipayService {
 
@@ -38,7 +41,7 @@ public class AlipayServiceImpl implements AlipayService {
     @Override
     @TxTransaction
     public int payment(Alipay alipay) {
-       return alipayMapper.save(alipay);
+        return alipayMapper.save(alipay);
 
     }
 

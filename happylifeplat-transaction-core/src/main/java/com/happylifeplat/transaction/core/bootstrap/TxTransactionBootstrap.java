@@ -28,9 +28,11 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author xiaoyu
+ */
 @Component
 public class TxTransactionBootstrap extends TxConfig implements ApplicationContextAware {
-
 
 
     private ConfigurableApplicationContext cfgContext;
@@ -51,7 +53,6 @@ public class TxTransactionBootstrap extends TxConfig implements ApplicationConte
         SpringBeanUtils.getInstance().setCfgContext(cfgContext);
         start(this);
     }
-
 
 
     private void start(TxConfig txConfig) {

@@ -17,13 +17,16 @@
  */
 package com.happylifeplat.transaction.core.config;
 
+/**
+ * @author xiaoyu
+ */
 public class TxRedisConfig {
     private String hostName;
     private int port;
     private String password;
     private int maxTotal = 8;
     private int maxIdle = 8;
-    private int minIdle=0;
+    private int minIdle = 0;
     private long maxWaitMillis = -1L;
     private long minEvictableIdleTimeMillis = 1800000L;
     private long softMinEvictableIdleTimeMillis = 1800000L;
@@ -35,7 +38,7 @@ public class TxRedisConfig {
     private long timeBetweenEvictionRunsMillis = -1L;
     private boolean blockWhenExhausted = true;
 
-    private int timeOut=10000;
+    private int timeOut = 10000;
 
     public String getHostName() {
         return hostName;

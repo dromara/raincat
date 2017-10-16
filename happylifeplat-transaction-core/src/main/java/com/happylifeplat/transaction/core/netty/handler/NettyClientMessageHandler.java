@@ -45,6 +45,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author xiaoyu
+ */
 @Component
 @ChannelHandler.Sharable
 public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
@@ -65,7 +68,7 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
     private static volatile ChannelHandlerContext ctx;
 
 
-    private static final HeartBeat heartBeat = new HeartBeat();
+    private static final HeartBeat HEART_BEAT = new HeartBeat();
 
 
     private TxConfig txConfig;
@@ -84,12 +87,12 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
        /* executorService.execute(() -> {*/
         try {
             switch (actionEnum) {
-                case HEART://心跳动作
+                case HEART:
                     break;
-                case RECEIVE://客户端接收动作
+                case RECEIVE:
                     receivedCommand(heartBeat.getKey(), heartBeat.getResult());
                     break;
-                case ROLLBACK://收到服务端的回滚指令
+                case ROLLBACK:
                     notify(heartBeat);
                     break;
                 case COMPLETE_COMMIT:
@@ -105,6 +108,8 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
                     final BlockTask task = BlockTaskHelper.getInstance().getTask(heartBeat.getKey());
                     task.setAsyncCall(objects -> heartBeat.getTxTransactionGroup());
                     task.signal();
+                    break;
+                default:
                     break;
 
             }
@@ -175,13 +180,11 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
         if (IdleStateEvent.class.isAssignableFrom(evt.getClass())) {
             IdleStateEvent event = (IdleStateEvent) evt;
             if (event.state() == IdleState.READER_IDLE) {
-                //表示已经多久没有收到数据了
-                //ctx.close();
                 SpringBeanUtils.getInstance().getBean(NettyClientService.class).doConnect();
             } else if (event.state() == IdleState.WRITER_IDLE) {
                 //表示已经多久没有发送数据了
-                heartBeat.setAction(NettyMessageActionEnum.HEART.getCode());
-                ctx.writeAndFlush(heartBeat);
+                HEART_BEAT.setAction(NettyMessageActionEnum.HEART.getCode());
+                ctx.writeAndFlush(HEART_BEAT);
                 LogUtil.debug(LOGGER, () -> "向服务端发送的心跳");
             } else if (event.state() == IdleState.ALL_IDLE) {
                 //表示已经多久既没有收到也没有发送数据了
@@ -246,7 +249,7 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
      *
      * @param heartBeat 定义的数据传输对象
      */
-    public void AsyncSendTxManagerMessage(HeartBeat heartBeat) {
+    public void asyncSendTxManagerMessage(HeartBeat heartBeat) {
         if (ctx != null && ctx.channel() != null && ctx.channel().isActive()) {
             ctx.writeAndFlush(heartBeat);
         }

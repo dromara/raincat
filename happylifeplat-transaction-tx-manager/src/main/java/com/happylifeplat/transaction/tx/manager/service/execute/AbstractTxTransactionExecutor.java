@@ -35,6 +35,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * @author xiaoyu
+ */
 public abstract class AbstractTxTransactionExecutor implements TxTransactionExecutor {
 
     /**
@@ -43,9 +46,23 @@ public abstract class AbstractTxTransactionExecutor implements TxTransactionExec
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTxTransactionExecutor.class);
 
 
-    protected abstract void doRollBack(String txGroupId, List<TxTransactionItem> txTransactionItems,List<TxTransactionItem> elseItems);
+    /**
+     * 当出现异常等情况的时候,进行回滚操作。
+     *
+     * @param txGroupId          事务组id
+     * @param txTransactionItems 回滚事务项
+     * @param elseItems          其他事务项（当netty长连接不在同一个txManager情况下）
+     */
+    protected abstract void doRollBack(String txGroupId, List<TxTransactionItem> txTransactionItems, List<TxTransactionItem> elseItems);
 
-    protected abstract void doCommit(String txGroupId, List<TxTransactionItem> txTransactionItems,List<TxTransactionItem> elseItems);
+    /**
+     * 当事务组完成时候，通知各业务模块，进行提交事务的操作。
+     *
+     * @param txGroupId          事务组id
+     * @param txTransactionItems 提交事务项
+     * @param elseItems          其他事务项（当netty长连接不在同一个txManager情况下）
+     */
+    protected abstract void doCommit(String txGroupId, List<TxTransactionItem> txTransactionItems, List<TxTransactionItem> elseItems);
 
 
     private TxManagerService txManagerService;
@@ -73,14 +90,12 @@ public abstract class AbstractTxTransactionExecutor implements TxTransactionExec
                 }
                 final List<TxTransactionItem> currentItem = listMap.get(Boolean.TRUE);
                 final List<TxTransactionItem> elseItems = listMap.get(Boolean.FALSE);
-                doRollBack(txGroupId, currentItem,elseItems);
+                doRollBack(txGroupId, currentItem, elseItems);
             }
         } finally {
             //txManagerService.removeRedisByTxGroupId(txGroupId);
         }
     }
-
-
 
 
     /**
@@ -117,9 +132,9 @@ public abstract class AbstractTxTransactionExecutor implements TxTransactionExec
 
 
         if (!ok) {
-            doRollBack(txGroupId, currentItem,elseItems);
+            doRollBack(txGroupId, currentItem, elseItems);
         } else {
-            doCommit(txGroupId, currentItem,elseItems);
+            doCommit(txGroupId, currentItem, elseItems);
         }
         return true;
     }
@@ -137,7 +152,7 @@ public abstract class AbstractTxTransactionExecutor implements TxTransactionExec
 
     }
 
-    private Map<Boolean, List<TxTransactionItem>> filterData(List<TxTransactionItem> txTransactionItems){
+    private Map<Boolean, List<TxTransactionItem>> filterData(List<TxTransactionItem> txTransactionItems) {
         //过滤掉发起方的数据，发起方已经回滚，不需要再通信进行回滚
         final List<TxTransactionItem> collect = txTransactionItems.stream()
                 .filter(item -> item.getRole() != TransactionRoleEnum.START.getCode())

@@ -24,6 +24,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 
+/**
+ * @author xiaoyu
+ */
 public class DiscardedPolicy implements RejectedExecutionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(DiscardedPolicy.class);
 
@@ -37,6 +40,7 @@ public class DiscardedPolicy implements RejectedExecutionHandler {
         this.threadName = threadName;
     }
 
+    @Override
     public void rejectedExecution(Runnable runnable, ThreadPoolExecutor executor) {
         if (threadName != null) {
             LOG.error("txTransaction Thread pool [{}] is exhausted, executor={}", threadName, executor.toString());

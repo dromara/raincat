@@ -26,6 +26,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author xiaoyu
+ */
 @Component
 public class TxTransactionInitialize {
 
@@ -50,7 +53,8 @@ public class TxTransactionInitialize {
             initService.initialization(txConfig);
         } catch (RuntimeException ex) {
             LogUtil.error(LOGGER, "初始化异常:{}", ex::getMessage);
-            System.exit(1);//非正常关闭
+            //非正常关闭
+            System.exit(1);
         }
     }
 

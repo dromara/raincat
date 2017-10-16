@@ -30,6 +30,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
+/**
+ * @author xiaoyu
+ */
 @SuppressWarnings("unchecked")
 public class JavaSerializer implements ObjectSerializer {
     @Override

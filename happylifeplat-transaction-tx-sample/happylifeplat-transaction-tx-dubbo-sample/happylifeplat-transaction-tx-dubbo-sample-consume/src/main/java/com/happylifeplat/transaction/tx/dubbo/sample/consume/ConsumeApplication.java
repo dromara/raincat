@@ -22,6 +22,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportResource;
 
+/**
+ * @author xiaoyu
+ */
 @SpringBootApplication
 @ImportResource({"classpath:applicationContext.xml"})
 @MapperScan("com.happylifeplat.transaction.tx.dubbo.sample.consume.mapper")
@@ -29,7 +32,6 @@ public class ConsumeApplication {
     public static void main(String[] args) {
         SpringApplication.run(ConsumeApplication.class, args);
     }
-
 
 
 }

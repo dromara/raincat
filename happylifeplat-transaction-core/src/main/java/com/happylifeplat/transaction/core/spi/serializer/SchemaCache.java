@@ -25,6 +25,9 @@ import com.google.common.cache.CacheBuilder;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author xiaoyu
+ */
 public class SchemaCache {
     private static class SchemaCacheHolder {
         private static SchemaCache cache = new SchemaCache();

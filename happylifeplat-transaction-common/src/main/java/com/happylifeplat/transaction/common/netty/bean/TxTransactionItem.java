@@ -20,6 +20,9 @@ package com.happylifeplat.transaction.common.netty.bean;
 import java.io.Serializable;
 
 
+/**
+ * @author xiaoyu
+ */
 public class TxTransactionItem implements Serializable {
 
     private static final long serialVersionUID = -983809184773470584L;

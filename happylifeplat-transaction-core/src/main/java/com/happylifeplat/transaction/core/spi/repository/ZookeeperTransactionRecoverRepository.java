@@ -20,7 +20,7 @@ package com.happylifeplat.transaction.core.spi.repository;
 import com.google.common.collect.Lists;
 import com.happylifeplat.transaction.common.enums.CompensationCacheTypeEnum;
 import com.happylifeplat.transaction.common.exception.TransactionException;
-import com.happylifeplat.transaction.common.exception.TransactionIOException;
+import com.happylifeplat.transaction.common.exception.TransactionIoException;
 import com.happylifeplat.transaction.common.exception.TransactionRuntimeException;
 import com.happylifeplat.transaction.common.holder.LogUtil;
 import com.happylifeplat.transaction.core.bean.TransactionRecover;
@@ -45,6 +45,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 
+/**
+ * @author xiaoyu
+ */
 public class ZookeeperTransactionRecoverRepository implements TransactionRecoverRepository {
 
     /**
@@ -60,7 +63,7 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
 
     private static volatile ZooKeeper zooKeeper;
 
-    private static final CountDownLatch countDownLatch = new CountDownLatch(1);
+    private static final CountDownLatch COUNT_DOWN_LATCH = new CountDownLatch(1);
 
 
     public void setRootPath(String rootPath) {
@@ -82,7 +85,7 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
                     ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             return 1;
         } catch (Exception e) {
-            throw new TransactionIOException(e);
+            throw new TransactionIoException(e);
         }
     }
 
@@ -99,7 +102,7 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
             zooKeeper.delete(getRootPath(id), byId.getVersion() - 1);
             return 1;
         } catch (Exception e) {
-            throw new TransactionIOException(e);
+            throw new TransactionIoException(e);
         }
     }
 
@@ -119,7 +122,7 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
                     objectSerializer.serialize(transactionRecover), transactionRecover.getVersion() - 2);
             return 1;
         } catch (Exception e) {
-            throw new TransactionIOException(e);
+            throw new TransactionIoException(e);
         }
     }
 
@@ -136,7 +139,7 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
             byte[] content = zooKeeper.getData(getRootPath(id), false, stat);
             return objectSerializer.deSerialize(content, TransactionRecover.class);
         } catch (Exception e) {
-            throw new TransactionIOException(e);
+            throw new TransactionIoException(e);
         }
     }
 
@@ -153,7 +156,7 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
         try {
             zNodePaths = zooKeeper.getChildren(rootPath, false);
         } catch (Exception e) {
-            throw new TransactionIOException(e);
+            throw new TransactionIoException(e);
         }
         if (CollectionUtils.isNotEmpty(zNodePaths)) {
             transactionRecovers = zNodePaths.stream()
@@ -204,16 +207,16 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
             zooKeeper = new ZooKeeper(config.getHost(), config.getSessionTimeOut(), watchedEvent -> {
                 if (watchedEvent.getState() == Watcher.Event.KeeperState.SyncConnected) {
                     // 放开闸门, wait在connect方法上的线程将被唤醒
-                    countDownLatch.countDown();
+                    COUNT_DOWN_LATCH.countDown();
                 }
             });
-            countDownLatch.await();
+            COUNT_DOWN_LATCH.await();
             Stat stat = zooKeeper.exists(rootPath, false);
             if (stat == null) {
                 zooKeeper.create(rootPath, rootPath.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             }
         } catch (Exception e) {
-            throw new TransactionIOException(e);
+            throw new TransactionIoException(e);
         }
 
 
@@ -237,10 +240,6 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
     @Override
     public void setSerializer(ObjectSerializer objectSerializer) {
         this.objectSerializer = objectSerializer;
-    }
-
-    private String getParentPath() {
-        return String.join("/", rootPath, modelName);
     }
 
     private String getRootPath(String id) {

@@ -25,6 +25,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+/**
+ * @author xiaoyu
+ */
 @Configuration
 public class MyConfiguration {
 
@@ -36,7 +39,7 @@ public class MyConfiguration {
 
     @Bean
     Request.Options feignOptions() {
-        return new Request.Options(/**connectTimeoutMillis**/1 * 5000, /** readTimeoutMillis **/1 * 5000);
+        return new Request.Options(5000, 5000);
     }
 
     @Bean

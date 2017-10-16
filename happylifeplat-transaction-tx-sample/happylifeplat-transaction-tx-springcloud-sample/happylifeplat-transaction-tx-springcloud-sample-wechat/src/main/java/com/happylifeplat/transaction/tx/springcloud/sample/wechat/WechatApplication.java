@@ -27,16 +27,19 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.ImportResource;
 
-@SpringBootApplication(exclude = {MongoAutoConfiguration.class,MongoDataAutoConfiguration.class})
+/**
+ * @author xiaoyu
+ */
+@SpringBootApplication(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 @EnableEurekaClient
 @EnableFeignClients
 @MapperScan("com.happylifeplat.transaction.tx.springcloud.sample.wechat.mapper")
 @ImportResource({"classpath:applicationContext.xml"})
 public class WechatApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(WechatApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(WechatApplication.class, args);
+    }
 
 
 }

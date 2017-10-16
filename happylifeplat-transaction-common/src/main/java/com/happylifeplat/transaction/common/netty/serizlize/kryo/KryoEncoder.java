@@ -18,9 +18,12 @@
 package com.happylifeplat.transaction.common.netty.serizlize.kryo;
 
 import com.happylifeplat.transaction.common.netty.MessageCodecService;
-import com.happylifeplat.transaction.common.netty.serizlize.MessageEncoder;
+import com.happylifeplat.transaction.common.netty.serizlize.AbstractMessageEncoder;
 
-public class KryoEncoder extends MessageEncoder {
+/**
+ * @author xiaoyu
+ */
+public class KryoEncoder extends AbstractMessageEncoder {
 
     public KryoEncoder(MessageCodecService util) {
         super(util);

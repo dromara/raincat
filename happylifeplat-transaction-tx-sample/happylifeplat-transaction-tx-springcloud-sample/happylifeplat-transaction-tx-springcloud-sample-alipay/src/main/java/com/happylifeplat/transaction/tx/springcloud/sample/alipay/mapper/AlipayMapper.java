@@ -20,9 +20,18 @@ package com.happylifeplat.transaction.tx.springcloud.sample.alipay.mapper;
 import com.happylifeplat.transaction.tx.springcloud.sample.alipay.entity.Alipay;
 import org.apache.ibatis.annotations.Insert;
 
+/**
+ * @author xiaoyu
+ */
 public interface AlipayMapper {
 
 
+    /**
+     * 数据库保存操作
+     *
+     * @param alipay 实体类
+     * @return rows
+     */
     @Insert("INSERT INTO alipay(name,amount,create_time) VALUES(#{name}, #{amount},#{createTime})")
     int save(Alipay alipay);
 

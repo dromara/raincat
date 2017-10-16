@@ -26,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * @author xiaoyu
+ */
 @RestController
 @RequestMapping("/alipay")
 public class AlipayController {

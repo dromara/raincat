@@ -22,6 +22,9 @@ import com.happylifeplat.transaction.core.service.TxTransactionHandler;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author xiaoyu
+ */
 @Component
 public class InsideCompensationHandler implements TxTransactionHandler {
 

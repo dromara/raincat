@@ -20,6 +20,9 @@ package com.happylifeplat.transaction.tx.springcloud.sample.pay.entiy;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * @author xiaoyu
+ */
 public class Pay {
 
     private Integer id;

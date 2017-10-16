@@ -19,9 +19,12 @@ package com.happylifeplat.transaction.common.netty.serizlize.hessian;
 
 
 import com.happylifeplat.transaction.common.netty.MessageCodecService;
-import com.happylifeplat.transaction.common.netty.serizlize.MessageDecoder;
+import com.happylifeplat.transaction.common.netty.serizlize.AbstractMessageDecoder;
 
-public class HessianDecoder extends MessageDecoder {
+/**
+ * @author xiaoyu
+ */
+public class HessianDecoder extends AbstractMessageDecoder {
 
     public HessianDecoder(MessageCodecService util) {
         super(util);

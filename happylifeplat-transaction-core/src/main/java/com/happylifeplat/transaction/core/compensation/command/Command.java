@@ -17,6 +17,9 @@
  */
 package com.happylifeplat.transaction.core.compensation.command;
 
+/**
+ * @author xiaoyu
+ */
 @FunctionalInterface
 public interface Command {
 

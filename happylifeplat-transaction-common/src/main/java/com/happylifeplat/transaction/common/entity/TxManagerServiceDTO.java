@@ -18,6 +18,9 @@
 package com.happylifeplat.transaction.common.entity;
 
 
+/**
+ * @author xiaoyu
+ */
 public class TxManagerServiceDTO {
 
     private String appName;

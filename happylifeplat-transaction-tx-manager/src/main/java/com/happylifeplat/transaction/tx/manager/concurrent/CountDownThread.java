@@ -22,7 +22,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
 
-
+/**
+ * @author xiaoyu
+ */
 public class CountDownThread<T> implements Runnable {
 
     private ExecutorService threadPool;

@@ -17,6 +17,9 @@
  */
 package com.happylifeplat.transaction.core.config;
 
+/**
+ * @author xiaoyu
+ */
 public class TxMongoConfig {
 
     /**

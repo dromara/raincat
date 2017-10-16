@@ -18,17 +18,21 @@
 
 package com.happylifeplat.transaction.core.helper;
 
+import com.happylifeplat.transaction.core.constant.Constant;
+
+/**
+ * @author xiaoyu
+ */
 public class SqlHelper {
 
-
-    public static  String buildCreateTableSql(String tableName,String driverClassName) {
+    public static String buildCreateTableSql(String tableName, String driverClassName) {
         String createTableSql;
         String dbType = "mysql";
-        if (driverClassName.contains("mysql")) {
+        if (driverClassName.contains(Constant.DB_MYSQL)) {
             dbType = "mysql";
-        } else if (driverClassName.contains("sqlserver")) {
+        } else if (driverClassName.contains(Constant.DB_SQLSERVER)) {
             dbType = "sqlserver";
-        } else if (driverClassName.contains("oracle")) {
+        } else if (driverClassName.contains(Constant.DB_ORACLE)) {
             dbType = "oracle";
         }
         switch (dbType) {

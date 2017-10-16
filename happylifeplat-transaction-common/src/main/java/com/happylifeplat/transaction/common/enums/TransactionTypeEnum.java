@@ -18,21 +18,45 @@
 package com.happylifeplat.transaction.common.enums;
 
 
+/**
+ * The enum Transaction type enum.
+ * @author xiaoyu
+ */
 public enum TransactionTypeEnum {
 
+    /**
+     * Root transaction type enum.
+     */
     ROOT(1),
+    /**
+     * Branch transaction type enum.
+     */
     BRANCH(2);
 
+    /**
+     * The Id.
+     */
     int id;
 
     TransactionTypeEnum(int id) {
         this.id = id;
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Value of transaction type enum.
+     *
+     * @param id the id
+     * @return the transaction type enum
+     */
     public  static TransactionTypeEnum  valueOf(int id) {
         switch (id) {
             case 1:

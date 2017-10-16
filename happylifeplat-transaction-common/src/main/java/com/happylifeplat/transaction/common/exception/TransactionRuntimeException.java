@@ -17,6 +17,9 @@
  */
 package com.happylifeplat.transaction.common.exception;
 
+/**
+ * @author xiaoyu
+ */
 public class TransactionRuntimeException extends RuntimeException {
     private static final long serialVersionUID = -1949770547060521702L;
 

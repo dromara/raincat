@@ -29,8 +29,11 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * @author xiaoyu
+ */
 @Service
-public class PayServiceImpl implements PayService{
+public class PayServiceImpl implements PayService {
 
     private final AlipayClient alipayClient;
 
@@ -48,7 +51,7 @@ public class PayServiceImpl implements PayService{
     @Override
     @TxTransaction
     public Boolean orderPay() {
-        Pay pay  = new Pay();
+        Pay pay = new Pay();
         pay.setName("ali|| wechat");
         pay.setTotalAmount(BigDecimal.valueOf(200));
         pay.setCreateTime(new Date());
@@ -68,7 +71,7 @@ public class PayServiceImpl implements PayService{
     @TxTransaction
     public void payWithAliPayFail() {
 
-        Pay pay  = new Pay();
+        Pay pay = new Pay();
         pay.setName("ali|| wechat");
         pay.setTotalAmount(BigDecimal.valueOf(200));
         pay.setCreateTime(new Date());
@@ -87,7 +90,7 @@ public class PayServiceImpl implements PayService{
     @Override
     @TxTransaction
     public void payWithAliPayTimeOut() {
-        Pay pay  = new Pay();
+        Pay pay = new Pay();
         pay.setName("ali|| wechat");
         pay.setTotalAmount(BigDecimal.valueOf(200));
         pay.setCreateTime(new Date());
@@ -105,7 +108,7 @@ public class PayServiceImpl implements PayService{
     @Override
     @TxTransaction
     public void payWithWechatPayFail() {
-        Pay pay  = new Pay();
+        Pay pay = new Pay();
         pay.setName("ali|| wechat");
         pay.setTotalAmount(BigDecimal.valueOf(200));
         pay.setCreateTime(new Date());
@@ -125,7 +128,7 @@ public class PayServiceImpl implements PayService{
     @TxTransaction
     public void payWithWechatPayTimeOut() {
 
-        Pay pay  = new Pay();
+        Pay pay = new Pay();
         pay.setName("ali|| wechat");
         pay.setTotalAmount(BigDecimal.valueOf(200));
         pay.setCreateTime(new Date());

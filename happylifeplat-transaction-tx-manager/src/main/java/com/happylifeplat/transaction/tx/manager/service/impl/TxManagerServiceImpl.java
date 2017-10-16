@@ -24,7 +24,6 @@ import com.happylifeplat.transaction.common.netty.bean.TxTransactionItem;
 import com.happylifeplat.transaction.tx.manager.config.Constant;
 import com.happylifeplat.transaction.tx.manager.service.TxManagerService;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -36,8 +35,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+/**
+ * @author xiaoyu
+ */
 @Component
 @SuppressWarnings("unchecked")
 public class TxManagerServiceImpl implements TxManagerService {

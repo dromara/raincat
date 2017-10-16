@@ -26,7 +26,7 @@ import java.util.List;
  */
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TxManagerServiceTest {
 
 
@@ -37,11 +37,11 @@ public class TxManagerServiceTest {
     @Test
     public void saveTxTransactionGroup() throws Exception {
 
-        TxTransactionGroup txTransactionGroup  = new TxTransactionGroup();
+        TxTransactionGroup txTransactionGroup = new TxTransactionGroup();
         txTransactionGroup.setId(IdWorkerUtils.getInstance().createGroupId());
 
 
-        TxTransactionItem  item = new TxTransactionItem();
+        TxTransactionItem item = new TxTransactionItem();
         item.setStatus(5);
         item.setTaskKey(IdWorkerUtils.getInstance().createTaskKey());
 

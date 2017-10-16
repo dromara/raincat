@@ -17,6 +17,9 @@
  */
 package com.happylifeplat.transaction.core.bean;
 
+/**
+ * @author xiaoyu
+ */
 public class TxTransactionInfo {
 
     /**

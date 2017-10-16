@@ -19,11 +19,23 @@ package com.happylifeplat.transaction.tx.dubbo.sample.stock.mapper;
 
 import com.happylifeplat.transaction.tx.dubbo.sample.stock.api.entity.Stock;
 
+/**
+ * @author xiaoyu
+ */
 public interface StockMapper {
 
-
+    /**
+     * 保存库存
+     *
+     * @param stock 库存实体
+     */
     void save(Stock stock);
 
 
+    /**
+     * 更新
+     *
+     * @param stock 库存实体
+     */
     void updateNumber(Stock stock);
 }

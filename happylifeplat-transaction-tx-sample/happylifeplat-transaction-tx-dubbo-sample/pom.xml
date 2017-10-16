@@ -19,39 +19,39 @@
         <module>happylifeplat-transaction-tx-dubbo-sample-order</module>
     </modules>
 
-   <dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>com.happylifeplat.transaction</groupId>
-            <artifactId>happylifeplat-transaction-tx-dubbo-sample-consume</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.happylifeplat.transaction</groupId>
-            <artifactId>happylifeplat-transaction-tx-dubbo-sample-stock-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.happylifeplat.transaction</groupId>
+                <artifactId>happylifeplat-transaction-tx-dubbo-sample-consume</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.happylifeplat.transaction</groupId>
+                <artifactId>happylifeplat-transaction-tx-dubbo-sample-stock-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.happylifeplat.transaction</groupId>
-            <artifactId>happylifeplat-transaction-tx-dubbo-sample-stock</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.happylifeplat.transaction</groupId>
+                <artifactId>happylifeplat-transaction-tx-dubbo-sample-stock</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.happylifeplat.transaction</groupId>
-            <artifactId>happylifeplat-transaction-tx-dubbo-sample-order-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.happylifeplat.transaction</groupId>
+                <artifactId>happylifeplat-transaction-tx-dubbo-sample-order-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.happylifeplat.transaction</groupId>
-            <artifactId>happylifeplat-transaction-tx-dubbo-sample-order</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
+            <dependency>
+                <groupId>com.happylifeplat.transaction</groupId>
+                <artifactId>happylifeplat-transaction-tx-dubbo-sample-order</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
 
-   </dependencyManagement>
+    </dependencyManagement>
 
 
 </project>

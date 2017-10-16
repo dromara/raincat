@@ -35,9 +35,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * @author xiaoyu
+ */
 public class TxManagerLocator {
 
     private static final TxManagerLocator TX_MANAGER_LOCATOR = new TxManagerLocator();
@@ -53,11 +57,11 @@ public class TxManagerLocator {
 
     private TxConfig txConfig;
 
-    private ScheduledExecutorService m_executorService;
+    private ScheduledExecutorService mExecutorservice;
 
-    private AtomicReference<List<TxManagerServiceDTO>> m_configServices;
+    private AtomicReference<List<TxManagerServiceDTO>> mConfigservices;
 
-    private Type m_responseType;
+    private Type mResponsetype;
 
     public void setTxConfig(TxConfig txConfig) {
         this.txConfig = txConfig;
@@ -65,10 +69,10 @@ public class TxManagerLocator {
 
     private TxManagerLocator() {
         List<TxManagerServiceDTO> initial = Lists.newArrayList();
-        m_configServices = new AtomicReference<>(initial);
-        m_responseType = new TypeToken<List<TxManagerServiceDTO>>() {
+        mConfigservices = new AtomicReference<>(initial);
+        mResponsetype = new TypeToken<List<TxManagerServiceDTO>>() {
         }.getType();
-        this.m_executorService = Executors.newSingleThreadScheduledExecutor(
+        this.mExecutorservice = new ScheduledThreadPoolExecutor(1,
                 TxTransactionThreadFactory.create("TxManagerLocator", true));
     }
 
@@ -105,17 +109,17 @@ public class TxManagerLocator {
 
 
     private List<TxManagerServiceDTO> getTxManagerService() {
-        if (m_configServices.get().isEmpty()) {
+        if (mConfigservices.get().isEmpty()) {
             updateTxManagerServices();
         }
-        return m_configServices.get();
+        return mConfigservices.get();
     }
 
 
     public void schedulePeriodicRefresh() {
-        this.m_executorService.scheduleAtFixedRate(
+        this.mExecutorservice.scheduleAtFixedRate(
                 () -> {
-                    LogUtil.info(LOGGER,"refresh updateTxManagerServices delayTime:{}",()->txConfig.getRefreshInterval());
+                    LogUtil.info(LOGGER, "refresh updateTxManagerServices delayTime:{}", () -> txConfig.getRefreshInterval());
                     updateTxManagerServices();
                 }, 0, txConfig.getRefreshInterval(),
                 TimeUnit.SECONDS);
@@ -128,12 +132,12 @@ public class TxManagerLocator {
         for (int i = 0; i < maxRetries; i++) {
             try {
                 final List<TxManagerServiceDTO> serviceDTOList =
-                        OkHttpTools.getInstance().get(url, m_responseType);
+                        OkHttpTools.getInstance().get(url, mResponsetype);
                 if (CollectionUtils.isEmpty(serviceDTOList)) {
                     LogUtil.error(LOGGER, "Empty response! 请求url为:{}", () -> url);
                     continue;
                 }
-                m_configServices.set(serviceDTOList);
+                mConfigservices.set(serviceDTOList);
                 return;
             } catch (Throwable ex) {
                 ex.printStackTrace();

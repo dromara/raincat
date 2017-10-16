@@ -51,8 +51,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author xiaoyu
+ */
 @Service
 public class TxCompensationServiceImpl implements TxCompensationService {
 
@@ -80,7 +84,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
     public TxCompensationServiceImpl(ModelNameService modelNameService, TxManagerMessageService txManagerMessageService) {
         this.modelNameService = modelNameService;
         this.txManagerMessageService = txManagerMessageService;
-        this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(
+        this.scheduledExecutorService = new ScheduledThreadPoolExecutor(1,
                 TxTransactionThreadFactory.create("CompensationService", true));
     }
 
@@ -135,8 +139,6 @@ public class TxCompensationServiceImpl implements TxCompensationService {
                 }, 30, txConfig.getCompensationRecoverTime(), TimeUnit.SECONDS);
 
     }
-
-
 
 
     /**
@@ -241,7 +243,8 @@ public class TxCompensationServiceImpl implements TxCompensationService {
         private void execute() {
             while (true) {
                 try {
-                    TxCompensationAction transaction = QUEUE.take();//得到需要回滚的事务对象
+                    //得到需要回滚的事务对象
+                    TxCompensationAction transaction = QUEUE.take();
                     if (transaction != null) {
                         final int code = transaction.getCompensationActionEnum().getCode();
                         if (CompensationActionEnum.SAVE.getCode() == code) {

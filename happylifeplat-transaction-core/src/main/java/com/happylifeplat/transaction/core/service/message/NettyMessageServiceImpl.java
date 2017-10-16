@@ -30,13 +30,16 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Objects;
 
+/**
+ * @author xiaoyu
+ */
 @Service
-public class NettyMessageService implements TxManagerMessageService {
+public class NettyMessageServiceImpl implements TxManagerMessageService {
 
     private final NettyClientMessageHandler nettyClientMessageHandler;
 
     @Autowired
-    public NettyMessageService(NettyClientMessageHandler nettyClientMessageHandler) {
+    public NettyMessageServiceImpl(NettyClientMessageHandler nettyClientMessageHandler) {
         this.nettyClientMessageHandler = nettyClientMessageHandler;
     }
 
@@ -179,15 +182,11 @@ public class NettyMessageService implements TxManagerMessageService {
         HeartBeat heartBeat = new HeartBeat();
         heartBeat.setAction(NettyMessageActionEnum.COMPLETE_COMMIT.getCode());
         TxTransactionGroup txTransactionGroup = new TxTransactionGroup();
-        // txTransactionGroup.setStatus(TransactionStatusEnum.COMMIT.getCode());
         txTransactionGroup.setId(txGroupId);
-
         TxTransactionItem item = new TxTransactionItem();
         item.setTaskKey(taskKey);
         item.setStatus(status);
-
         txTransactionGroup.setItemList(Collections.singletonList(item));
-
         heartBeat.setTxTransactionGroup(txTransactionGroup);
         final Object object = nettyClientMessageHandler.sendTxManagerMessage(heartBeat);
         if (Objects.nonNull(object)) {
@@ -204,7 +203,7 @@ public class NettyMessageService implements TxManagerMessageService {
      * @param status    状态  {@linkplain TransactionStatusEnum}
      */
     @Override
-    public void AsyncCompleteCommitTxTransaction(String txGroupId, String taskKey, int status) {
+    public void asynccompletecommit(String txGroupId, String taskKey, int status) {
         HeartBeat heartBeat = new HeartBeat();
         heartBeat.setAction(NettyMessageActionEnum.COMPLETE_COMMIT.getCode());
         TxTransactionGroup txTransactionGroup = new TxTransactionGroup();
@@ -217,7 +216,7 @@ public class NettyMessageService implements TxManagerMessageService {
         txTransactionGroup.setItemList(Collections.singletonList(item));
 
         heartBeat.setTxTransactionGroup(txTransactionGroup);
-        nettyClientMessageHandler.AsyncSendTxManagerMessage(heartBeat);
+        nettyClientMessageHandler.asyncSendTxManagerMessage(heartBeat);
     }
 
     /**

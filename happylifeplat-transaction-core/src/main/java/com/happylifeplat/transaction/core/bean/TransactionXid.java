@@ -24,6 +24,9 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.UUID;
 
+/**
+ * @author xiaoyu
+ */
 public class TransactionXid implements Xid, Serializable {
 
     private static final long serialVersionUID = -6817267250789142043L;
@@ -79,6 +82,7 @@ public class TransactionXid implements Xid, Serializable {
                 "," + "branchQualifier:" + UUID.nameUUIDFromBytes(branchQualifier).toString();
     }
 
+    @Override
     public TransactionXid clone() {
 
         byte[] cloneGlobalTransactionId = null;
@@ -98,6 +102,7 @@ public class TransactionXid implements Xid, Serializable {
         return clone;
     }
 
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -107,6 +112,7 @@ public class TransactionXid implements Xid, Serializable {
         return result;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;

@@ -17,17 +17,18 @@
  */
 package com.happylifeplat.transaction.tx.dubbo.interceptor;
 
-import com.happylifeplat.transaction.core.interceptor.TxTransactionAspect;
-import com.happylifeplat.transaction.core.service.AspectTransactionService;
+import com.happylifeplat.transaction.core.interceptor.AbstractTxTransactionAspect;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
+/**
+ * @author xiaoyu
+ */
 @Aspect
 @Component
-public class DubboTxTransactionAspect extends TxTransactionAspect implements Ordered {
+public class DubboTxTransactionAspect extends AbstractTxTransactionAspect implements Ordered {
 
     @Autowired
     public DubboTxTransactionAspect(DubboTxTransactionInterceptor dubboTxTransactionInterceptor) {

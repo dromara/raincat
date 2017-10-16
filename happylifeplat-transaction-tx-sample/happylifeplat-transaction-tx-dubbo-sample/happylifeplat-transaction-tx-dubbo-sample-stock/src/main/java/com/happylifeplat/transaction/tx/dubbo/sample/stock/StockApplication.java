@@ -23,6 +23,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportResource;
 
 
+/**
+ * @author xiaoyu
+ */
 @SpringBootApplication
 @ImportResource({"classpath:applicationContext.xml"})
 @MapperScan("com.happylifeplat.transaction.tx.dubbo.sample.stock.mapper")

@@ -15,7 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.happylifeplat.transaction.common.netty.serizlize.hessian;
+package com.happylifeplat.transaction.common.netty.serizlize.protostuff;
 
 import com.google.common.io.Closer;
 import com.happylifeplat.transaction.common.netty.MessageCodecService;
@@ -25,38 +25,40 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class HessianCodecService implements MessageCodecService {
-
-    private HessianSerializePool pool = HessianSerializePool.getHessianPoolInstance();
+/**
+ * @author xiaoyu
+ */
+public class ProtostuffCodecServiceImpl implements MessageCodecService {
     private static Closer closer = Closer.create();
-
-
+    private ProtostuffSerializePool pool = ProtostuffSerializePool.getProtostuffPoolInstance();
+    @Override
     public void encode(final ByteBuf out, final Object message) throws IOException {
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             closer.register(byteArrayOutputStream);
-            HessianSerialize hessianSerialization = pool.borrow();
-            hessianSerialization.serialize(byteArrayOutputStream, message);
+            ProtostuffSerialize protostuffSerialization = pool.borrow();
+            protostuffSerialization.serialize(byteArrayOutputStream, message);
             byte[] body = byteArrayOutputStream.toByteArray();
             int dataLength = body.length;
             out.writeInt(dataLength);
             out.writeBytes(body);
-            pool.restore(hessianSerialization);
+            pool.restore(protostuffSerialization);
         } finally {
             closer.close();
         }
     }
 
+    @Override
     public Object decode(byte[] body) throws IOException {
         try {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(body);
             closer.register(byteArrayInputStream);
-            HessianSerialize hessianSerialization = pool.borrow();
-            Object object = hessianSerialization.deserialize(byteArrayInputStream);
-            pool.restore(hessianSerialization);
-            return object;
+            ProtostuffSerialize protostuffSerialization = pool.borrow();
+            Object obj = protostuffSerialization.deserialize(byteArrayInputStream);
+            pool.restore(protostuffSerialization);
+            return obj;
         } finally {
-            closer.close();
+            //closer.close();
         }
     }
 }

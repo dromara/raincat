@@ -21,13 +21,22 @@ import com.happylifeplat.transaction.core.bean.TransactionRecover;
 import com.happylifeplat.transaction.core.compensation.command.TxCompensationAction;
 import com.happylifeplat.transaction.core.config.TxConfig;
 
+/**
+ * @author xiaoyu
+ */
 public interface TxCompensationService {
 
+    /**
+     * 补偿操作
+     */
     void compensate();
 
 
     /**
      * 启动本地补偿事务，根据配置是否进行补偿
+     *
+     * @param txConfig 配置信息
+     * @throws Exception 异常信息
      */
     void start(TxConfig txConfig) throws Exception;
 
@@ -56,10 +65,12 @@ public interface TxCompensationService {
      */
     void update(TransactionRecover transactionRecover);
 
+
     /**
-     * 提交补偿操作
+     * 提交补偿
      *
      * @param txCompensationAction 补偿命令
+     * @return true 成功
      */
     Boolean submit(TxCompensationAction txCompensationAction);
 }

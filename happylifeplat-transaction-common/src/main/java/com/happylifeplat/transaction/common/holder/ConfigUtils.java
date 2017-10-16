@@ -19,6 +19,9 @@ package com.happylifeplat.transaction.common.holder;
 
 
 
+/**
+ * @author xiaoyu
+ */
 public class ConfigUtils {
 
     public static String getString(String filePath, String key) {

@@ -18,6 +18,9 @@
 package com.happylifeplat.transaction.tx.dubbo.sample.consume.entity;
 
 
+/**
+ * @author xiaoyu
+ */
 public class Test1 {
 
     private Integer id;

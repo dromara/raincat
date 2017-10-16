@@ -24,6 +24,9 @@ import com.happylifeplat.transaction.tx.springcloud.sample.wechat.service.Wechat
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author xiaoyu
+ */
 @Service
 public class WechatServiceImpl implements WechatService {
 

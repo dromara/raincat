@@ -48,6 +48,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author xiaoyu
+ */
 public class MongoTransactionRecoverRepository implements TransactionRecoverRepository {
 
     /**
@@ -59,7 +62,7 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
 
     private MongoTemplate template;
 
-    private String COLLECTION_NAME;
+    private String collectionName;
 
 
     /**
@@ -81,7 +84,7 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
             mongoTransactionRecover.setStatus(transactionRecover.getStatus());
             final byte[] cache = objectSerializer.serialize(transactionRecover.getTransactionInvocation());
             mongoTransactionRecover.setContents(cache);
-            template.save(mongoTransactionRecover, COLLECTION_NAME);
+            template.save(mongoTransactionRecover, collectionName);
         } catch (TransactionException e) {
             e.printStackTrace();
         }
@@ -99,7 +102,7 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
         Assert.notNull(id);
         Query query = new Query();
         query.addCriteria(new Criteria("transId").is(id));
-        template.remove(query, COLLECTION_NAME);
+        template.remove(query, collectionName);
         return 1;
     }
 
@@ -115,11 +118,11 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
         query.addCriteria(new Criteria("transId").is(transactionRecover.getId()));
         Update update = new Update();
         update.set("lastTime", new Date());
-        update.set("retriedCount", transactionRecover.getRetriedCount()+1);
-        update.set("version", transactionRecover.getVersion()+1);
-        final WriteResult writeResult = template.updateFirst(query, update, MongoTransactionRecover.class, COLLECTION_NAME);
-        if(writeResult.getN()<=0){
-           throw new  TransactionRuntimeException("更新数据异常!");
+        update.set("retriedCount", transactionRecover.getRetriedCount() + 1);
+        update.set("version", transactionRecover.getVersion() + 1);
+        final WriteResult writeResult = template.updateFirst(query, update, MongoTransactionRecover.class, collectionName);
+        if (writeResult.getN() <= 0) {
+            throw new TransactionRuntimeException("更新数据异常!");
         }
         return 1;
     }
@@ -135,7 +138,7 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
     public TransactionRecover findById(String id) {
         Query query = new Query();
         query.addCriteria(new Criteria("transId").is(id));
-        MongoTransactionRecover cache = template.findOne(query, MongoTransactionRecover.class, COLLECTION_NAME);
+        MongoTransactionRecover cache = template.findOne(query, MongoTransactionRecover.class, collectionName);
         return buildByCache(cache);
 
     }
@@ -173,7 +176,7 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
                         TransactionStatusEnum.FAILURE.getCode(),
                         TransactionStatusEnum.ROLLBACK.getCode()));
         final List<MongoTransactionRecover> mongoTransactionRecoverList =
-                template.find(query, MongoTransactionRecover.class,COLLECTION_NAME);
+                template.find(query, MongoTransactionRecover.class, collectionName);
         if (CollectionUtils.isNotEmpty(mongoTransactionRecoverList)) {
             return mongoTransactionRecoverList.stream().map(this::buildByCache).collect(Collectors.toList());
         }
@@ -189,13 +192,12 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
      */
     @Override
     public void init(String modelName, TxConfig txConfig) {
-        COLLECTION_NAME = modelName;
+        collectionName = modelName;
         final TxMongoConfig txMongoConfig = txConfig.getTxMongoConfig();
         MongoClientFactoryBean clientFactoryBean = buildMongoClientFactoryBean(txMongoConfig);
         try {
             clientFactoryBean.afterPropertiesSet();
             template = new MongoTemplate(clientFactoryBean.getObject(), txMongoConfig.getMongoDbName());
-            //template.setWriteConcern(WriteConcern.NORMAL);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -25,6 +25,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * @author xiaoyu
+ */
 @Controller
 public class TxManagerIndexController {
 

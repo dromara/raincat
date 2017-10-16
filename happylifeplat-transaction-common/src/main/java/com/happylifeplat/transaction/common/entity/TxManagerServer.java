@@ -17,6 +17,9 @@
  */
 package com.happylifeplat.transaction.common.entity;
 
+/**
+ * @author xiaoyu
+ */
 public class TxManagerServer {
 
     /**

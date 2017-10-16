@@ -21,6 +21,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.ImportResource;
 
+/**
+ * @author xiaoyu
+ */
 @Configuration
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public class DubboConfiguration {
@@ -29,21 +32,5 @@ public class DubboConfiguration {
     @Configuration
     static class DubboAspectConfiguration {
 
-
-
-      /*  private final DubboTxTransactionInterceptor dubboTxTransactionInterceptor;
-
-        @Autowired(required = false)
-        public DubboAspectConfiguration(DubboTxTransactionInterceptor dubboTxTransactionInterceptor) {
-            this.dubboTxTransactionInterceptor = dubboTxTransactionInterceptor;
-        }
-
-
-        @Bean
-        public DubboTxTransactionAspect dubboTxTransactionAspect() {
-          //  return new DubboTxTransactionAspect(dubboTxTransactionInterceptor);
-        }
-
-*/
     }
 }

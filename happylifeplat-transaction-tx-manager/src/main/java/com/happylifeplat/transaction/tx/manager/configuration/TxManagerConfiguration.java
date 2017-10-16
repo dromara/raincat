@@ -35,6 +35,9 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.web.client.RestTemplate;
 import redis.clients.jedis.JedisPoolConfig;
 
+/**
+ * @author xiaoyu
+ */
 @Configuration
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 public class TxManagerConfiguration {

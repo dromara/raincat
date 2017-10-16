@@ -22,6 +22,9 @@ import com.happylifeplat.transaction.core.service.ModelNameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author xiaoyu
+ */
 @Service
 public class DubboModelNameServiceImpl implements ModelNameService {
 

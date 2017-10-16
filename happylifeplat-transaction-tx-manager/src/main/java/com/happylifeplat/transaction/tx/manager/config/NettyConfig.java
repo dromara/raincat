@@ -17,6 +17,9 @@
  */
 package com.happylifeplat.transaction.tx.manager.config;
 
+/**
+ * @author xiaoyu
+ */
 public class NettyConfig {
 
     /**
@@ -27,13 +30,13 @@ public class NettyConfig {
     /**
      * 最大线程数
      */
-    private int maxThreads=Runtime.getRuntime().availableProcessors()<<2;
+    private int maxThreads = Runtime.getRuntime().availableProcessors() << 2;
 
 
     /**
      * 客户端与服务端链接数
      */
-    private int maxConnection=50;
+    private int maxConnection = 50;
 
     /**
      * 序列化方式

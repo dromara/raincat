@@ -19,12 +19,28 @@ package com.happylifeplat.transaction.tx.springcloud.sample.alipay.service;
 
 import com.happylifeplat.transaction.tx.springcloud.sample.alipay.entity.Alipay;
 
+/**
+ * @author xiaoyu
+ */
 public interface AlipayService {
 
-
+    /**
+     * 付款动作
+     *
+     * @param alipay 实体类
+     * @return rows
+     */
     int payment(Alipay alipay);
 
+    /**
+     * 支付失败测试
+     */
     void payFail();
 
+    /**
+     * 支付超时
+     *
+     * @param alipay 实体类
+     */
     void payTimeOut(Alipay alipay);
 }

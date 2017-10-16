@@ -20,25 +20,19 @@ package com.happylifeplat.transaction.core.compensation.command;
 import com.happylifeplat.transaction.common.enums.CompensationActionEnum;
 import com.happylifeplat.transaction.common.enums.TransactionStatusEnum;
 import com.happylifeplat.transaction.common.holder.IdWorkerUtils;
-import com.happylifeplat.transaction.common.holder.LogUtil;
 import com.happylifeplat.transaction.core.bean.TransactionInvocation;
 import com.happylifeplat.transaction.core.bean.TransactionRecover;
 import com.happylifeplat.transaction.core.compensation.TxCompensationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.concurrent.CompletableFuture;
 
+/**
+ * @author xiaoyu
+ */
 @Service
 public class TxCompensationCommand implements Command {
-
-    /**
-     * logger
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(TxCompensationCommand.class);
 
     private final TxCompensationService txCompensationService;
 
@@ -55,14 +49,6 @@ public class TxCompensationCommand implements Command {
     @Override
     public void execute(TxCompensationAction txCompensationAction) {
         txCompensationService.submit(txCompensationAction);
-      /*  CompletableFuture.supplyAsync(() -> txCompensationService.submit(txCompensationAction))
-                .thenAccept(result -> {
-                    if (result) {
-                        LogUtil.info(LOGGER, "补偿操作提交成功！,执行的操作为:{}",
-                                () -> txCompensationAction.getCompensationActionEnum().getCode());
-                    }
-                });*/
-
     }
 
 

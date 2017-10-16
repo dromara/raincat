@@ -27,82 +27,91 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * @author xiaoyu
+ */
 public class TxTransactionThreadFactory implements ThreadFactory {
 
-  private static final  Logger log = LoggerFactory.getLogger(TxTransactionThreadFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(TxTransactionThreadFactory.class);
 
-  private final AtomicLong threadNumber = new AtomicLong(1);
+    private final AtomicLong threadNumber = new AtomicLong(1);
 
-  private final String namePrefix;
+    private final String namePrefix;
 
-  private static volatile boolean daemon;
+    private static volatile boolean daemon;
 
-  private static final ThreadGroup threadGroup = new ThreadGroup("txTransaction");
+    private static final ThreadGroup THREAD_GROUP = new ThreadGroup("txTransaction");
 
-  public static ThreadGroup getThreadGroup() {
-    return threadGroup;
-  }
+    public static ThreadGroup getThreadGroup() {
+        return THREAD_GROUP;
+    }
 
-  public static ThreadFactory create(String namePrefix, boolean daemon) {
-    return new TxTransactionThreadFactory(namePrefix, daemon);
-  }
+    public static ThreadFactory create(String namePrefix, boolean daemon) {
+        return new TxTransactionThreadFactory(namePrefix, daemon);
+    }
 
-  public static boolean waitAllShutdown(int timeoutInMillis) {
-    ThreadGroup group = getThreadGroup();
-    Thread[] activeThreads = new Thread[group.activeCount()];
-    group.enumerate(activeThreads);
-    Set<Thread> alives = new HashSet<Thread>(Arrays.asList(activeThreads));
-    Set<Thread> dies = new HashSet<Thread>();
-    log.info("Current ACTIVE thread count is: {}", alives.size());
-    long expire = System.currentTimeMillis() + timeoutInMillis;
-    while (System.currentTimeMillis() < expire) {
-      classify(alives, dies, thread -> !thread.isAlive() || thread.isInterrupted() || thread.isDaemon());
-      if (alives.size() > 0) {
-        log.info("Alive txTransaction threads: {}", alives);
-        try {
-          TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException ex) {
-          // ignore
+    public static boolean waitAllShutdown(int timeoutInMillis) {
+        ThreadGroup group = getThreadGroup();
+        Thread[] activeThreads = new Thread[group.activeCount()];
+        group.enumerate(activeThreads);
+        Set<Thread> alives = new HashSet<Thread>(Arrays.asList(activeThreads));
+        Set<Thread> dies = new HashSet<Thread>();
+        log.info("Current ACTIVE thread count is: {}", alives.size());
+        long expire = System.currentTimeMillis() + timeoutInMillis;
+        while (System.currentTimeMillis() < expire) {
+            classify(alives, dies, thread -> !thread.isAlive() || thread.isInterrupted() || thread.isDaemon());
+            if (alives.size() > 0) {
+                log.info("Alive txTransaction threads: {}", alives);
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                } catch (InterruptedException ex) {
+                    // ignore
+                }
+            } else {
+                log.info("txTransaction threads are shutdown.");
+                return true;
+            }
         }
-      } else {
-        log.info("All txTransaction threads are shutdown.");
-        return true;
-      }
+        log.warn("Some txTransaction threads are still alive but expire time has reached, alive threads: {}",
+                alives);
+        return false;
     }
-    log.warn("Some txTransaction threads are still alive but expire time has reached, alive threads: {}",
-        alives);
-    return false;
-  }
 
-  private static interface ClassifyStandard<T> {
-    boolean satisfy(T thread);
-  }
-
-  private static <T> void classify(Set<T> src, Set<T> des, ClassifyStandard<T> standard) {
-    Set<T> set = new HashSet<>();
-    for (T t : src) {
-      if (standard.satisfy(t)) {
-        set.add(t);
-      }
+    private interface ClassifyStandard<T> {
+        /**
+         * 没啥用
+         *
+         * @param thread 线程
+         * @return ture
+         */
+        boolean satisfy(T thread);
     }
-    src.removeAll(set);
-    des.addAll(set);
-  }
 
-  private TxTransactionThreadFactory(String namePrefix, boolean daemon) {
-    this.namePrefix = namePrefix;
-    this.daemon = daemon;
-  }
-
-
-  @Override
-  public Thread newThread(Runnable runnable) {
-    Thread thread = new Thread(threadGroup, runnable,//
-        threadGroup.getName() + "-" + namePrefix + "-" + threadNumber.getAndIncrement());
-    thread.setDaemon(daemon);
-    if (thread.getPriority() != Thread.NORM_PRIORITY) {
-      thread.setPriority(Thread.NORM_PRIORITY);
+    private static <T> void classify(Set<T> src, Set<T> des, ClassifyStandard<T> standard) {
+        Set<T> set = new HashSet<>();
+        for (T t : src) {
+            if (standard.satisfy(t)) {
+                set.add(t);
+            }
+        }
+        src.removeAll(set);
+        des.addAll(set);
     }
-    return thread;
-  }
+
+    private TxTransactionThreadFactory(String namePrefix, boolean daemon) {
+        this.namePrefix = namePrefix;
+        TxTransactionThreadFactory.daemon = daemon;
+    }
+
+
+    @Override
+    public Thread newThread(Runnable runnable) {
+        Thread thread = new Thread(THREAD_GROUP, runnable,
+                THREAD_GROUP.getName() + "-" + namePrefix + "-" + threadNumber.getAndIncrement());
+        thread.setDaemon(daemon);
+        if (thread.getPriority() != Thread.NORM_PRIORITY) {
+            thread.setPriority(Thread.NORM_PRIORITY);
+        }
+        return thread;
+    }
 }

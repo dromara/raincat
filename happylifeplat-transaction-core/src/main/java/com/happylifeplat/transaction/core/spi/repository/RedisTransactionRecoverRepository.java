@@ -20,7 +20,7 @@ package com.happylifeplat.transaction.core.spi.repository;
 import com.google.common.collect.Lists;
 import com.happylifeplat.transaction.common.enums.CompensationCacheTypeEnum;
 import com.happylifeplat.transaction.common.exception.TransactionException;
-import com.happylifeplat.transaction.common.exception.TransactionIOException;
+import com.happylifeplat.transaction.common.exception.TransactionIoException;
 import com.happylifeplat.transaction.common.exception.TransactionRuntimeException;
 import com.happylifeplat.transaction.common.holder.LogUtil;
 import com.happylifeplat.transaction.core.bean.TransactionRecover;
@@ -40,6 +40,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @author xiaoyu
+ */
 public class RedisTransactionRecoverRepository implements TransactionRecoverRepository {
 
     /**
@@ -79,7 +82,7 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
 
             return statusCode.intValue();
         } catch (Exception e) {
-            throw new TransactionIOException(e);
+            throw new TransactionIoException(e);
         }
     }
 
@@ -96,7 +99,7 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
             Long result = RedisHelper.execute(jedisPool, jedis -> jedis.del(key));
             return result.intValue();
         } catch (Exception e) {
-            throw new TransactionIOException(e);
+            throw new TransactionIoException(e);
         }
     }
 
@@ -111,9 +114,9 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
         try {
             final byte[] key = RedisHelper.getRedisKey(keyName, transactionRecover.getId());
             Long statusCode = RedisHelper.execute(jedisPool, jedis -> {
-                transactionRecover.setVersion(transactionRecover.getVersion()+1);
+                transactionRecover.setVersion(transactionRecover.getVersion() + 1);
                 transactionRecover.setLastTime(new Date());
-                transactionRecover.setRetriedCount(transactionRecover.getRetriedCount()+1);
+                transactionRecover.setRetriedCount(transactionRecover.getRetriedCount() + 1);
                 try {
                     return jedis.hsetnx(key,
                             ByteUtils.longToBytes(transactionRecover.getVersion()),
@@ -126,7 +129,7 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
             });
 
             final int intValue = statusCode.intValue();
-            if(intValue<=0){
+            if (intValue <= 0) {
                 throw new TransactionRuntimeException("数据已经被更新！");
             }
             return intValue;
@@ -153,7 +156,7 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
             }
             return null;
         } catch (Exception e) {
-            throw new TransactionIOException(e);
+            throw new TransactionIoException(e);
         }
     }
 
@@ -176,7 +179,7 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
             }
             return transactions;
         } catch (Exception e) {
-            throw new TransactionIOException(e);
+            throw new TransactionIoException(e);
         }
     }
 
@@ -238,12 +241,12 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
         //对象空闲多久后逐出, 当空闲时间>该值 ，且 空闲连接>最大空闲数 时直接逐出,不再根据MinEvictableIdleTimeMillis判断  (默认逐出策略)，默认30m
         config.setSoftMinEvictableIdleTimeMillis(txRedisConfig.getSoftMinEvictableIdleTimeMillis());
         //逐出扫描的时间间隔(毫秒) 如果为负数,则不运行逐出线程, 默认-1
-        config.setTimeBetweenEvictionRunsMillis(txRedisConfig.getTimeBetweenEvictionRunsMillis()); //1m
+        config.setTimeBetweenEvictionRunsMillis(txRedisConfig.getTimeBetweenEvictionRunsMillis());
         //每次逐出检查时 逐出的最大数目 如果为负数就是 : 1/abs(n), 默认3
         config.setNumTestsPerEvictionRun(txRedisConfig.getNumTestsPerEvictionRun());
-        if(StringUtils.isNoneBlank(txRedisConfig.getPassword())){
+        if (StringUtils.isNoneBlank(txRedisConfig.getPassword())) {
             jedisPool = new JedisPool(config, txRedisConfig.getHostName(), txRedisConfig.getPort(), txRedisConfig.getTimeOut(), txRedisConfig.getPassword());
-        }else{
+        } else {
             jedisPool = new JedisPool(config, txRedisConfig.getHostName(), txRedisConfig.getPort(), txRedisConfig.getTimeOut());
         }
 

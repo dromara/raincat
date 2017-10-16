@@ -32,6 +32,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * @author xiaoyu
+ */
 @RestController
 @RequestMapping("/tx/manager")
 public class TxManagerController {

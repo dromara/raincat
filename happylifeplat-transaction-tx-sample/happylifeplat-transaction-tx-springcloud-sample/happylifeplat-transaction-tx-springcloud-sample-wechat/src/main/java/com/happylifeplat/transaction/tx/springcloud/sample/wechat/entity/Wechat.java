@@ -20,6 +20,9 @@ package com.happylifeplat.transaction.tx.springcloud.sample.wechat.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * @author xiaoyu
+ */
 public class Wechat {
 
     private Integer id;

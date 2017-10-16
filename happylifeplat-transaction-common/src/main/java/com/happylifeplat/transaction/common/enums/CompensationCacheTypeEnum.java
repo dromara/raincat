@@ -21,6 +21,9 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * @author xiaoyu
+ */
 public enum CompensationCacheTypeEnum {
 
     /**

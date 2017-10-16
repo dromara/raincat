@@ -19,7 +19,15 @@ package com.happylifeplat.transaction.tx.dubbo.sample.order.mapper;
 
 import com.happylifeplat.transaction.tx.dubbo.sample.order.api.entity.Order;
 
+/**
+ * @author xiaoyu
+ */
 public interface OrderMapper {
 
+    /**
+     * 保存订单
+     *
+     * @param order 订单实体
+     */
     void save(Order order);
 }

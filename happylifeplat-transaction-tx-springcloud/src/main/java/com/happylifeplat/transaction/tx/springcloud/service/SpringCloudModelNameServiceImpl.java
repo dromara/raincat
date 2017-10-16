@@ -23,6 +23,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 
+/**
+ * @author xiaoyu
+ */
 @Service
 public class SpringCloudModelNameServiceImpl implements ModelNameService {
 

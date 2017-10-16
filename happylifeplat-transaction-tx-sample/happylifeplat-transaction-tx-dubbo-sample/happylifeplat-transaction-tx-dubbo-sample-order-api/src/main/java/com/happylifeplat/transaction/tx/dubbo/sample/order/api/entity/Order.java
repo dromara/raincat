@@ -20,17 +20,29 @@ package com.happylifeplat.transaction.tx.dubbo.sample.order.api.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Order  implements Serializable{
+/**
+ * @author xiaoyu
+ */
+public class Order implements Serializable {
 
-    private Integer  id;
+    private static final long serialVersionUID = -2613483254808605599L;
 
-    //创建日期
+
+    private Integer id;
+
+    /**
+     * 创建日期
+     */
     private Date createTime;
 
-    //订单编号
+    /**
+     * 订单编号
+     */
     private String number;
 
-    //订单类型
+    /**
+     * 订单类型
+     */
     private Integer type;
 
     private Integer status;

@@ -51,6 +51,9 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author xiaoyu
+ */
 @Service
 public class NettyClientServiceImpl implements NettyClientService {
     /**
@@ -71,6 +74,8 @@ public class NettyClientServiceImpl implements NettyClientService {
     private Channel channel;
 
     private Bootstrap bootstrap;
+
+    private static final String OS_NAME = "Linux";
 
     private final NettyClientHandlerInitializer nettyClientHandlerInitializer;
 
@@ -106,7 +111,7 @@ public class NettyClientServiceImpl implements NettyClientService {
     }
 
     private void groups(Bootstrap bootstrap, int workThreads) {
-        if (Objects.equals(StandardSystemProperty.OS_NAME.value(), "Linux")) {
+        if (Objects.equals(StandardSystemProperty.OS_NAME.value(), OS_NAME)) {
             workerGroup = new EpollEventLoopGroup(workThreads);
             bootstrap.group(workerGroup);
             bootstrap.channel(EpollSocketChannel.class);
@@ -132,6 +137,7 @@ public class NettyClientServiceImpl implements NettyClientService {
     }
 
 
+    @Override
     public void doConnect() {
         if (channel != null && channel.isActive()) {
             return;

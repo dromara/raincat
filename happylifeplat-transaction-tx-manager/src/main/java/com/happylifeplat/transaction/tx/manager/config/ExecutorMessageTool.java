@@ -28,10 +28,13 @@ import io.netty.channel.Channel;
 import java.util.Collections;
 import java.util.Objects;
 
+/**
+ * @author xiaoyu
+ */
 public class ExecutorMessageTool {
 
 
-     public  static HeartBeat buildMessage(TxTransactionItem item, ChannelSender channelSender, TransactionStatusEnum transactionStatusEnum) {
+    public static HeartBeat buildMessage(TxTransactionItem item, ChannelSender channelSender, TransactionStatusEnum transactionStatusEnum) {
         HeartBeat heartBeat = new HeartBeat();
         Channel channel = SocketManager.getInstance().getChannelByModelName(item.getModelName());
         if (Objects.nonNull(channel)) {
@@ -40,11 +43,11 @@ public class ExecutorMessageTool {
             }
         }
         TxTransactionGroup txTransactionGroup = new TxTransactionGroup();
-        if(TransactionStatusEnum.ROLLBACK.getCode()==transactionStatusEnum.getCode()){
+        if (TransactionStatusEnum.ROLLBACK.getCode() == transactionStatusEnum.getCode()) {
             heartBeat.setAction(NettyMessageActionEnum.ROLLBACK.getCode());
             item.setStatus(TransactionStatusEnum.ROLLBACK.getCode());
             txTransactionGroup.setStatus(TransactionStatusEnum.ROLLBACK.getCode());
-        }else if(TransactionStatusEnum.COMMIT.getCode()==transactionStatusEnum.getCode()){
+        } else if (TransactionStatusEnum.COMMIT.getCode() == transactionStatusEnum.getCode()) {
             heartBeat.setAction(NettyMessageActionEnum.COMPLETE_COMMIT.getCode());
             item.setStatus(TransactionStatusEnum.COMMIT.getCode());
             txTransactionGroup.setStatus(TransactionStatusEnum.COMMIT.getCode());

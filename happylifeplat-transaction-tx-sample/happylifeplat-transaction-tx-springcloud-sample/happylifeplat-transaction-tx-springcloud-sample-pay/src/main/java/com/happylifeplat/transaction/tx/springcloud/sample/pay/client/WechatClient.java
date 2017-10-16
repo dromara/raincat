@@ -20,15 +20,29 @@ package com.happylifeplat.transaction.tx.springcloud.sample.pay.client;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@FeignClient(value = "wechat-service",configuration =MyConfiguration.class)
+/**
+ * @author xiaoyu
+ */
+@FeignClient(value = "wechat-service", configuration = MyConfiguration.class)
 public interface WechatClient {
 
+    /**
+     * 保存
+     *
+     * @return rows
+     */
     @RequestMapping("/wechat-service/wechat/save")
     int save();
 
+    /**
+     * 微信支付失败
+     */
     @RequestMapping("/wechat-service/wechat/payFail")
     void payFail();
 
+    /**
+     * 微信支付超时
+     */
     @RequestMapping("/wechat-service/wechat/payTimeOut")
     void payTimeOut();
 }

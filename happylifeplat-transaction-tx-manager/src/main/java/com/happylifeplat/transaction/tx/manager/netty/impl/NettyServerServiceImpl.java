@@ -44,18 +44,23 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
+/**
+ * @author xiaoyu
+ */
 @Component
-public class NettyServerService implements NettyService {
+public class NettyServerServiceImpl implements NettyService {
 
     /**
      * logger
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(NettyServerService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NettyServerServiceImpl.class);
 
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
     private DefaultEventExecutorGroup servletExecutor;
     private static int MAX_THREADS = Runtime.getRuntime().availableProcessors() << 1;
+
+    private static final String OS_NAME = "Linux";
 
     private final TxManagerService txManagerService;
 
@@ -64,7 +69,7 @@ public class NettyServerService implements NettyService {
     private final NettyServerHandlerInitializer nettyServerHandlerInitializer;
 
     @Autowired(required = false)
-    public NettyServerService(TxManagerService txManagerService, NettyConfig nettyConfig, NettyServerHandlerInitializer nettyServerHandlerInitializer) {
+    public NettyServerServiceImpl(TxManagerService txManagerService, NettyConfig nettyConfig, NettyServerHandlerInitializer nettyServerHandlerInitializer) {
         this.txManagerService = txManagerService;
         this.nettyConfig = nettyConfig;
         this.nettyServerHandlerInitializer = nettyServerHandlerInitializer;
@@ -86,7 +91,7 @@ public class NettyServerService implements NettyService {
             nettyServerHandlerInitializer.setSerializeProtocolEnum(serializeProtocolEnum);
             nettyServerHandlerInitializer.setServletExecutor(servletExecutor);
             ServerBootstrap b = new ServerBootstrap();
-            groups(b,MAX_THREADS<<1);
+            groups(b, MAX_THREADS << 1);
           /*  bossGroup = new NioEventLoopGroup();
             workerGroup = new NioEventLoopGroup(MAX_THREADS * 2);
             b.group(bossGroup, workerGroup)
@@ -107,7 +112,7 @@ public class NettyServerService implements NettyService {
 
 
     private void groups(ServerBootstrap b, int workThreads) {
-        if (Objects.equals(StandardSystemProperty.OS_NAME.value(), "Linux")) {
+        if (Objects.equals(StandardSystemProperty.OS_NAME.value(), OS_NAME)) {
             bossGroup = new EpollEventLoopGroup(1);
             workerGroup = new EpollEventLoopGroup(workThreads);
             b.group(bossGroup, workerGroup)

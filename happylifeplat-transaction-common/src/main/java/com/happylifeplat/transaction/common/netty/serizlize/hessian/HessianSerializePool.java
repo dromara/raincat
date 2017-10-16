@@ -21,6 +21,9 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 
+/**
+ * @author xiaoyu
+ */
 public class HessianSerializePool {
 
     private GenericObjectPool<HessianSerialize> hessianPool;

@@ -33,6 +33,9 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+/**
+ * @author xiaoyu
+ */
 @Component
 public class StartCompensationHandler implements TxTransactionHandler {
 
@@ -65,10 +68,10 @@ public class StartCompensationHandler implements TxTransactionHandler {
         try {
             final Object proceed = point.proceed();
             platformTransactionManager.commit(transactionStatus);
-            LogUtil.info(LOGGER,"补偿事务执行成功!事务组id为:{}",info::getTxGroupId);
+            LogUtil.info(LOGGER, "补偿事务执行成功!事务组id为:{}", info::getTxGroupId);
             return proceed;
         } catch (Throwable e) {
-            LogUtil.info(LOGGER,"补偿事务执行失败!事务组id为:{}",info::getTxGroupId);
+            LogUtil.info(LOGGER, "补偿事务执行失败!事务组id为:{}", info::getTxGroupId);
             platformTransactionManager.rollback(transactionStatus);
             throw e;
         } finally {

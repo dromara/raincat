@@ -23,10 +23,14 @@ import com.happylifeplat.transaction.tx.manager.entity.TxManagerInfo;
 
 import java.util.List;
 
+/**
+ * @author xiaoyu
+ */
 public interface TxManagerInfoService {
 
     /**
      * 业务端获取TxManager信息
+     *
      * @return TxManagerServer
      */
     TxManagerServer findTxManagerServer();
@@ -34,17 +38,17 @@ public interface TxManagerInfoService {
 
     /**
      * 服务端信息
+     *
      * @return TxManagerInfo
      */
     TxManagerInfo findTxManagerInfo();
 
     /**
      * 获取eureka上的注册服务
+     *
      * @return List<TxManagerServiceDTO>
      */
     List<TxManagerServiceDTO> loadTxManagerService();
-
-
 
 
 }

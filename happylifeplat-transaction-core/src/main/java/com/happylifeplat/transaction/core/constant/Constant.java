@@ -17,20 +17,29 @@
  */
 package com.happylifeplat.transaction.core.constant;
 
+/**
+ * @author xiaoyu
+ */
 public interface Constant {
 
 
-    String COMPENSATE_KEY="COMPENSATE";
+    String COMPENSATE_KEY = "COMPENSATE";
 
-    String COMPENSATE_ID="COMPENSATE_ID";
+    String COMPENSATE_ID = "COMPENSATE_ID";
 
-    String TX_TRANSACTION_GROUP="TX_TRANSACTION_GROUP";
+    String TX_TRANSACTION_GROUP = "TX_TRANSACTION_GROUP";
 
+    String TX_MANAGER_PRE = "/tx/manager";
 
-    String TX_MANAGER_PRE ="/tx/manager";
+    String LOAD_TX_MANAGER_SERVICE_URL = "/loadTxManagerService";
 
-    String LOAD_TX_MANAGER_SERVICE_URL ="/loadTxManagerService";
+    String FIND_SERVER = "/findTxManagerServer";
 
-    String FIND_SERVER ="/findTxManagerServer";
+    String DB_MYSQL = "mysql";
+
+    String DB_SQLSERVER = "sqlserver";
+
+    String DB_ORACLE = "oracle";
+
 
 }

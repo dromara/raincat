@@ -31,6 +31,9 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
 
+/**
+ * @author xiaoyu
+ */
 @Service
 public class AspectTransactionServiceImpl implements AspectTransactionService {
 

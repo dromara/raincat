@@ -21,12 +21,15 @@ import com.happylifeplat.transaction.core.concurrent.threadlocal.TxTransactionLo
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 
+/**
+ * @author xiaoyu
+ */
 public class RestTemplateInterceptor implements RequestInterceptor {
 
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
-        requestTemplate.header("tx-group",  TxTransactionLocal.getInstance().getTxGroupId());
+        requestTemplate.header("tx-group", TxTransactionLocal.getInstance().getTxGroupId());
     }
 
 }

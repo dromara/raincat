@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * @author xiaoyu
+ */
 @RestController
 @RequestMapping("/consume/index")
 public class IndexController {
@@ -33,8 +36,8 @@ public class IndexController {
 
     @ResponseBody
     @PostMapping("/index")
-    public String  findTxManagerServer(){
-        return  "hello index";
+    public String findTxManagerServer() {
+        return "hello index";
     }
 
 }

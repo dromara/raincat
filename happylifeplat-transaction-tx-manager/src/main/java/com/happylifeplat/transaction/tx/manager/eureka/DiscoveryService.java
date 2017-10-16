@@ -29,10 +29,15 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author xiaoyu
+ */
 @Service
 public class DiscoveryService {
 
-    /** logger */
+    /**
+     * logger
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscoveryService.class);
 
     private final EurekaClient eurekaClient;
@@ -43,7 +48,7 @@ public class DiscoveryService {
     }
 
     public List<InstanceInfo> getConfigServiceInstances() {
-        Application application = eurekaClient.getApplication(Constant.applicationName);
+        Application application = eurekaClient.getApplication(Constant.APPLICATION_NAME);
         if (application == null) {
             LOGGER.error("获取eureka服务失败！");
         }

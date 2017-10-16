@@ -19,6 +19,9 @@ package com.happylifeplat.transaction.core.spi;
 
 import com.happylifeplat.transaction.common.exception.TransactionException;
 
+/**
+ * @author xiaoyu
+ */
 public interface ObjectSerializer {
     /**
      * 序列化对象
@@ -36,10 +39,21 @@ public interface ObjectSerializer {
      * @return 对象
      * @throws TransactionException 异常
      */
+
+    /**
+     * 反序列化对象
+     *
+     * @param param 需要反序列化的byte []
+     * @param clazz 序列化后对应的java class
+     * @param <T>   泛型
+     * @return <T>
+     * @throws TransactionException 异常
+     */
     <T> T deSerialize(byte[] param, Class<T> clazz) throws TransactionException;
 
     /**
      * 设置scheme
+     *
      * @return scheme 命名
      */
     String getScheme();

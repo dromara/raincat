@@ -17,13 +17,18 @@
  */
 package com.happylifeplat.transaction.core.netty;
 
-import com.happylifeplat.transaction.common.netty.bean.HeartBeat;
 import com.happylifeplat.transaction.core.config.TxConfig;
 
+/**
+ * @author xiaoyu
+ */
 public interface NettyClientService {
+
 
     /**
      * 启动netty客户端
+     *
+     * @param txConfig 配置信息
      */
     void start(TxConfig txConfig);
 
@@ -33,6 +38,9 @@ public interface NettyClientService {
     void stop();
 
 
+    /**
+     * 连接netty服务
+     */
     void doConnect();
 
     /**

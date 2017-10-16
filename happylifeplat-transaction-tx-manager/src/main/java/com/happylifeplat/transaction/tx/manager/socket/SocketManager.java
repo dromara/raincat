@@ -25,12 +25,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * @author xiaoyu
+ */
 public class SocketManager {
 
     /**
      * 最大连接数
      */
-    private int maxConnection=50;
+    private int maxConnection = 50;
 
     public void setMaxConnection(int maxConnection) {
         this.maxConnection = maxConnection;
@@ -60,15 +63,14 @@ public class SocketManager {
 
 
     public Channel getChannelByModelName(String name) {
-        if(CollectionUtils.isNotEmpty(clients)){
+        if (CollectionUtils.isNotEmpty(clients)) {
             final Optional<Channel> first = clients.stream().filter(channel ->
                     Objects.equals(channel.remoteAddress().toString(), name))
                     .findFirst();
-           return first.orElse(null);
+            return first.orElse(null);
         }
         return null;
     }
-
 
 
     public void addClient(Channel client) {

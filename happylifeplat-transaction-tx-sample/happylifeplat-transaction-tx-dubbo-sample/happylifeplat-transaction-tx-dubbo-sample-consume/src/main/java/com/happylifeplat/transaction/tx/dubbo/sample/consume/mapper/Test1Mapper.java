@@ -19,7 +19,16 @@ package com.happylifeplat.transaction.tx.dubbo.sample.consume.mapper;
 
 import com.happylifeplat.transaction.tx.dubbo.sample.consume.entity.Test1;
 
+/**
+ * @author xiaoyu
+ */
 public interface Test1Mapper {
 
+    /**
+     * 保存测试
+     *
+     * @param test1 实体
+     * @return rows
+     */
     int save(Test1 test1);
 }

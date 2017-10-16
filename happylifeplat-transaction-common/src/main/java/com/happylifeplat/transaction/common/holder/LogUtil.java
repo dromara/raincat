@@ -23,6 +23,9 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 
+/**
+ * @author xiaoyu
+ */
 public class LogUtil {
 
     public static final LogUtil LOG_UTIL = new LogUtil();

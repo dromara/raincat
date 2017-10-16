@@ -19,6 +19,9 @@ package com.happylifeplat.transaction.core.helper;
 
 import java.nio.ByteBuffer;
 
+/**
+ * @author xiaoyu
+ */
 public class ByteUtils {
 
     public static byte[] longToBytes(long l) {

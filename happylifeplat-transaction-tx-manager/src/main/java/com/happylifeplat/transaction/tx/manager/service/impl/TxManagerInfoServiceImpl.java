@@ -38,8 +38,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.apache.coyote.http11.Constants.a;
-
+/**
+ * @author xiaoyu
+ */
 @Service("txManagerInfoService")
 public class TxManagerInfoServiceImpl implements TxManagerInfoService {
 
@@ -53,11 +54,11 @@ public class TxManagerInfoServiceImpl implements TxManagerInfoService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${redis_save_max_time}")
-    private int redis_save_max_time;
+    @Value("${redisSaveMaxTime}")
+    private int redisSaveMaxTime;
 
-    @Value("${transaction_wait_max_time}")
-    private int transaction_wait_max_time;
+    @Value("${transactionWaitMaxTime}")
+    private int transactionWaitMaxTime;
 
 
     /**
@@ -107,8 +108,8 @@ public class TxManagerInfoServiceImpl implements TxManagerInfoService {
         txManagerInfo.setPort(nettyConfig.getPort());
         txManagerInfo.setMaxConnection(SocketManager.getInstance().getMaxConnection());
         txManagerInfo.setNowConnection(SocketManager.getInstance().getNowConnection());
-        txManagerInfo.setTransactionWaitMaxTime(transaction_wait_max_time);
-        txManagerInfo.setRedisSaveMaxTime(redis_save_max_time);
+        txManagerInfo.setTransactionWaitMaxTime(transactionWaitMaxTime);
+        txManagerInfo.setRedisSaveMaxTime(redisSaveMaxTime);
         txManagerInfo.setClusterInfoList(findEurekaService());
         return txManagerInfo;
     }

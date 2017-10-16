@@ -17,19 +17,22 @@
  */
 package com.happylifeplat.transaction.tx.springcloud.interceptor;
 
-import com.happylifeplat.transaction.core.interceptor.TxTransactionAspect;
+import com.happylifeplat.transaction.core.interceptor.AbstractTxTransactionAspect;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author xiaoyu
+ */
 @Aspect
 @Component
-public class SpringCloudTxTransactionAspect extends TxTransactionAspect implements Ordered {
+public class SpringCloudTxTransactionAspect extends AbstractTxTransactionAspect implements Ordered {
 
 
     @Autowired
-    public SpringCloudTxTransactionAspect(SpringCloudTxTransactionInterceptor  springCloudTxTransactionInterceptor) {
+    public SpringCloudTxTransactionAspect(SpringCloudTxTransactionInterceptor springCloudTxTransactionInterceptor) {
         this.setTxTransactionInterceptor(springCloudTxTransactionInterceptor);
     }
 

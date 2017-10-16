@@ -17,6 +17,9 @@
  */
 package com.happylifeplat.transaction.tx.manager.service;
 
+/**
+ * @author xiaoyu
+ */
 public interface TxTransactionExecutor {
 
 

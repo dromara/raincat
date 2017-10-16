@@ -20,7 +20,10 @@ package com.happylifeplat.transaction.tx.dubbo.sample.stock.api.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Stock  implements Serializable{
+/**
+ * @author xiaoyu
+ */
+public class Stock implements Serializable {
 
     private Integer id;
 
@@ -31,7 +34,9 @@ public class Stock  implements Serializable{
      */
     private Integer number;
 
-    //创建日期
+    /**
+     * 创建时间
+     */
     private Date createTime;
 
 

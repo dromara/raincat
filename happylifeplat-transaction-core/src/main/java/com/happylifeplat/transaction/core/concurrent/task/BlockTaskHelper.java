@@ -27,6 +27,9 @@ import org.apache.commons.lang.StringUtils;
 
 import java.util.concurrent.ExecutionException;
 
+/**
+ * @author xiaoyu
+ */
 public class BlockTaskHelper {
 
     private static final int MAX_COUNT = 10000;
@@ -37,7 +40,7 @@ public class BlockTaskHelper {
 
     }
 
-    private static final LoadingCache<String, BlockTask> cache = CacheBuilder.newBuilder()
+    private static final LoadingCache<String, BlockTask> LOADING_CACHE = CacheBuilder.newBuilder()
             .maximumWeight(MAX_COUNT)
             .weigher((Weigher<String, BlockTask>) (string, BlockTask) -> getSize())
             .build(new CacheLoader<String, BlockTask>() {
@@ -53,14 +56,14 @@ public class BlockTaskHelper {
     }
 
     private static int getSize() {
-        if (cache == null) {
+        if (LOADING_CACHE == null) {
             return 0;
         }
-        return (int) cache.size();
+        return (int) LOADING_CACHE.size();
     }
 
 
-    private  static BlockTask createTask(String key) {
+    private static BlockTask createTask(String key) {
         BlockTask task = new BlockTask();
         task.setKey(key);
         return task;
@@ -74,7 +77,7 @@ public class BlockTaskHelper {
      */
     public BlockTask getTask(String key) {
         try {
-            return cache.get(key);
+            return LOADING_CACHE.get(key);
         } catch (ExecutionException e) {
             throw new TransactionRuntimeException(e.getCause());
         }
@@ -83,7 +86,7 @@ public class BlockTaskHelper {
 
     public void removeByKey(String key) {
         if (StringUtils.isNotEmpty(key)) {
-            cache.invalidate(key);
+            LOADING_CACHE.invalidate(key);
         }
     }
 
@@ -95,11 +98,9 @@ public class BlockTaskHelper {
         BlockTaskHelper.getInstance().removeByKey(taskKey);
 
 
-        System.out.println(cache.size());
+        System.out.println(LOADING_CACHE.size());
 
-        //   final BlockTask blockTask = cache.get("1576926491");
-
-        System.out.println(cache.size());
+        System.out.println(LOADING_CACHE.size());
 
     }
 

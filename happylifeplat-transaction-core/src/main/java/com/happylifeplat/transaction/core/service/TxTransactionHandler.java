@@ -20,6 +20,9 @@ package com.happylifeplat.transaction.core.service;
 import com.happylifeplat.transaction.core.bean.TxTransactionInfo;
 import org.aspectj.lang.ProceedingJoinPoint;
 
+/**
+ * @author xiaoyu
+ */
 @FunctionalInterface
 public interface TxTransactionHandler {
 

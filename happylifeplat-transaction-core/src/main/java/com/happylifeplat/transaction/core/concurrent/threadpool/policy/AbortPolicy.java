@@ -22,6 +22,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
+/**
+ * @author xiaoyu
+ */
 public class AbortPolicy extends ThreadPoolExecutor.AbortPolicy {
     private static final Logger LOG = LoggerFactory.getLogger(AbortPolicy.class);
 
@@ -35,6 +38,7 @@ public class AbortPolicy extends ThreadPoolExecutor.AbortPolicy {
         this.threadName = threadName;
     }
 
+    @Override
     public void rejectedExecution(Runnable runnable, ThreadPoolExecutor executor) {
         if (threadName != null) {
             LOG.error("txTransaction Thread pool [{}] is exhausted, executor={}", threadName, executor.toString());

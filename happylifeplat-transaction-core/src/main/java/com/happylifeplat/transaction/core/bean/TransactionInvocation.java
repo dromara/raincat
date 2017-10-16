@@ -19,6 +19,9 @@ package com.happylifeplat.transaction.core.bean;
 
 import java.io.Serializable;
 
+/**
+ * @author xiaoyu
+ */
 public class TransactionInvocation implements Serializable {
     private static final long serialVersionUID = 7722060715819141844L;
     /**

@@ -26,12 +26,15 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class KryoCodecService implements MessageCodecService {
+/**
+ * @author xiaoyu
+ */
+public class KryoCodecServiceImpl implements MessageCodecService {
 
     private KryoPool pool;
     private static Closer closer = Closer.create();
 
-    public KryoCodecService(KryoPool pool) {
+    public KryoCodecServiceImpl(KryoPool pool) {
         this.pool = pool;
     }
 

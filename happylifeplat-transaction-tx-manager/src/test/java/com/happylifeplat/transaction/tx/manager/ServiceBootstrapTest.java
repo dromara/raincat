@@ -13,5 +13,4 @@ package com.happylifeplat.transaction.tx.manager;
 public class ServiceBootstrapTest {
 
 
-
 }

@@ -17,6 +17,9 @@
  */
 package com.happylifeplat.transaction.core.concurrent.threadlocal;
 
+/**
+ * @author xiaoyu
+ */
 public class CompensationLocal {
 
     private static final CompensationLocal COMPENSATION_LOCAL = new CompensationLocal();
@@ -30,19 +33,19 @@ public class CompensationLocal {
     }
 
 
-    private static final ThreadLocal<String> currentLocal = new ThreadLocal<>();
+    private static final ThreadLocal<String> CURRENT_LOCAL = new ThreadLocal<>();
 
 
     public void setCompensationId(String compensationId) {
-        currentLocal.set(compensationId);
+        CURRENT_LOCAL.set(compensationId);
     }
 
     public String getCompensationId() {
-        return currentLocal.get();
+        return CURRENT_LOCAL.get();
     }
 
     public void removeCompensationId() {
-        currentLocal.remove();
+        CURRENT_LOCAL.remove();
     }
 
 }

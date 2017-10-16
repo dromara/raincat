@@ -30,6 +30,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * @author xiaoyu
+ */
 @Component
 public class SpringCloudTxTransactionInterceptor implements TxTransactionInterceptor {
 
@@ -44,7 +47,7 @@ public class SpringCloudTxTransactionInterceptor implements TxTransactionInterce
     @Override
     public Object interceptor(ProceedingJoinPoint pjp) throws Throwable {
         final String compensationId = CompensationLocal.getInstance().getCompensationId();
-        String groupId=null;
+        String groupId = null;
         if (StringUtils.isBlank(compensationId)) {
             //如果不是本地反射调用补偿
             RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
