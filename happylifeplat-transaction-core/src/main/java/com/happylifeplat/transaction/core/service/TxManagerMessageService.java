@@ -99,7 +99,7 @@ public interface TxManagerMessageService {
      * @param taskKey   子事务的taskKey
      * @param status    状态  {@linkplain com.happylifeplat.transaction.common.enums.TransactionStatusEnum}
      */
-    void asynccompletecommit(String txGroupId, String taskKey, int status);
+    void asyncCompleteCommit(String txGroupId, String taskKey, int status);
 
     /**
      * 提交参与者事务状态

@@ -153,9 +153,10 @@ public abstract class AbstractTxTransactionExecutor implements TxTransactionExec
     }
 
     private Map<Boolean, List<TxTransactionItem>> filterData(List<TxTransactionItem> txTransactionItems) {
-        //过滤掉发起方的数据，发起方已经回滚，不需要再通信进行回滚
+        //过滤掉发起方的数据，发起方已经进行提交，不需要再通信进行
         final List<TxTransactionItem> collect = txTransactionItems.stream()
-                .filter(item -> item.getRole() != TransactionRoleEnum.START.getCode())
+                .filter(item -> item.getRole() != TransactionRoleEnum.START.getCode() ||
+                        item.getRole() != TransactionRoleEnum.GROUP.getCode())
                 .collect(Collectors.toList());
         if (CollectionUtils.isEmpty(collect)) {
             return null;

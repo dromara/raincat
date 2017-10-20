@@ -17,6 +17,7 @@
  */
 package com.happylifeplat.transaction.core.service.impl;
 
+import com.happylifeplat.transaction.core.annotation.TxTransaction;
 import com.happylifeplat.transaction.core.bean.TransactionInvocation;
 import com.happylifeplat.transaction.core.bean.TxTransactionInfo;
 import com.happylifeplat.transaction.core.concurrent.threadlocal.CompensationLocal;
@@ -54,8 +55,12 @@ public class AspectTransactionServiceImpl implements AspectTransactionService {
 
         final String compensationId = CompensationLocal.getInstance().getCompensationId();
 
+        final TxTransaction txTransaction = method.getAnnotation(TxTransaction.class);
+
+        final int waitMaxTime = txTransaction.waitMaxTime();
+
         TransactionInvocation invocation = new TransactionInvocation(clazz, thisMethod.getName(), args, method.getParameterTypes());
-        TxTransactionInfo info = new TxTransactionInfo(compensationId, transactionGroupId, invocation);
+        TxTransactionInfo info = new TxTransactionInfo(compensationId, transactionGroupId, invocation,waitMaxTime);
         final Class c = txTransactionFactoryService.factoryOf(info);
         final TxTransactionHandler txTransactionHandler =
                 (TxTransactionHandler) SpringBeanUtils.getInstance().getBean(c);

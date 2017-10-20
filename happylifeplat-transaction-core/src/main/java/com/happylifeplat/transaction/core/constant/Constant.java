@@ -35,11 +35,12 @@ public interface Constant {
 
     String FIND_SERVER = "/findTxManagerServer";
 
-    String DB_MYSQL = "mysql";
 
-    String DB_SQLSERVER = "sqlserver";
 
-    String DB_ORACLE = "oracle";
+
+
+
+
 
 
 }

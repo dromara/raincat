@@ -31,9 +31,9 @@
         <module>happylifeplat-transaction-tx-manager</module>
         <module>happylifeplat-transaction-tx-dubbo</module>
         <module>happylifeplat-transaction-tx-springcloud</module>
-        <module>happylifeplat-transaction-tcc-dubbo</module>
         <module>happylifeplat-transaction-common</module>
         <module>happylifeplat-transaction-tx-sample</module>
+        <module>happylifeplat-transaction-admin</module>
     </modules>
 
 
@@ -106,6 +106,13 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>com.happylifeplat.transaction</groupId>
+                <artifactId>happylifeplat-transaction-admin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.happylifeplat.transaction</groupId>
                 <artifactId>happylifeplat-transaction-common</artifactId>
@@ -116,12 +123,6 @@
                 <artifactId>happylifeplat-transaction-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.happylifeplat.transaction</groupId>
-                <artifactId>happylifeplat-transaction-tcc-dubbo</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>com.happylifeplat.transaction</groupId>
                 <artifactId>happylifeplat-transaction-tx-dubbo</artifactId>

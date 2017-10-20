@@ -73,6 +73,15 @@ public interface TransactionRecoverRepository {
 
 
     /**
+     * 获取延迟多长时间后的事务信息,只要为了防止并发的时候，刚新增的数据被执行
+     *
+     * @param date 延迟后的时间
+     * @return List<TransactionRecover>
+     */
+    List<TransactionRecover> listAllByDelay(Date date);
+
+
+    /**
      * 初始化操作
      *
      * @param modelName 模块名称

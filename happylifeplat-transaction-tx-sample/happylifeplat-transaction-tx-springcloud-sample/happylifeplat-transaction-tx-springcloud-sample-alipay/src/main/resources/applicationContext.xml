@@ -19,8 +19,23 @@
         <property name="serializer" value="kryo"/>
         <property name="nettySerializer" value="kryo"/>
         <property name="blockingQueueType" value="Linked"/>
-        <property name="compensationCacheType" value="db"/>
         <property name="compensation" value="true"/>
+        <property name="compensationCacheType" value="db"/>
+        <property name="txDbConfig">
+            <bean class="com.happylifeplat.transaction.core.config.TxDbConfig">
+                <property name="url"
+                          value="jdbc:mysql://192.168.1.68:3306/tx?useUnicode=true&amp;characterEncoding=utf8"/>
+                <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+                <property name="password" value="Wgj@555888"/>
+                <property name="username" value="xiaoyu"/>
+            </bean>
+        </property>
+
+    </bean>
+
+
+    <!--
+      <property name="compensationCacheType" value="db"/>
         <property name="txDbConfig">
             <bean class="com.happylifeplat.transaction.core.config.TxDbConfig">
                 <property name="url"
@@ -31,7 +46,40 @@
             </bean>
         </property>
 
-    </bean>
+
+          <property name="compensationCacheType" value="redis"/>
+          <property name="txRedisConfig">
+            <bean class="com.happylifeplat.transaction.core.config.TxRedisConfig">
+                <property name="hostName"
+                          value="192.168.1.78"/>
+                <property name="port" value="6379"/>
+                <property name="password" value=""/>
+            </bean>
+        </property>
+
+
+
+
+         <property name="compensationCacheType" value="mongodb"/>
+        <property name="txMongoConfig">
+            <bean class="com.happylifeplat.transaction.core.config.TxMongoConfig">
+                <property name="mongoDbUrl"  value="192.168.1.78:27017"/>
+                <property name="mongoDbName" value="happylife"/>
+                <property name="mongoUserName" value="xiaoyu"/>
+                <property name="mongoUserPwd" value="123456"/>
+            </bean>
+        </property>
+
+
+         <property name="compensationCacheType" value="file"/>
+         <property name="txFileConfig">
+            <bean class="com.happylifeplat.transaction.core.config.TxFileConfig">
+                <property name="path"  value=""/>
+                <property name="prefix" value="consume"/>
+            </bean>
+        </property>
+
+     -->
 
 
 </beans>

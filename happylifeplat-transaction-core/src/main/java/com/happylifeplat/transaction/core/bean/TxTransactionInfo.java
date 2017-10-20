@@ -35,6 +35,10 @@ public class TxTransactionInfo {
 
     private String compensationId;
 
+
+    private int waitMaxTime = 60;
+
+
     public TxTransactionInfo(String txGroupId, TransactionInvocation invocation) {
         this.txGroupId = txGroupId;
         this.invocation = invocation;
@@ -49,6 +53,16 @@ public class TxTransactionInfo {
     }
 
 
+    public TxTransactionInfo(
+            String compensationId, String txGroupId,
+            TransactionInvocation invocation, int waitMaxTime) {
+        this.compensationId = compensationId;
+        this.txGroupId = txGroupId;
+        this.invocation = invocation;
+        this.waitMaxTime = waitMaxTime;
+    }
+
+
     public TransactionInvocation getInvocation() {
         return invocation;
     }
@@ -57,8 +71,11 @@ public class TxTransactionInfo {
         return txGroupId;
     }
 
-
     public String getCompensationId() {
         return compensationId;
+    }
+
+    public int getWaitMaxTime() {
+        return waitMaxTime;
     }
 }

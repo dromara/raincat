@@ -23,6 +23,7 @@ import com.happylifeplat.transaction.common.exception.TransactionException;
 import com.happylifeplat.transaction.common.exception.TransactionIoException;
 import com.happylifeplat.transaction.common.exception.TransactionRuntimeException;
 import com.happylifeplat.transaction.common.holder.LogUtil;
+import com.happylifeplat.transaction.common.holder.RepositoryPathUtils;
 import com.happylifeplat.transaction.core.bean.TransactionRecover;
 import com.happylifeplat.transaction.core.config.TxConfig;
 import com.happylifeplat.transaction.core.config.TxZookeeperConfig;
@@ -59,14 +60,12 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
 
     private String rootPath = "/tx";
 
-    private String modelName;
-
     private static volatile ZooKeeper zooKeeper;
 
     private static final CountDownLatch COUNT_DOWN_LATCH = new CountDownLatch(1);
 
 
-    public void setRootPath(String rootPath) {
+    private void setRootPath(String rootPath) {
         this.rootPath = rootPath;
     }
 
@@ -176,6 +175,18 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
     }
 
     /**
+     * 获取延迟多长时间后的事务信息,只要为了防止并发的时候，刚新增的数据被执行
+     *
+     * @param date 延迟后的时间
+     * @return List<TransactionRecover>
+     */
+    @Override
+    public List<TransactionRecover> listAllByDelay(Date date) {
+        final List<TransactionRecover> tccTransactions = listAll();
+        return tccTransactions.stream().filter(transactionRecover -> transactionRecover.getLastTime().compareTo(date) > 0).collect(Collectors.toList());
+    }
+
+    /**
      * 初始化操作
      *
      * @param modelName 模块名称
@@ -183,22 +194,13 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
      */
     @Override
     public void init(String modelName, TxConfig txConfig) {
-        this.modelName = modelName;
-        final String zkRootPath = txConfig.getTxZookeeperConfig().getRootPath();
-        if (StringUtils.isNoneBlank(zkRootPath)) {
-            String path = String.join("_", zkRootPath, modelName);
-            setRootPath(path);
-        } else {
-            setRootPath(String.join("_", this.rootPath, modelName));
-        }
-
+        setRootPath(RepositoryPathUtils.buildZookeeperPath(modelName));
         try {
             connect(txConfig.getTxZookeeperConfig());
         } catch (Exception e) {
             LogUtil.error(LOGGER, "zookeeper连接异常请检查配置信息是否正确:{}", e::getMessage);
             throw new TransactionRuntimeException(e.getMessage());
         }
-
 
     }
 

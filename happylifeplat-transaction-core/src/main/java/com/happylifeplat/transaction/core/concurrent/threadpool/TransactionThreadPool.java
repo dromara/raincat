@@ -150,7 +150,21 @@ public class TransactionThreadPool {
     }
 
 
-    public ScheduledFuture multiThreadscheduled(Supplier<Object> supplier) {
+    public ScheduledFuture   multiScheduled(Supplier<Object> supplier) {
+        return scheduledExecutorService
+                .schedule(() -> {
+
+                            final Boolean o = (Boolean) supplier.get();
+                            if (o) {
+                                LogUtil.info(LOGGER, "多线程执行任务调度成功,调度时间为:{}", txConfig::getDelayTime);
+                            } else {
+                                LogUtil.info(LOGGER, "多线程执行任务调度未执行任务,调度时间为:{}", txConfig::getDelayTime);
+                            }
+                        },
+                        txConfig.getDelayTime(), TimeUnit.SECONDS);
+    }
+
+    public ScheduledFuture multiScheduled(Supplier<Object> supplier,int waitTime) {
         return scheduledExecutorService
                 .schedule(() -> {
                             final Boolean o = (Boolean) supplier.get();
@@ -160,7 +174,7 @@ public class TransactionThreadPool {
                                 LogUtil.info(LOGGER, "多线程执行任务调度未执行任务,调度时间为:{}", txConfig::getDelayTime);
                             }
                         },
-                        txConfig.getDelayTime(), TimeUnit.SECONDS);
+                        waitTime, TimeUnit.SECONDS);
     }
 
     public ScheduledFuture singleThreadScheduled(Supplier<Object> supplier) {

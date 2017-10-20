@@ -19,6 +19,7 @@ package com.happylifeplat.transaction.tx.manager.service.impl;
 
 import com.happylifeplat.transaction.common.enums.TransactionRoleEnum;
 import com.happylifeplat.transaction.common.enums.TransactionStatusEnum;
+import com.happylifeplat.transaction.common.holder.DateUtils;
 import com.happylifeplat.transaction.common.netty.bean.TxTransactionGroup;
 import com.happylifeplat.transaction.common.netty.bean.TxTransactionItem;
 import com.happylifeplat.transaction.tx.manager.config.Constant;
@@ -29,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -132,9 +135,20 @@ public class TxManagerServiceImpl implements TxManagerService {
         try {
             final TxTransactionItem item = (TxTransactionItem)
                     redisTemplate.opsForHash().get(cacheKey(key), hashKey);
-           /* TxTransactionItem item = new TxTransactionItem();
-            BeanUtils.copyProperties(object, item);*/
             item.setStatus(status);
+            //计算耗时
+            final String createDate = item.getCreateDate();
+
+            final LocalDateTime now = LocalDateTime.now();
+
+            try {
+                final LocalDateTime createDateTime = DateUtils.parseLocalDateTime(createDate);
+                final long consumeTime = DateUtils.getSecondsBetween(createDateTime, now);
+                item.setConsumeTime(consumeTime);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
             redisTemplate.opsForHash().put(cacheKey(key), item.getTaskKey(), item);
         } catch (BeansException e) {
             return false;

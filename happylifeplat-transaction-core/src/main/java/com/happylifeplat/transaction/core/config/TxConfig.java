@@ -101,6 +101,18 @@ public class TxConfig {
 
 
     /**
+     * 最大重试次数
+     */
+    private int retryMax = 10;
+
+
+    /**
+     * 事务恢复间隔时间 单位秒（注意 此时间表示本地事务创建的时间多少秒以后才会执行）
+     */
+    private int recoverDelayTime = 60;
+
+
+    /**
      * txManagerUrl服务地址
      */
     private String txManagerUrl;
@@ -291,5 +303,22 @@ public class TxConfig {
 
     public void setRefreshInterval(int refreshInterval) {
         this.refreshInterval = refreshInterval;
+    }
+
+
+    public int getRetryMax() {
+        return retryMax;
+    }
+
+    public void setRetryMax(int retryMax) {
+        this.retryMax = retryMax;
+    }
+
+    public int getRecoverDelayTime() {
+        return recoverDelayTime;
+    }
+
+    public void setRecoverDelayTime(int recoverDelayTime) {
+        this.recoverDelayTime = recoverDelayTime;
     }
 }

@@ -17,8 +17,13 @@
  */
 package com.happylifeplat.transaction.common.enums;
 
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
+
 /**
  * The enum Transaction role enum.
+ *
  * @author xiaoyu
  */
 public enum TransactionRoleEnum {
@@ -35,11 +40,11 @@ public enum TransactionRoleEnum {
      */
     ACTOR(1, "参与者"),
 
-
-
-
+    /**
+     * 事务组
+     */
+    GROUP(2,"事务组")
     ;
-
 
 
     private int code;
@@ -49,6 +54,19 @@ public enum TransactionRoleEnum {
     TransactionRoleEnum(int code, String desc) {
         this.code = code;
         this.desc = desc;
+    }
+
+    public static TransactionRoleEnum acquireByCode(int code) {
+        Optional<TransactionRoleEnum> roleEnum =
+                Arrays.stream(TransactionRoleEnum.values())
+                        .filter(v -> Objects.equals(v.getCode(), code))
+                        .findFirst();
+        return roleEnum.orElse(TransactionRoleEnum.START);
+
+    }
+
+    public static String acquireDescByCode(int code) {
+        return acquireByCode(code).getDesc();
     }
 
 

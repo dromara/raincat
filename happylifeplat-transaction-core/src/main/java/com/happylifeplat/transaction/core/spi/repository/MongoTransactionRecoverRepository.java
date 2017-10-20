@@ -24,6 +24,7 @@ import com.happylifeplat.transaction.common.exception.TransactionException;
 import com.happylifeplat.transaction.common.exception.TransactionRuntimeException;
 import com.happylifeplat.transaction.common.holder.Assert;
 import com.happylifeplat.transaction.common.holder.LogUtil;
+import com.happylifeplat.transaction.common.holder.RepositoryPathUtils;
 import com.happylifeplat.transaction.core.bean.MongoTransactionRecover;
 import com.happylifeplat.transaction.core.bean.TransactionInvocation;
 import com.happylifeplat.transaction.core.bean.TransactionRecover;
@@ -185,6 +186,28 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
     }
 
     /**
+     * 获取延迟多长时间后的事务信息,只要为了防止并发的时候，刚新增的数据被执行
+     *
+     * @param date 延迟后的时间
+     * @return List<TransactionRecover>
+     */
+    @Override
+    public List<TransactionRecover> listAllByDelay(Date date) {
+        Query query = new Query();
+        query.addCriteria(new Criteria("status")
+                .in(TransactionStatusEnum.BEGIN.getCode(),
+                        TransactionStatusEnum.FAILURE.getCode(),
+                        TransactionStatusEnum.ROLLBACK.getCode()))
+        .addCriteria(Criteria.where("lastTime").lt(date));
+        final List<MongoTransactionRecover> mongoBeans =
+                template.find(query, MongoTransactionRecover.class, collectionName);
+        if (CollectionUtils.isNotEmpty(mongoBeans)) {
+            return mongoBeans.stream().map(this::buildByCache).collect(Collectors.toList());
+        }
+        return null;
+    }
+
+    /**
      * 初始化操作
      *
      * @param modelName 模块名称
@@ -192,7 +215,7 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
      */
     @Override
     public void init(String modelName, TxConfig txConfig) {
-        collectionName = modelName;
+        collectionName = RepositoryPathUtils.buildMongoTableName(modelName);
         final TxMongoConfig txMongoConfig = txConfig.getTxMongoConfig();
         MongoClientFactoryBean clientFactoryBean = buildMongoClientFactoryBean(txMongoConfig);
         try {

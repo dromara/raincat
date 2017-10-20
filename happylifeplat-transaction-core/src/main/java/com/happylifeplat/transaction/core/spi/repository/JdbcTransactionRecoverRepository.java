@@ -22,6 +22,7 @@ import com.google.common.collect.Maps;
 import com.happylifeplat.transaction.common.enums.CompensationCacheTypeEnum;
 import com.happylifeplat.transaction.common.exception.TransactionException;
 import com.happylifeplat.transaction.common.exception.TransactionRuntimeException;
+import com.happylifeplat.transaction.common.holder.RepositoryPathUtils;
 import com.happylifeplat.transaction.core.bean.TransactionInvocation;
 import com.happylifeplat.transaction.core.bean.TransactionRecover;
 import com.happylifeplat.transaction.core.config.TxConfig;
@@ -43,6 +44,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author xiaoyu
@@ -112,6 +115,15 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
      */
     @Override
     public TransactionRecover findById(String id) {
+
+        String selectSql = "select * from " + tableName + " where id=?";
+
+        List<Map<String, Object>> list = executeQuery(selectSql);
+        if (CollectionUtils.isNotEmpty(list)) {
+            return list.stream().filter(Objects::nonNull)
+                    .map(this::buildByMap).collect(Collectors.toList()).get(0);
+        }
+
         return null;
     }
 
@@ -124,29 +136,54 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
     public List<TransactionRecover> listAll() {
         String selectSql = "select * from " + tableName;
         List<Map<String, Object>> list = executeQuery(selectSql);
-        List<TransactionRecover> recovers = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(list)) {
-            for (Map<String, Object> map : list) {
-                TransactionRecover recover = new TransactionRecover();
-                recover.setId((String) map.get("id"));
-                recover.setRetriedCount((Integer) map.get("retried_count"));
-                recover.setCreateTime((Date) map.get("create_time"));
-                recover.setLastTime((Date) map.get("last_time"));
-                recover.setTaskId((String) map.get("task_id"));
-                recover.setGroupId((String) map.get("group_id"));
-                recover.setVersion((Integer) map.get("version"));
-                byte[] bytes = (byte[]) map.get("invocation");
-                try {
-                    final TransactionInvocation transactionInvocation = serializer.deSerialize(bytes, TransactionInvocation.class);
-                    recover.setTransactionInvocation(transactionInvocation);
-                } catch (TransactionException e) {
-                    e.printStackTrace();
-                }
-                recovers.add(recover);
-            }
+            return list.stream().filter(Objects::nonNull)
+                    .map(this::buildByMap).collect(Collectors.toList());
         }
 
-        return recovers;
+        return null;
+    }
+
+    /**
+     * 获取延迟多长时间后的事务信息,只要为了防止并发的时候，刚新增的数据被执行
+     *
+     * @param date 延迟后的时间
+     * @return List<TransactionRecover>
+     */
+    @Override
+    public List<TransactionRecover> listAllByDelay(Date date) {
+
+        String sb = "select * from " +
+                tableName +
+                " where last_time <?";
+
+        List<Map<String, Object>> list = executeQuery(sb, date);
+
+        if (CollectionUtils.isNotEmpty(list)) {
+            return list.stream().filter(Objects::nonNull)
+                    .map(this::buildByMap).collect(Collectors.toList());
+        }
+        return null;
+    }
+
+
+    private TransactionRecover buildByMap(Map<String, Object> map) {
+        TransactionRecover recover = new TransactionRecover();
+        recover.setId((String) map.get("id"));
+        recover.setRetriedCount((Integer) map.get("retried_count"));
+        recover.setCreateTime((Date) map.get("create_time"));
+        recover.setLastTime((Date) map.get("last_time"));
+        recover.setTaskId((String) map.get("task_id"));
+        recover.setGroupId((String) map.get("group_id"));
+        recover.setVersion((Integer) map.get("version"));
+        byte[] bytes = (byte[]) map.get("invocation");
+        try {
+            final TransactionInvocation transactionInvocation = serializer.deSerialize(bytes, TransactionInvocation.class);
+            recover.setTransactionInvocation(transactionInvocation);
+        } catch (TransactionException e) {
+            e.printStackTrace();
+        }
+        return recover;
     }
 
     /**
@@ -171,7 +208,7 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
         dataSource.setTestOnBorrow(false);
         dataSource.setTestWhileIdle(true);
         dataSource.setPoolPreparedStatements(false);
-        this.tableName = "tx_transaction_" + modelName.replaceAll("-", "_");
+        this.tableName = RepositoryPathUtils.buildDbTableName(modelName);
         executeUpdate(SqlHelper.buildCreateTableSql(tableName, txDbConfig.getDriverClassName()));
     }
 

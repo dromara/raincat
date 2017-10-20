@@ -17,6 +17,7 @@
  */
 package com.happylifeplat.transaction.core.helper;
 
+import com.happylifeplat.transaction.common.holder.RedisKeyUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -30,12 +31,7 @@ import java.util.Map;
 public class RedisHelper {
 
     public static byte[] getRedisKey(String keyPrefix, String id) {
-        byte[] prefix = keyPrefix.getBytes();
-        final byte[] idBytes = id.getBytes();
-        byte[] key = new byte[prefix.length + idBytes.length];
-        System.arraycopy(prefix, 0, key, 0, prefix.length);
-        System.arraycopy(idBytes, 0, key, prefix.length, idBytes.length);
-        return key;
+        return RedisKeyUtils.getRedisKey(keyPrefix, id);
     }
 
     public static byte[] getKeyValue(JedisPool jedisPool, final byte[] key) {

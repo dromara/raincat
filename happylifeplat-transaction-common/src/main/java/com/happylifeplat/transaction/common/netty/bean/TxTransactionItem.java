@@ -62,8 +62,63 @@ public class TxTransactionItem implements Serializable {
      */
     private String txGroupId;
 
+    /**
+     * 创建时间
+     */
+    private String createDate;
+
+    /**
+     * 事务最大等待时间 单位秒
+     */
+    private Integer waitMaxTime;
 
 
+    /**
+     * 执行类名称
+     */
+    private String targetClazzName;
+    /**
+     * 执行方法
+     */
+    private String targetMethodName;
+
+    /**
+     * 耗时 秒
+     */
+    private Long consumeTime;
+
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
+    public Integer getWaitMaxTime() {
+        return waitMaxTime;
+    }
+
+    public void setWaitMaxTime(Integer waitMaxTime) {
+        this.waitMaxTime = waitMaxTime;
+    }
+
+    public String getTargetClazzName() {
+        return targetClazzName;
+    }
+
+    public void setTargetClazzName(String targetClazzName) {
+        this.targetClazzName = targetClazzName;
+    }
+
+    public String getTargetMethodName() {
+        return targetMethodName;
+    }
+
+    public void setTargetMethodName(String targetMethodName) {
+        this.targetMethodName = targetMethodName;
+    }
 
     public String getTaskKey() {
         return taskKey;
@@ -120,5 +175,13 @@ public class TxTransactionItem implements Serializable {
 
     public void setTxGroupId(String txGroupId) {
         this.txGroupId = txGroupId;
+    }
+
+    public Long getConsumeTime() {
+        return consumeTime;
+    }
+
+    public void setConsumeTime(Long consumeTime) {
+        this.consumeTime = consumeTime;
     }
 }

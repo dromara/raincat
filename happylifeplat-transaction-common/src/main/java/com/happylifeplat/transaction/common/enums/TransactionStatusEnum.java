@@ -83,6 +83,10 @@ public enum TransactionStatusEnum {
 
     }
 
+    public static String acquireDescByCode(int code) {
+        return acquireByCode(code).getDesc();
+    }
+
     /**
      * Gets code.
      *

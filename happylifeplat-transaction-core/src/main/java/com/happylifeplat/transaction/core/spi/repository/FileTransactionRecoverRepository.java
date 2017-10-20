@@ -20,6 +20,7 @@ package com.happylifeplat.transaction.core.spi.repository;
 import com.google.common.collect.Lists;
 import com.happylifeplat.transaction.common.enums.CompensationCacheTypeEnum;
 import com.happylifeplat.transaction.common.exception.TransactionRuntimeException;
+import com.happylifeplat.transaction.common.holder.RepositoryPathUtils;
 import com.happylifeplat.transaction.core.bean.TransactionRecover;
 import com.happylifeplat.transaction.core.config.TxConfig;
 import com.happylifeplat.transaction.core.config.TxFileConfig;
@@ -34,6 +35,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author xiaoyu
@@ -132,10 +134,24 @@ public class FileTransactionRecoverRepository implements TransactionRecoverRepos
         return transactionRecoverList;
     }
 
+    /**
+     * 获取延迟多长时间后的事务信息,只要为了防止并发的时候，刚新增的数据被执行
+     *
+     * @param date 延迟后的时间
+     * @return List<TransactionRecover>
+     */
+    @Override
+    public List<TransactionRecover> listAllByDelay(Date date) {
+        final List<TransactionRecover> transactionRecovers = listAll();
+        return transactionRecovers.stream()
+                .filter(recover -> recover.getLastTime().compareTo(date) < 0)
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public void init(String modelName, TxConfig txConfig) {
-        filePath = buildFilePath(modelName, txConfig.getTxFileConfig());
+        filePath = RepositoryPathUtils.buildFilePath(modelName);
         File file = new File(filePath);
         if (!file.exists()) {
             file.getParentFile().mkdirs();
@@ -143,14 +159,6 @@ public class FileTransactionRecoverRepository implements TransactionRecoverRepos
         }
     }
 
-    private String buildFilePath(String modelName, TxFileConfig txFileConfig) {
-
-        String fileName = String.join("_", "TX", txFileConfig.getPrefix(), modelName.replaceAll("-", "_"));
-
-        return String.join("/", txFileConfig.getPath(), fileName);
-
-
-    }
 
     /**
      * 设置scheme

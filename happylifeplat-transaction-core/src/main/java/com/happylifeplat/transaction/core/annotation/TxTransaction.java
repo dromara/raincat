@@ -28,4 +28,10 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TxTransaction {
+
+    /**
+     * 事务等待的最大时间 单位 秒
+     * @return 多少秒
+     */
+    int waitMaxTime() default 60;
 }

@@ -43,6 +43,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -92,49 +95,52 @@ public class TxCompensationServiceImpl implements TxCompensationService {
     public void compensate() {
         scheduledExecutorService
                 .scheduleAtFixedRate(() -> {
-                    LogUtil.debug(LOGGER, "compensate execute delayTime:{}", () -> txConfig.getCompensationRecoverTime());
-                    try {
-                        final List<TransactionRecover> transactionRecovers = transactionRecoverRepository.listAll();
-                        if (CollectionUtils.isNotEmpty(transactionRecovers)) {
-                            transactionRecovers.stream().map(transactionRecover -> {
-                                transactionRecoverRepository.update(transactionRecover);
-                                final TxTransactionGroup byTxGroupId = txManagerMessageService
-                                        .findByTxGroupId(transactionRecover.getGroupId());
-                                if (Objects.nonNull(byTxGroupId) && CollectionUtils.isNotEmpty(byTxGroupId.getItemList())) {
-                                    final Optional<TxTransactionItem> any = byTxGroupId.getItemList().stream()
-                                            .filter(item -> Objects.equals(item.getTaskKey(), transactionRecover.getGroupId()))
-                                            .findAny();
-                                    if (any.isPresent()) {
-                                        final int status = any.get().getStatus();
-                                        if (TransactionStatusEnum.COMMIT.getCode() == status) {
-                                            final Optional<TxTransactionItem> txTransactionItem = byTxGroupId.getItemList().stream()
-                                                    .filter(item -> Objects.equals(item.getTaskKey(), transactionRecover.getTaskId()))
-                                                    .findAny();
-                                            if (txTransactionItem.isPresent()) {
-                                                final TxTransactionItem item = txTransactionItem.get();
-                                                if (item.getStatus() != TransactionStatusEnum.COMMIT.getCode()) {
-                                                    return buildCompensate(transactionRecover);
+                    LogUtil.debug(LOGGER, "compensate recover execute delayTime:{}", () -> txConfig.getCompensationRecoverTime());
+                    final List<TransactionRecover> transactionRecovers =
+                            transactionRecoverRepository.listAllByDelay(acquireData());
+                    if (CollectionUtils.isNotEmpty(transactionRecovers)) {
+                        for (TransactionRecover transactionRecover : transactionRecovers) {
+                            if (transactionRecover.getRetriedCount() > txConfig.getRetryMax()) {
+                                LogUtil.error(LOGGER, "此事务超过了最大重试次数，不再进行重试：{}",
+                                        () -> transactionRecover);
+                                continue;
+                            }
+                            try {
+                                final int update = transactionRecoverRepository.update(transactionRecover);
+                                if (update > 0) {
+                                    final TxTransactionGroup byTxGroupId = txManagerMessageService
+                                            .findByTxGroupId(transactionRecover.getGroupId());
+                                    if (Objects.nonNull(byTxGroupId) && CollectionUtils.isNotEmpty(byTxGroupId.getItemList())) {
+                                        final Optional<TxTransactionItem> any = byTxGroupId.getItemList().stream()
+                                                .filter(item -> Objects.equals(item.getTaskKey(), transactionRecover.getGroupId()))
+                                                .findAny();
+                                        if (any.isPresent()) {
+                                            final int status = any.get().getStatus();
+                                            //如果整个事务组状态是提交的
+                                            if (TransactionStatusEnum.COMMIT.getCode() == status) {
+                                                final Optional<TxTransactionItem> txTransactionItem = byTxGroupId.getItemList().stream()
+                                                        .filter(item -> Objects.equals(item.getTaskKey(), transactionRecover.getTaskId()))
+                                                        .findAny();
+                                                if (txTransactionItem.isPresent()) {
+                                                    final TxTransactionItem item = txTransactionItem.get();
+                                                    //自己的状态不是提交，那么就进行补偿
+                                                    if (item.getStatus() != TransactionStatusEnum.COMMIT.getCode()) {
+                                                        submit(buildCompensate(transactionRecover));
+                                                    }
                                                 }
+                                            }else{
+                                                //不需要进行补偿，就删除
+                                                submit(buildDel(transactionRecover));
                                             }
-                                        } else {
-                                            //删除本地补偿信息
-                                            LogUtil.info(LOGGER, "事务组id：{} ,未提交，不需要进行补偿!",
-                                                    transactionRecover::getGroupId);
-                                            return buildDel(transactionRecover);
                                         }
-
                                     }
-                                } else {
-                                    //删除本地补偿信息
-                                    LogUtil.info(LOGGER, "事务组id：{} ,未提交，不需要进行补偿!",
-                                            transactionRecover::getGroupId);
-                                    return buildDel(transactionRecover);
                                 }
-                                return null;
-                            }).filter(Objects::nonNull).forEach(this::submit);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                LogUtil.error(LOGGER, "执行事务补偿异常:{}", e::getMessage);
+                            }
+
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 }, 30, txConfig.getCompensationRecoverTime(), TimeUnit.SECONDS);
 
@@ -313,6 +319,13 @@ public class TxCompensationServiceImpl implements TxCompensationService {
         compensationAction.setCompensationActionEnum(CompensationActionEnum.DELETE);
         compensationAction.setTransactionRecover(transactionRecover);
         return compensationAction;
+    }
+
+    private Date acquireData() {
+        return new Date(LocalDateTime.now()
+                .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() -
+                (txConfig.getRecoverDelayTime() * 1000));
+
     }
 
 }

@@ -23,6 +23,7 @@ import com.happylifeplat.transaction.common.exception.TransactionException;
 import com.happylifeplat.transaction.common.exception.TransactionIoException;
 import com.happylifeplat.transaction.common.exception.TransactionRuntimeException;
 import com.happylifeplat.transaction.common.holder.LogUtil;
+import com.happylifeplat.transaction.common.holder.RepositoryPathUtils;
 import com.happylifeplat.transaction.core.bean.TransactionRecover;
 import com.happylifeplat.transaction.core.config.TxConfig;
 import com.happylifeplat.transaction.core.config.TxRedisConfig;
@@ -39,6 +40,7 @@ import redis.clients.jedis.JedisPoolConfig;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author xiaoyu
@@ -184,6 +186,20 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
     }
 
     /**
+     * 获取延迟多长时间后的事务信息,只要为了防止并发的时候，刚新增的数据被执行
+     *
+     * @param date 延迟后的时间
+     * @return List<TransactionRecover>
+     */
+    @Override
+    public List<TransactionRecover> listAllByDelay(Date date) {
+        final List<TransactionRecover> tccTransactions = listAll();
+        return tccTransactions.stream().filter(transactionRecover
+                -> transactionRecover.getLastTime().compareTo(date) > 0)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * 初始化操作
      *
      * @param modelName 模块名称
@@ -191,7 +207,7 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
      */
     @Override
     public void init(String modelName, TxConfig txConfig) {
-        keyName = modelName;
+        keyName = RepositoryPathUtils.buildRedisKey(modelName);
         final TxRedisConfig txRedisConfig = txConfig.getTxRedisConfig();
         try {
             buildJedisPool(txRedisConfig);

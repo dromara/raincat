@@ -203,7 +203,7 @@ public class NettyMessageServiceImpl implements TxManagerMessageService {
      * @param status    状态  {@linkplain TransactionStatusEnum}
      */
     @Override
-    public void asynccompletecommit(String txGroupId, String taskKey, int status) {
+    public void asyncCompleteCommit(String txGroupId, String taskKey, int status) {
         HeartBeat heartBeat = new HeartBeat();
         heartBeat.setAction(NettyMessageActionEnum.COMPLETE_COMMIT.getCode());
         TxTransactionGroup txTransactionGroup = new TxTransactionGroup();
