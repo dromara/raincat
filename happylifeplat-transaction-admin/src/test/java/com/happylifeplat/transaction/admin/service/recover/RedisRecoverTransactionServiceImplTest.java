@@ -18,7 +18,16 @@
 
 package com.happylifeplat.transaction.admin.service.recover;
 
+import com.happylifeplat.transaction.admin.page.CommonPager;
+import com.happylifeplat.transaction.admin.page.PageParameter;
+import com.happylifeplat.transaction.admin.query.RecoverTransactionQuery;
+import com.happylifeplat.transaction.admin.service.RecoverTransactionService;
+import com.happylifeplat.transaction.admin.vo.TransactionRecoverVO;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.*;
 
@@ -30,9 +39,27 @@ import static org.junit.Assert.*;
  * @date 2017/10/20 16:01
  * @since JDK 1.8
  */
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RedisRecoverTransactionServiceImplTest {
+
+    @Autowired
+    private RecoverTransactionService recoverTransactionService;
+
     @Test
     public void listByPage() throws Exception {
+
+        RecoverTransactionQuery query = new RecoverTransactionQuery();
+
+        query.setApplicationName("alipay-service");
+
+        PageParameter pageParameter = new PageParameter(1,10);
+
+        query.setPageParameter(pageParameter);
+
+        final CommonPager<TransactionRecoverVO> voCommonPager = recoverTransactionService.listByPage(query);
+
+
     }
 
 }

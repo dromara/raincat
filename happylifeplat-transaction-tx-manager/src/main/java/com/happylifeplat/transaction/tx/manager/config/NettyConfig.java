@@ -17,9 +17,12 @@
  */
 package com.happylifeplat.transaction.tx.manager.config;
 
+import lombok.Data;
+
 /**
  * @author xiaoyu
  */
+@Data
 public class NettyConfig {
 
     /**
@@ -54,64 +57,5 @@ public class NettyConfig {
     private int heartTime;
 
 
-    public int getMaxConnection() {
-        return maxConnection;
-    }
-
-    public void setMaxConnection(int maxConnection) {
-        this.maxConnection = maxConnection;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public int getMaxThreads() {
-        return maxThreads;
-    }
-
-    public void setMaxThreads(int maxThreads) {
-        this.maxThreads = maxThreads;
-    }
-
-    public String getSerialize() {
-        return serialize;
-    }
-
-    public void setSerialize(String serialize) {
-        this.serialize = serialize;
-    }
-
-    public int getDelayTime() {
-        return delayTime;
-    }
-
-    public void setDelayTime(int delayTime) {
-        this.delayTime = delayTime;
-    }
-
-    public int getHeartTime() {
-        return heartTime;
-    }
-
-    public void setHeartTime(int heartTime) {
-        this.heartTime = heartTime;
-    }
-
-    @Override
-    public String toString() {
-        return "NettyConfig{" +
-                "port=" + port +
-                ", maxThreads=" + maxThreads +
-                ", maxConnection=" + maxConnection +
-                ", serialize='" + serialize + '\'' +
-                ", delayTime=" + delayTime +
-                ", heartTime=" + heartTime +
-                '}';
-    }
 }
 

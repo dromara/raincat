@@ -17,9 +17,9 @@
  */
 package com.happylifeplat.transaction.core.compensation;
 
-import com.happylifeplat.transaction.core.bean.TransactionRecover;
+import com.happylifeplat.transaction.common.bean.TransactionRecover;
 import com.happylifeplat.transaction.core.compensation.command.TxCompensationAction;
-import com.happylifeplat.transaction.core.config.TxConfig;
+import com.happylifeplat.transaction.common.config.TxConfig;
 
 /**
  * @author xiaoyu

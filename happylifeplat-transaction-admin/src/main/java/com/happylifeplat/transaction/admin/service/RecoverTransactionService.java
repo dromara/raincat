@@ -21,6 +21,9 @@ package com.happylifeplat.transaction.admin.service;
 import com.happylifeplat.transaction.admin.page.CommonPager;
 import com.happylifeplat.transaction.admin.query.RecoverTransactionQuery;
 import com.happylifeplat.transaction.admin.vo.TransactionRecoverVO;
+import com.happylifeplat.transaction.common.exception.TransactionException;
+
+import java.util.List;
 
 /**
  * <p>Description: .</p>
@@ -33,11 +36,32 @@ import com.happylifeplat.transaction.admin.vo.TransactionRecoverVO;
 public interface RecoverTransactionService {
 
 
-
     /**
      * 分页获取补偿事务信息
+     *
      * @param query 查询条件
-     * @return  CommonPager<TransactionRecoverVO>
+     * @return CommonPager<TransactionRecoverVO>
      */
     CommonPager<TransactionRecoverVO> listByPage(RecoverTransactionQuery query);
+
+
+    /**
+     * 批量删除补偿事务信息
+     *
+     * @param ids             ids 事务id集合
+     * @param applicationName 应用名称
+     * @return true 成功
+     */
+    Boolean batchRemove(List<String> ids, String applicationName);
+
+
+    /**
+     * 更改恢复次数
+     *
+     * @param id              事务id
+     * @param retry           恢复次数
+     * @param applicationName 应用名称
+     * @return true 成功
+     */
+    Boolean updateRetry(String id, Integer retry, String applicationName);
 }

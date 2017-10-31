@@ -18,7 +18,7 @@
 package com.happylifeplat.transaction.core.bootstrap;
 
 import com.happylifeplat.transaction.common.exception.TransactionRuntimeException;
-import com.happylifeplat.transaction.core.config.TxConfig;
+import com.happylifeplat.transaction.common.config.TxConfig;
 import com.happylifeplat.transaction.core.helper.SpringBeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;

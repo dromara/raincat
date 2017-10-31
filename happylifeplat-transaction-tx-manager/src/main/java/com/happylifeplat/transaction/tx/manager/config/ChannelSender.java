@@ -19,12 +19,14 @@ package com.happylifeplat.transaction.tx.manager.config;
 
 import com.happylifeplat.transaction.common.netty.bean.TxTransactionItem;
 import io.netty.channel.Channel;
+import lombok.Data;
 
 import java.util.List;
 
 /**
  * @author xiaoyu
  */
+@Data
 public class ChannelSender {
 
     /**
@@ -33,31 +35,14 @@ public class ChannelSender {
     private Channel channel;
 
 
+    /**
+     * txManger的域名信息
+     */
     private String tmDomain;
 
+    /**
+     * 事务item
+     */
     private List<TxTransactionItem> itemList;
 
-    public Channel getChannel() {
-        return channel;
-    }
-
-    public void setChannel(Channel channel) {
-        this.channel = channel;
-    }
-
-    public String getTmDomain() {
-        return tmDomain;
-    }
-
-    public void setTmDomain(String tmDomain) {
-        this.tmDomain = tmDomain;
-    }
-
-    public List<TxTransactionItem> getItemList() {
-        return itemList;
-    }
-
-    public void setItemList(List<TxTransactionItem> itemList) {
-        this.itemList = itemList;
-    }
 }

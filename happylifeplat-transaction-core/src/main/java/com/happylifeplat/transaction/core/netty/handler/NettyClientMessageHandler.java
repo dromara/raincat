@@ -26,7 +26,7 @@ import com.happylifeplat.transaction.common.netty.bean.TxTransactionGroup;
 import com.happylifeplat.transaction.common.netty.bean.TxTransactionItem;
 import com.happylifeplat.transaction.core.concurrent.task.BlockTask;
 import com.happylifeplat.transaction.core.concurrent.task.BlockTaskHelper;
-import com.happylifeplat.transaction.core.config.TxConfig;
+import com.happylifeplat.transaction.common.config.TxConfig;
 import com.happylifeplat.transaction.core.helper.SpringBeanUtils;
 import com.happylifeplat.transaction.core.netty.NettyClientService;
 import io.netty.channel.ChannelHandler;

@@ -18,9 +18,7 @@
 
 package com.happylifeplat.transaction.core.helper;
 
-import com.happylifeplat.transaction.common.constant.CommonConstant;
 import com.happylifeplat.transaction.common.holder.DbTypeUtils;
-import com.happylifeplat.transaction.core.constant.Constant;
 
 /**
  * @author xiaoyu
@@ -34,6 +32,8 @@ public class SqlHelper {
             case "mysql": {
                 createTableSql = "CREATE TABLE `" + tableName + "` (\n" +
                         "  `id` varchar(64) NOT NULL,\n" +
+                        "  `target_class` varchar(256) ,\n" +
+                        "  `target_method` varchar(128) ,\n" +
                         "  `retried_count` int(3) NOT NULL,\n" +
                         "  `create_time` datetime NOT NULL,\n" +
                         "  `last_time` datetime NOT NULL,\n" +
@@ -48,6 +48,8 @@ public class SqlHelper {
             case "oracle": {
                 createTableSql = "CREATE TABLE `" + tableName + "` (\n" +
                         "  `id` varchar(64) NOT NULL,\n" +
+                        "  `target_class` varchar(256) ,\n" +
+                        "  `target_method` varchar(128) ,\n" +
                         "  `retried_count` int(3) NOT NULL,\n" +
                         "  `create_time` date NOT NULL,\n" +
                         "  `last_time` date NOT NULL,\n" +
@@ -62,6 +64,8 @@ public class SqlHelper {
             case "sqlserver": {
                 createTableSql = "CREATE TABLE `" + tableName + "` (\n" +
                         "  `id` varchar(64) NOT NULL,\n" +
+                        "  `target_class` varchar(256) ,\n" +
+                        "  `target_method` varchar(128) ,\n" +
                         "  `retried_count` int(3) NOT NULL,\n" +
                         "  `create_time` datetime NOT NULL,\n" +
                         "  `last_time` datetime NOT NULL,\n" +

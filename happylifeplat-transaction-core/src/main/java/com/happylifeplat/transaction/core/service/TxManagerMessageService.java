@@ -93,13 +93,14 @@ public interface TxManagerMessageService {
 
 
     /**
-     * 异步完成自身事务的提交
+     * 异步完成自身的提交
      *
      * @param txGroupId 事务组id
      * @param taskKey   子事务的taskKey
      * @param status    状态  {@linkplain com.happylifeplat.transaction.common.enums.TransactionStatusEnum}
+     * @param message   完成信息 返回结果，或者是异常信息
      */
-    void asyncCompleteCommit(String txGroupId, String taskKey, int status);
+    void asyncCompleteCommit(String txGroupId, String taskKey, int status,Object message);
 
     /**
      * 提交参与者事务状态

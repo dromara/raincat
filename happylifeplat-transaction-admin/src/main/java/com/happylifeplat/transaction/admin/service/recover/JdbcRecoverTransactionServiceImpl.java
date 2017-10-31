@@ -24,15 +24,25 @@ import com.happylifeplat.transaction.admin.page.PageParameter;
 import com.happylifeplat.transaction.admin.query.RecoverTransactionQuery;
 import com.happylifeplat.transaction.admin.service.RecoverTransactionService;
 import com.happylifeplat.transaction.admin.vo.TransactionRecoverVO;
+import com.happylifeplat.transaction.common.bean.TransactionInvocation;
+import com.happylifeplat.transaction.common.exception.TransactionException;
 import com.happylifeplat.transaction.common.holder.DbTypeUtils;
 import com.happylifeplat.transaction.common.holder.RepositoryPathUtils;
+import com.happylifeplat.transaction.common.serializer.ObjectSerializer;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>Description: .</p>
+ * jdbc实现
  *
  * @author xiaoyu(Myth)
  * @version 1.0
@@ -43,6 +53,9 @@ public class JdbcRecoverTransactionServiceImpl implements RecoverTransactionServ
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private ObjectSerializer objectSerializer;
 
     private String dbType;
 
@@ -58,15 +71,18 @@ public class JdbcRecoverTransactionServiceImpl implements RecoverTransactionServ
         final String tableName = RepositoryPathUtils.buildDbTableName(query.getApplicationName());
         final PageParameter pageParameter = query.getPageParameter();
 
-        final String sql = buildPageSql( "select * FROM  " + tableName , pageParameter);
+        final String sql = buildPageSql("select * FROM  " + tableName, pageParameter);
 
         CommonPager<TransactionRecoverVO> pager = new CommonPager<>();
 
 
-        final List<TransactionRecoverVO> transactionRecoverVOS =
-                jdbcTemplate.queryForList(sql, TransactionRecoverVO.class);
+        final List<Map<String, Object>> mapList = jdbcTemplate.queryForList(sql);
 
-        pager.setDataList(transactionRecoverVOS);
+        if (CollectionUtils.isNotEmpty(mapList)) {
+
+            pager.setDataList(mapList.stream().map(this::buildByMap).collect(Collectors.toList()));
+        }
+
         final Integer totalCount =
                 jdbcTemplate.queryForObject("select count(1) from " + tableName, Integer.class);
 
@@ -76,6 +92,62 @@ public class JdbcRecoverTransactionServiceImpl implements RecoverTransactionServ
         return pager;
     }
 
+    /**
+     * 批量删除补偿事务信息
+     *
+     * @param ids             ids 事务id集合
+     * @param applicationName 应用名称
+     * @return true 成功
+     */
+    @Override
+    public Boolean batchRemove(List<String> ids, String applicationName) {
+        if (CollectionUtils.isEmpty(ids) || StringUtils.isBlank(applicationName)) {
+            return Boolean.FALSE;
+        }
+        final String tableName = RepositoryPathUtils.buildDbTableName(applicationName);
+        ids.stream()
+                .map(id -> buildDelSql(tableName, id))
+                .forEach(sql -> jdbcTemplate.execute(sql));
+
+        return Boolean.TRUE;
+    }
+
+    /**
+     * 更改恢复次数
+     *
+     * @param id              事务id
+     * @param retry           恢复次数
+     * @param applicationName 应用名称
+     * @return true 成功
+     */
+    @Override
+    public Boolean updateRetry(String id, Integer retry, String applicationName) {
+        if (StringUtils.isBlank(id) || StringUtils.isBlank(applicationName) || Objects.isNull(retry)) {
+            return false;
+        }
+        final String tableName = RepositoryPathUtils.buildDbTableName(applicationName);
+        String sql = " update " + tableName +
+                     " set  retried_count =" + retry + " ,last_time=" + new Date() + " " +
+                     " where id= " + id;
+
+        jdbcTemplate.execute(sql);
+        return Boolean.TRUE;
+    }
+
+
+    private TransactionRecoverVO buildByMap(Map<String, Object> map) {
+        TransactionRecoverVO vo = new TransactionRecoverVO();
+        vo.setId((String) map.get("id"));
+        vo.setRetriedCount((Integer) map.get("retried_count"));
+        vo.setCreateTime(String.valueOf(map.get("create_time")));
+        vo.setLastTime(String.valueOf(map.get("last_time")));
+        vo.setTaskId((String) map.get("task_id"));
+        vo.setGroupId((String) map.get("group_id"));
+        vo.setVersion((Integer) map.get("version"));
+        vo.setTargetClass((String) map.get("target_class"));
+        vo.setTargetMethod((String) map.get("target_method"));
+        return vo;
+    }
 
     private String buildPageSql(String sql, PageParameter pageParameter) {
         switch (dbType) {
@@ -98,5 +170,9 @@ public class JdbcRecoverTransactionServiceImpl implements RecoverTransactionServ
 
     public void setDbType(String dbType) {
         this.dbType = DbTypeUtils.buildByDriverClassName(dbType);
+    }
+
+    private String buildDelSql(String tableName, String id) {
+        return "DELETE FROM " + tableName + " WHERE ID=" + id;
     }
 }

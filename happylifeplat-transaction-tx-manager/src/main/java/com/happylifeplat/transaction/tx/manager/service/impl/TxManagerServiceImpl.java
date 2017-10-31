@@ -17,6 +17,7 @@
  */
 package com.happylifeplat.transaction.tx.manager.service.impl;
 
+import com.happylifeplat.transaction.common.constant.CommonConstant;
 import com.happylifeplat.transaction.common.enums.TransactionRoleEnum;
 import com.happylifeplat.transaction.common.enums.TransactionStatusEnum;
 import com.happylifeplat.transaction.common.holder.DateUtils;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -67,6 +69,10 @@ public class TxManagerServiceImpl implements TxManagerService {
     public Boolean saveTxTransactionGroup(TxTransactionGroup txTransactionGroup) {
         try {
             final String groupId = txTransactionGroup.getId();
+            //保存数据 到sortSet
+            redisTemplate.opsForZSet()
+                    .add(CommonConstant.REDIS_KEY_SET, groupId, CommonConstant.REDIS_SCOPE);
+
             final List<TxTransactionItem> itemList = txTransactionGroup.getItemList();
             if (CollectionUtils.isNotEmpty(itemList)) {
                 for (TxTransactionItem item : itemList) {
@@ -128,14 +134,18 @@ public class TxManagerServiceImpl implements TxManagerService {
      * @param key     redis key 也就是txGroupId
      * @param hashKey 也就是taskKey
      * @param status  事务状态
+     * @param message 执行结果信息
      * @return true 成功 false 失败
      */
     @Override
-    public Boolean updateTxTransactionItemStatus(String key, String hashKey, int status) {
+    public Boolean updateTxTransactionItemStatus(String key, String hashKey, int status, Object message) {
         try {
             final TxTransactionItem item = (TxTransactionItem)
                     redisTemplate.opsForHash().get(cacheKey(key), hashKey);
             item.setStatus(status);
+            if (Objects.nonNull(message)) {
+                item.setMessage(message);
+            }
             //计算耗时
             final String createDate = item.getCreateDate();
 
@@ -210,6 +220,6 @@ public class TxManagerServiceImpl implements TxManagerService {
     }
 
     private String cacheKey(String key) {
-        return String.format(Constant.REDIS_PRE_FIX, key);
+        return String.format(CommonConstant.REDIS_PRE_FIX, key);
     }
 }

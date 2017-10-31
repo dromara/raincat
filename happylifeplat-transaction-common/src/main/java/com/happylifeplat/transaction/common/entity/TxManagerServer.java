@@ -17,9 +17,12 @@
  */
 package com.happylifeplat.transaction.common.entity;
 
+import lombok.Data;
+
 /**
  * @author xiaoyu
  */
+@Data
 public class TxManagerServer {
 
     /**
@@ -32,27 +35,5 @@ public class TxManagerServer {
      */
     private Integer port;
 
-    public String getHost() {
-        return host;
-    }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public Integer getPort() {
-        return port;
-    }
-
-    public void setPort(Integer port) {
-        this.port = port;
-    }
-
-    @Override
-    public String toString() {
-        return "TxManagerServer{" +
-                "host='" + host + '\'' +
-                ", port=" + port +
-                '}';
-    }
 }

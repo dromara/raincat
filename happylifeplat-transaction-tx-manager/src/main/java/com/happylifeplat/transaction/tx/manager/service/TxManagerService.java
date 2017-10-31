@@ -69,9 +69,10 @@ public interface TxManagerService {
      * @param key     redis key 也就是txGroupId
      * @param hashKey 也就是taskKey
      * @param status  事务状态
+     * @param message  执行结果信息
      * @return true 成功 false 失败
      */
-    Boolean updateTxTransactionItemStatus(String key, String hashKey, int status);
+    Boolean updateTxTransactionItemStatus(String key, String hashKey, int status,Object message);
 
 
     /**

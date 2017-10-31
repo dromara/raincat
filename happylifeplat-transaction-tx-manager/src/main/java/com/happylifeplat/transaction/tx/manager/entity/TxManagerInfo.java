@@ -17,13 +17,16 @@
  */
 package com.happylifeplat.transaction.tx.manager.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author xiaoyu
  */
-public class TxManagerInfo implements Serializable {
+@Data
+public class TxManagerInfo {
 
 
     private static final long serialVersionUID = 1975118058422053078L;
@@ -61,72 +64,4 @@ public class TxManagerInfo implements Serializable {
      */
     private List<String> clusterInfoList;
 
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public int getMaxConnection() {
-        return maxConnection;
-    }
-
-    public void setMaxConnection(int maxConnection) {
-        this.maxConnection = maxConnection;
-    }
-
-    public int getNowConnection() {
-        return nowConnection;
-    }
-
-    public void setNowConnection(int nowConnection) {
-        this.nowConnection = nowConnection;
-    }
-
-    public int getTransactionWaitMaxTime() {
-        return transactionWaitMaxTime;
-    }
-
-    public void setTransactionWaitMaxTime(int transactionWaitMaxTime) {
-        this.transactionWaitMaxTime = transactionWaitMaxTime;
-    }
-
-    public int getRedisSaveMaxTime() {
-        return redisSaveMaxTime;
-    }
-
-    public void setRedisSaveMaxTime(int redisSaveMaxTime) {
-        this.redisSaveMaxTime = redisSaveMaxTime;
-    }
-
-    public List<String> getClusterInfoList() {
-        return clusterInfoList;
-    }
-
-    public void setClusterInfoList(List<String> clusterInfoList) {
-        this.clusterInfoList = clusterInfoList;
-    }
-
-    @Override
-    public String toString() {
-        return "TxManagerInfo{" +
-                "ip='" + ip + '\'' +
-                ", port=" + port +
-                ", maxConnection=" + maxConnection +
-                ", nowConnection=" + nowConnection +
-                ", transactionWaitMaxTime=" + transactionWaitMaxTime +
-                ", redisSaveMaxTime=" + redisSaveMaxTime +
-                ", clusterInfoList=" + clusterInfoList +
-                '}';
-    }
 }

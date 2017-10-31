@@ -19,6 +19,7 @@
 package com.happylifeplat.transaction.common.holder;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.Instant;
@@ -36,6 +37,7 @@ import java.util.Date;
 
 /**
  * 时间操作类
+ *
  * @author yu.xiao @happylifeplat.com
  * @version 1.0
  * @date 2017 /3/1 11:52
@@ -51,6 +53,8 @@ public class DateUtils {
     public static final String DATE_FORMAT_DATETIME14 = "yyyyMMddHHmmss"; // 年/月/日
     public static final String SHORTDATEFORMAT = "yyyyMMdd";
     public static final String HMS_FORMAT = "HH:mm:ss";
+
+
 
     /**
      * 把字符串转成日期类型
@@ -109,11 +113,12 @@ public class DateUtils {
     public static String getCurrentDateTime() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_DATETIME));
     }
-    
+
     /**
-     * 获取当前日期时间 
+     * 获取当前日期时间
+     *
      * @param format 格式字符串
-     * @return 获取当前日期时间 
+     * @return 获取当前日期时间
      */
     public static String getCurrentDateTime(String format) {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern(format));

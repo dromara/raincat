@@ -34,38 +34,14 @@ public class RedisHelper {
         return RedisKeyUtils.getRedisKey(keyPrefix, id);
     }
 
-    public static byte[] getKeyValue(JedisPool jedisPool, final byte[] key) {
-        return execute(jedisPool, jedis -> {
-                    Map<byte[], byte[]> fieldValueMap = jedis.hgetAll(key);
-                    List<Map.Entry<byte[], byte[]>> entries = new ArrayList<>(fieldValueMap.entrySet());
-                    entries.sort((entry1, entry2) -> (int) (ByteUtils.bytesToLong(entry1.getKey()) - ByteUtils.bytesToLong(entry2.getKey())));
-                    if (entries.isEmpty()) {
-                        return null;
-                    }
-                    return entries.get(entries.size() - 1).getValue();
-                }
-        );
+    public static String buildRecoverKey(String keyPrefix, String id) {
+        return String.join(":", keyPrefix, id);
     }
 
-    public static byte[] getKeyValue(Jedis jedis, final byte[] key) {
-        Map<byte[], byte[]> fieldValueMap = jedis.hgetAll(key);
-        List<Map.Entry<byte[], byte[]>> entries = new ArrayList<Map.Entry<byte[], byte[]>>(fieldValueMap.entrySet());
-        entries.sort((entry1, entry2) -> (int) (ByteUtils.bytesToLong(entry1.getKey()) - ByteUtils.bytesToLong(entry2.getKey())));
-        if (entries.isEmpty()) {
-            return null;
-        }
-        return entries.get(entries.size() - 1).getValue();
-    }
 
     public static <T> T execute(JedisPool jedisPool, JedisCallback<T> callback) {
-        Jedis jedis = null;
-        try {
-            jedis = jedisPool.getResource();
+        try(Jedis jedis=jedisPool.getResource()) {
             return callback.doInJedis(jedis);
-        } finally {
-            if (jedis != null) {
-                jedis.close();
-            }
         }
     }
 }

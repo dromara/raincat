@@ -17,7 +17,7 @@
  */
 package com.happylifeplat.transaction.core.service.handler;
 
-import com.happylifeplat.transaction.core.bean.TxTransactionInfo;
+import com.happylifeplat.transaction.common.bean.TxTransactionInfo;
 import com.happylifeplat.transaction.core.service.TxTransactionHandler;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.stereotype.Component;

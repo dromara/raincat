@@ -2,17 +2,14 @@ package com.happylifeplat.transaction.tx.dubbo.sample.consume;
 
 import com.happylifeplat.transaction.common.enums.CompensationActionEnum;
 import com.happylifeplat.transaction.common.enums.TransactionStatusEnum;
-import com.happylifeplat.transaction.core.bean.TransactionInvocation;
-import com.happylifeplat.transaction.core.bean.TransactionRecover;
+import com.happylifeplat.transaction.common.bean.TransactionInvocation;
+import com.happylifeplat.transaction.common.bean.TransactionRecover;
 import com.happylifeplat.transaction.core.compensation.command.TxCompensationAction;
 import com.happylifeplat.transaction.core.compensation.command.TxCompensationCommand;
-import com.happylifeplat.transaction.core.compensation.impl.TxCompensationServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;

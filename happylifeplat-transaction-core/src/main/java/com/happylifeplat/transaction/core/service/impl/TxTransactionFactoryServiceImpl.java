@@ -17,8 +17,8 @@
  */
 package com.happylifeplat.transaction.core.service.impl;
 
-import com.happylifeplat.transaction.core.bean.TxTransactionInfo;
-import com.happylifeplat.transaction.core.constant.Constant;
+import com.happylifeplat.transaction.common.bean.TxTransactionInfo;
+import com.happylifeplat.transaction.common.constant.CommonConstant;
 import com.happylifeplat.transaction.core.service.TxTransactionFactoryService;
 import com.happylifeplat.transaction.core.service.handler.ActorTxTransactionHandler;
 import com.happylifeplat.transaction.core.service.handler.InsideCompensationHandler;
@@ -43,7 +43,7 @@ public class TxTransactionFactoryServiceImpl implements TxTransactionFactoryServ
         if (StringUtils.isBlank(info.getTxGroupId())) {
             return StartTxTransactionHandler.class;
         } else {
-            if (Objects.equals(Constant.COMPENSATE_ID, info.getTxGroupId())) {
+            if (Objects.equals(CommonConstant.COMPENSATE_ID, info.getTxGroupId())) {
                 return InsideCompensationHandler.class;
             }
             return ActorTxTransactionHandler.class;

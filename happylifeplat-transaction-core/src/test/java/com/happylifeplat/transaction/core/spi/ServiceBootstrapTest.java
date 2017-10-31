@@ -2,6 +2,8 @@ package com.happylifeplat.transaction.core.spi;
 
 import com.happylifeplat.transaction.common.enums.CompensationCacheTypeEnum;
 import com.happylifeplat.transaction.common.enums.SerializeProtocolEnum;
+import com.happylifeplat.transaction.common.holder.ServiceBootstrap;
+import com.happylifeplat.transaction.common.serializer.ObjectSerializer;
 import com.happylifeplat.transaction.core.helper.SpringBeanUtils;
 import org.junit.Test;
 import org.slf4j.Logger;

@@ -18,6 +18,8 @@
 
 package com.happylifeplat.transaction.admin.vo;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -28,6 +30,7 @@ import java.io.Serializable;
  * @date 2017/10/19 16:37
  * @since JDK 1.8
  */
+@Data
 public class TransactionRecoverVO implements Serializable {
 
 
@@ -76,106 +79,11 @@ public class TransactionRecoverVO implements Serializable {
     /**
      * 执行类名称
      */
-    private String targetClazzName;
+    private String targetClass;
     /**
      * 执行方法
      */
-    private String targetMethodName;
+    private String targetMethod;
 
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Integer getRetriedCount() {
-        return retriedCount;
-    }
-
-    public void setRetriedCount(Integer retriedCount) {
-        this.retriedCount = retriedCount;
-    }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getLastTime() {
-        return lastTime;
-    }
-
-    public void setLastTime(String lastTime) {
-        this.lastTime = lastTime;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
-
-    public String getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
-
-    public String getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getTargetClazzName() {
-        return targetClazzName;
-    }
-
-    public void setTargetClazzName(String targetClazzName) {
-        this.targetClazzName = targetClazzName;
-    }
-
-    public String getTargetMethodName() {
-        return targetMethodName;
-    }
-
-    public void setTargetMethodName(String targetMethodName) {
-        this.targetMethodName = targetMethodName;
-    }
-
-    @Override
-    public String toString() {
-        return "TransactionRecoverVO{" +
-                "id='" + id + '\'' +
-                ", retriedCount=" + retriedCount +
-                ", createTime='" + createTime + '\'' +
-                ", lastTime='" + lastTime + '\'' +
-                ", version=" + version +
-                ", groupId='" + groupId + '\'' +
-                ", taskId='" + taskId + '\'' +
-                ", status='" + status + '\'' +
-                ", targetClazzName='" + targetClazzName + '\'' +
-                ", targetMethodName='" + targetMethodName + '\'' +
-                '}';
-    }
 }

@@ -17,6 +17,8 @@
  */
 package com.happylifeplat.transaction.common.netty.bean;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -24,6 +26,7 @@ import java.util.List;
 /**
  * @author xiaoyu
  */
+@Data
 public class TxTransactionGroup implements Serializable {
 
 
@@ -46,35 +49,4 @@ public class TxTransactionGroup implements Serializable {
 
     private  List<TxTransactionItem> itemList;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public int getWaitTime() {
-        return waitTime;
-    }
-
-    public void setWaitTime(int waitTime) {
-        this.waitTime = waitTime;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public List<TxTransactionItem> getItemList() {
-        return itemList;
-    }
-
-    public void setItemList(List<TxTransactionItem> itemList) {
-        this.itemList = itemList;
-    }
 }

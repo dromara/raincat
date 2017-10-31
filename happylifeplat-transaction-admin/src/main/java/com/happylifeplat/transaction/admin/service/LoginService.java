@@ -35,4 +35,11 @@ public interface LoginService {
      * @return  true 成功
      */
     Boolean login(String userName,String password);
+
+
+    /**
+     * 用户登出
+     * @return true 成功
+     */
+    Boolean logout();
 }

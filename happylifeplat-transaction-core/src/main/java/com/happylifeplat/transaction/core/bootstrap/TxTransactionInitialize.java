@@ -19,7 +19,7 @@ package com.happylifeplat.transaction.core.bootstrap;
 
 
 import com.happylifeplat.transaction.common.holder.LogUtil;
-import com.happylifeplat.transaction.core.config.TxConfig;
+import com.happylifeplat.transaction.common.config.TxConfig;
 import com.happylifeplat.transaction.core.service.InitService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

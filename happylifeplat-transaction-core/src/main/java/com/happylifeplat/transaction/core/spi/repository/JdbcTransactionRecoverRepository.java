@@ -23,12 +23,12 @@ import com.happylifeplat.transaction.common.enums.CompensationCacheTypeEnum;
 import com.happylifeplat.transaction.common.exception.TransactionException;
 import com.happylifeplat.transaction.common.exception.TransactionRuntimeException;
 import com.happylifeplat.transaction.common.holder.RepositoryPathUtils;
-import com.happylifeplat.transaction.core.bean.TransactionInvocation;
-import com.happylifeplat.transaction.core.bean.TransactionRecover;
-import com.happylifeplat.transaction.core.config.TxConfig;
-import com.happylifeplat.transaction.core.config.TxDbConfig;
+import com.happylifeplat.transaction.common.serializer.ObjectSerializer;
+import com.happylifeplat.transaction.common.bean.TransactionInvocation;
+import com.happylifeplat.transaction.common.bean.TransactionRecover;
+import com.happylifeplat.transaction.common.config.TxConfig;
+import com.happylifeplat.transaction.common.config.TxDbConfig;
 import com.happylifeplat.transaction.core.helper.SqlHelper;
-import com.happylifeplat.transaction.core.spi.ObjectSerializer;
 import com.happylifeplat.transaction.core.spi.TransactionRecoverRepository;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -41,7 +41,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -53,7 +52,7 @@ import java.util.stream.Collectors;
 public class JdbcTransactionRecoverRepository implements TransactionRecoverRepository {
 
 
-    private Logger logger = LoggerFactory.getLogger(JdbcTransactionRecoverRepository.class);
+    private static final  Logger LOGGER = LoggerFactory.getLogger(JdbcTransactionRecoverRepository.class);
 
     private DruidDataSource dataSource;
 
@@ -69,11 +68,14 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
 
     @Override
     public int create(TransactionRecover recover) {
-        String sql = "insert into " + tableName + "(id,retried_count,create_time,last_time,version,group_id,task_id,invocation)" +
-                " values(?,?,?,?,?,?,?,?)";
+        String sql = "insert into " + tableName + "(id,target_class,target_method,retried_count,create_time,last_time,version,group_id,task_id,invocation)" +
+                " values(?,?,?,?,?,?,?,?,?,?)";
         try {
-            final byte[] serialize = serializer.serialize(recover.getTransactionInvocation());
-            return executeUpdate(sql, recover.getId(), recover.getRetriedCount(), recover.getCreateTime(), recover.getLastTime(),
+            final TransactionInvocation transactionInvocation = recover.getTransactionInvocation();
+            final String className = transactionInvocation.getTargetClazz().getName();
+            final String method = transactionInvocation.getMethod();
+            final byte[] serialize = serializer.serialize(transactionInvocation);
+            return executeUpdate(sql, recover.getId(),className, method,recover.getRetriedCount(), recover.getCreateTime(), recover.getLastTime(),
                     recover.getVersion(), recover.getGroupId(), recover.getTaskId(), serialize);
 
         } catch (TransactionException e) {
@@ -224,74 +226,48 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
     }
 
     private int executeUpdate(String sql, Object... params) {
-        Connection connection = null;
-        PreparedStatement ps = null;
         try {
-            connection = dataSource.getConnection();
-            ps = connection.prepareStatement(sql);
-            if (params != null) {
-                for (int i = 0; i < params.length; i++) {
-                    ps.setObject((i + 1), params[i]);
+            try(Connection connection = dataSource.getConnection();
+                PreparedStatement ps=  connection.prepareStatement(sql);){
+                if (params != null) {
+                    for (int i = 0; i < params.length; i++) {
+                        ps.setObject((i + 1), params[i]);
+                    }
                 }
+                return ps.executeUpdate();
             }
-            return ps.executeUpdate();
         } catch (SQLException e) {
-            logger.error("executeUpdate->" + e.getMessage());
-        } finally {
-            try {
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            e.printStackTrace();
+            LOGGER.error("executeUpdate->" + e.getMessage());
         }
         return 0;
     }
 
     private List<Map<String, Object>> executeQuery(String sql, Object... params) {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         List<Map<String, Object>> list = null;
         try {
-            connection = dataSource.getConnection();
-            ps = connection.prepareStatement(sql);
-            if (params != null) {
-                for (int i = 0; i < params.length; i++) {
-                    ps.setObject((i + 1), params[i]);
+            try(Connection connection = dataSource.getConnection();
+                PreparedStatement ps=  connection.prepareStatement(sql)){
+                if (params != null) {
+                    for (int i = 0; i < params.length; i++) {
+                        ps.setObject((i + 1), params[i]);
+                    }
                 }
-            }
-            rs = ps.executeQuery();
-            ResultSetMetaData md = rs.getMetaData();
-            int columnCount = md.getColumnCount();
-            list = new ArrayList<>();
-            while (rs.next()) {
-                Map<String, Object> rowData = Maps.newHashMap();
-                for (int i = 1; i <= columnCount; i++) {
-                    rowData.put(md.getColumnName(i), rs.getObject(i));
+                ResultSet rs = ps.executeQuery();
+                ResultSetMetaData md = rs.getMetaData();
+                int columnCount = md.getColumnCount();
+                list = new ArrayList<>();
+                while (rs.next()) {
+                    Map<String, Object> rowData = Maps.newHashMap();
+                    for (int i = 1; i <= columnCount; i++) {
+                        rowData.put(md.getColumnName(i), rs.getObject(i));
+                    }
+                    list.add(rowData);
                 }
-                list.add(rowData);
             }
         } catch (SQLException e) {
-            logger.error("executeQuery->" + e.getMessage());
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            e.printStackTrace();
+            LOGGER.error("executeQuery->" + e.getMessage());
         }
         return list;
     }

@@ -20,7 +20,9 @@ package com.happylifeplat.transaction.tx.manager.configuration;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Maps;
 import com.happylifeplat.transaction.tx.manager.config.NettyConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
@@ -28,12 +30,19 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.web.client.RestTemplate;
 import redis.clients.jedis.JedisPoolConfig;
+
+import java.util.Arrays;
+import java.util.Map;
 
 /**
  * @author xiaoyu
@@ -66,32 +75,45 @@ public class TxManagerConfiguration {
 
     @Configuration
     static class RedisConfiguration {
+
+
+        private final Environment env;
+
+        @Autowired
+        public RedisConfiguration(Environment env) {
+            this.env = env;
+        }
+
+
         @Bean
         public KeyGenerator keyGenerator() {
             return (target, method, params) -> {
                 StringBuilder sb = new StringBuilder();
                 sb.append(target.getClass().getName());
                 sb.append(method.getName());
-                for (Object obj : params) {
-                    sb.append(obj.toString());
-                }
-                return sb.toString();
+                return Arrays.stream(params)
+                        .map(obj -> sb.append(obj.toString())).toString();
+
             };
         }
 
         @Bean
-        @ConfigurationProperties(prefix = "spring.redis")
-        public JedisPoolConfig getRedisConfig() {
+        @ConfigurationProperties(prefix = "tx.redis")
+        public JedisPoolConfig getRedisPoolConfig() {
             return new JedisPoolConfig();
         }
 
         @Bean
-        @ConfigurationProperties(prefix = "spring.redis")
+        @ConfigurationProperties(prefix = "tx.redis")
         public JedisConnectionFactory getConnectionFactory() {
-            JedisConnectionFactory factory = new JedisConnectionFactory();
-            JedisPoolConfig config = getRedisConfig();
-            factory.setPoolConfig(config);
-            return factory;
+
+            final Boolean cluster = env.getProperty("tx.redis.cluster", Boolean.class);
+            if (cluster) {
+                return new JedisConnectionFactory(getClusterConfiguration(),
+                        getRedisPoolConfig());
+            } else {
+                return new JedisConnectionFactory(getRedisPoolConfig());
+            }
         }
 
 
@@ -100,17 +122,25 @@ public class TxManagerConfiguration {
         public RedisTemplate redisTemplate() {
             RedisTemplate redisTemplate = new StringRedisTemplate();
             redisTemplate.setConnectionFactory(getConnectionFactory());
-
             Jackson2JsonRedisSerializer jackson2JsonRedisSerializer =
                     new Jackson2JsonRedisSerializer(Object.class);
             ObjectMapper om = new ObjectMapper();
             om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
             om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
             jackson2JsonRedisSerializer.setObjectMapper(om);
+
+
             redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
             redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
             redisTemplate.afterPropertiesSet();
             return redisTemplate;
+        }
+
+        private RedisClusterConfiguration getClusterConfiguration() {
+            Map<String, Object> source = Maps.newHashMap();
+            source.put("spring.redis.cluster.nodes", env.getProperty("tx.redis.cluster.nodes"));
+            source.put("spring.redis.cluster.max-redirects", env.getProperty("tx.redis.cluster.redirects"));
+            return new RedisClusterConfiguration(new MapPropertySource("RedisClusterConfiguration", source));
         }
     }
 }

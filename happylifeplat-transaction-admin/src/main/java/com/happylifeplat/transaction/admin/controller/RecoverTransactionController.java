@@ -18,6 +18,8 @@
 
 package com.happylifeplat.transaction.admin.controller;
 
+import com.happylifeplat.transaction.admin.annotation.Permission;
+import com.happylifeplat.transaction.admin.dto.RecoverDTO;
 import com.happylifeplat.transaction.admin.page.CommonPager;
 import com.happylifeplat.transaction.admin.query.RecoverTransactionQuery;
 import com.happylifeplat.transaction.admin.service.RecoverApplicationNameService;
@@ -25,9 +27,9 @@ import com.happylifeplat.transaction.admin.service.RecoverTransactionService;
 import com.happylifeplat.transaction.admin.vo.TransactionRecoverVO;
 import com.happylifeplat.transaction.common.holder.httpclient.AjaxResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -56,22 +58,37 @@ public class RecoverTransactionController {
         this.recoverApplicationNameService = recoverApplicationNameService;
     }
 
-
-    @RequestMapping(value = "/listPage", method = RequestMethod.POST)
+    @Permission
+    @PostMapping(value = "/listPage")
     public AjaxResponse listPage(@RequestBody RecoverTransactionQuery recoverQuery) {
         final CommonPager<TransactionRecoverVO> pager =
                 recoverTransactionService.listByPage(recoverQuery);
         return AjaxResponse.success(pager);
     }
 
-    @RequestMapping(value = "/listAppName", method = RequestMethod.POST)
+
+    @PostMapping(value = "/batchRemove")
+    @Permission
+    public AjaxResponse batchRemove(@RequestBody RecoverDTO recoverDTO) {
+        final Boolean success = recoverTransactionService.batchRemove(recoverDTO.getIdList(), recoverDTO.getApplicationName());
+        return AjaxResponse.success(success);
+
+    }
+
+    @PostMapping(value = "/update")
+    @Permission
+    public AjaxResponse update(@RequestBody RecoverDTO recoverDTO) {
+        final Boolean success = recoverTransactionService.updateRetry(recoverDTO.getId(),
+                recoverDTO.getRetry(), recoverDTO.getApplicationName());
+        return AjaxResponse.success(success);
+
+    }
+
+    @PostMapping(value = "/listAppName")
     public AjaxResponse listAppName() {
         final List<String> list = recoverApplicationNameService.list();
         return AjaxResponse.success(list);
     }
-
-
-
 
 
 }

@@ -18,7 +18,7 @@
 package com.happylifeplat.transaction.core.compensation.command;
 
 import com.happylifeplat.transaction.common.enums.CompensationActionEnum;
-import com.happylifeplat.transaction.core.bean.TransactionRecover;
+import com.happylifeplat.transaction.common.bean.TransactionRecover;
 
 import java.io.Serializable;
 

@@ -48,6 +48,9 @@ public class LoginServiceImpl implements LoginService {
     @Value("${tx.admin.password}")
     private String password;
 
+    public static boolean LOGIN_SUCCESS = false;
+
+
     /**
      * 登录接口，验证用户名 密码
      *
@@ -59,8 +62,20 @@ public class LoginServiceImpl implements LoginService {
     public Boolean login(String userName, String password) {
         LogUtil.info(LOGGER, "输入的用户名密码为:{}", () -> userName + "," + password);
         if (userName.equals(this.userName) && password.equals(this.password)) {
+            LOGIN_SUCCESS = true;
             return Boolean.TRUE;
         }
         return Boolean.FALSE;
+    }
+
+    /**
+     * 用户登出
+     *
+     * @return true 成功
+     */
+    @Override
+    public Boolean logout() {
+        LOGIN_SUCCESS = false;
+        return Boolean.TRUE;
     }
 }

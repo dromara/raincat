@@ -126,8 +126,12 @@ public class NettyServerMessageHandler extends ChannelInboundHandlerAdapter {
                     break;
                 case COMPLETE_COMMIT:
                     final List<TxTransactionItem> its = txTransactionGroup.getItemList();
-                    txManagerService.updateTxTransactionItemStatus(txTransactionGroup.getId(), its.get(0).getTaskKey(),
-                            its.get(0).getStatus());
+                    if(CollectionUtils.isNotEmpty(its)){
+                        final TxTransactionItem item = its.get(0);
+                        txManagerService.updateTxTransactionItemStatus(txTransactionGroup.getId(),
+                                item.getTaskKey(),
+                                item.getStatus(),item.getMessage());
+                    }
                     break;
                 default:
                     hb.setAction(NettyMessageActionEnum.HEART.getCode());

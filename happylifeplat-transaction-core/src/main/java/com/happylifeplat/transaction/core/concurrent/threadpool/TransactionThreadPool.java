@@ -26,7 +26,7 @@ import com.happylifeplat.transaction.core.concurrent.threadpool.policy.BlockingP
 import com.happylifeplat.transaction.core.concurrent.threadpool.policy.CallerRunsPolicy;
 import com.happylifeplat.transaction.core.concurrent.threadpool.policy.DiscardedPolicy;
 import com.happylifeplat.transaction.core.concurrent.threadpool.policy.RejectedPolicy;
-import com.happylifeplat.transaction.core.config.TxConfig;
+import com.happylifeplat.transaction.common.config.TxConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,6 @@ import javax.annotation.PostConstruct;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledExecutorService;

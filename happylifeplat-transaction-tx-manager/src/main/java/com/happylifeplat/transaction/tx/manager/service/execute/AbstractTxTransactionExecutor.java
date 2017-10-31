@@ -80,7 +80,7 @@ public abstract class AbstractTxTransactionExecutor implements TxTransactionExec
     @Override
     public void rollBack(String txGroupId) {
         try {
-            txManagerService.updateTxTransactionItemStatus(txGroupId, txGroupId, TransactionStatusEnum.ROLLBACK.getCode());
+            txManagerService.updateTxTransactionItemStatus(txGroupId, txGroupId, TransactionStatusEnum.ROLLBACK.getCode(),null);
             final List<TxTransactionItem> txTransactionItems = txManagerService.listByTxGroupId(txGroupId);
             if (CollectionUtils.isNotEmpty(txTransactionItems)) {
                 final Map<Boolean, List<TxTransactionItem>> listMap = filterData(txTransactionItems);
@@ -106,7 +106,7 @@ public abstract class AbstractTxTransactionExecutor implements TxTransactionExec
      */
     @Override
     public Boolean preCommit(String txGroupId) {
-        txManagerService.updateTxTransactionItemStatus(txGroupId, txGroupId, TransactionStatusEnum.COMMIT.getCode());
+        txManagerService.updateTxTransactionItemStatus(txGroupId, txGroupId, TransactionStatusEnum.COMMIT.getCode(),null);
         final List<TxTransactionItem> txTransactionItems = txManagerService.listByTxGroupId(txGroupId);
 
         final Map<Boolean, List<TxTransactionItem>> listMap = filterData(txTransactionItems);
@@ -155,8 +155,7 @@ public abstract class AbstractTxTransactionExecutor implements TxTransactionExec
     private Map<Boolean, List<TxTransactionItem>> filterData(List<TxTransactionItem> txTransactionItems) {
         //过滤掉发起方的数据，发起方已经进行提交，不需要再通信进行
         final List<TxTransactionItem> collect = txTransactionItems.stream()
-                .filter(item -> item.getRole() != TransactionRoleEnum.START.getCode() ||
-                        item.getRole() != TransactionRoleEnum.GROUP.getCode())
+                .filter(item -> item.getRole() == TransactionRoleEnum.ACTOR.getCode())
                 .collect(Collectors.toList());
         if (CollectionUtils.isEmpty(collect)) {
             return null;

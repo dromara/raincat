@@ -17,12 +17,15 @@
  */
 package com.happylifeplat.transaction.common.netty.bean;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 
 /**
  * @author xiaoyu
  */
+@Data
 public class TxTransactionItem implements Serializable {
 
     private static final long serialVersionUID = -983809184773470584L;
@@ -76,11 +79,11 @@ public class TxTransactionItem implements Serializable {
     /**
      * 执行类名称
      */
-    private String targetClazzName;
+    private String targetClass;
     /**
      * 执行方法
      */
-    private String targetMethodName;
+    private String targetMethod;
 
     /**
      * 耗时 秒
@@ -88,100 +91,10 @@ public class TxTransactionItem implements Serializable {
     private Long consumeTime;
 
 
-    public String getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(String createDate) {
-        this.createDate = createDate;
-    }
-
-    public Integer getWaitMaxTime() {
-        return waitMaxTime;
-    }
-
-    public void setWaitMaxTime(Integer waitMaxTime) {
-        this.waitMaxTime = waitMaxTime;
-    }
-
-    public String getTargetClazzName() {
-        return targetClazzName;
-    }
-
-    public void setTargetClazzName(String targetClazzName) {
-        this.targetClazzName = targetClazzName;
-    }
-
-    public String getTargetMethodName() {
-        return targetMethodName;
-    }
-
-    public void setTargetMethodName(String targetMethodName) {
-        this.targetMethodName = targetMethodName;
-    }
-
-    public String getTaskKey() {
-        return taskKey;
-    }
-
-    public void setTaskKey(String taskKey) {
-        this.taskKey = taskKey;
-    }
-
-    public String getTransId() {
-        return transId;
-    }
-
-    public void setTransId(String transId) {
-        this.transId = transId;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getModelName() {
-        return modelName;
-    }
-
-    public void setModelName(String modelName) {
-        this.modelName = modelName;
-    }
+    /**
+     * 操作结果信息
+     */
+    private Object message;
 
 
-    public int getRole() {
-        return role;
-    }
-
-    public void setRole(int role) {
-        this.role = role;
-    }
-
-    public String getTmDomain() {
-        return tmDomain;
-    }
-
-    public void setTmDomain(String tmDomain) {
-        this.tmDomain = tmDomain;
-    }
-
-    public String getTxGroupId() {
-        return txGroupId;
-    }
-
-    public void setTxGroupId(String txGroupId) {
-        this.txGroupId = txGroupId;
-    }
-
-    public Long getConsumeTime() {
-        return consumeTime;
-    }
-
-    public void setConsumeTime(Long consumeTime) {
-        this.consumeTime = consumeTime;
-    }
 }

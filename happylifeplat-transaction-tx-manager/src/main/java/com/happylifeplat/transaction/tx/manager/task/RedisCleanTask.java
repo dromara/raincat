@@ -42,7 +42,7 @@ public class RedisCleanTask {
      *
      * @throws InterruptedException 异常
      */
-    @Scheduled(fixedDelay = 1000 * 300)
+    //@Scheduled(fixedDelay = 1000 * 300)
     public void removeCommitTxGroup() throws InterruptedException {
         txManagerService.removeCommitTxGroup();
 
@@ -50,11 +50,11 @@ public class RedisCleanTask {
 
 
     /**
-     * 清除完全提交的事务组信息，每隔10分钟执行一次
+     * 清除完全回滚的事务组信息，每隔10分钟执行一次
      *
      * @throws InterruptedException 异常
      */
-    @Scheduled(fixedDelay = 1000 * 600)
+    //@Scheduled(fixedDelay = 1000 * 600)
     public void removeRollBackTxGroup() throws InterruptedException {
         txManagerService.removeRollBackTxGroup();
     }

@@ -24,10 +24,11 @@ import com.happylifeplat.transaction.common.exception.TransactionIoException;
 import com.happylifeplat.transaction.common.exception.TransactionRuntimeException;
 import com.happylifeplat.transaction.common.holder.LogUtil;
 import com.happylifeplat.transaction.common.holder.RepositoryPathUtils;
-import com.happylifeplat.transaction.core.bean.TransactionRecover;
-import com.happylifeplat.transaction.core.config.TxConfig;
-import com.happylifeplat.transaction.core.config.TxZookeeperConfig;
-import com.happylifeplat.transaction.core.spi.ObjectSerializer;
+import com.happylifeplat.transaction.common.holder.TransactionRecoverUtils;
+import com.happylifeplat.transaction.common.serializer.ObjectSerializer;
+import com.happylifeplat.transaction.common.bean.TransactionRecover;
+import com.happylifeplat.transaction.common.config.TxConfig;
+import com.happylifeplat.transaction.common.config.TxZookeeperConfig;
 import com.happylifeplat.transaction.core.spi.TransactionRecoverRepository;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -80,7 +81,7 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
     public int create(TransactionRecover transactionRecover) {
         try {
             zooKeeper.create(getRootPath(transactionRecover.getId()),
-                    objectSerializer.serialize(transactionRecover),
+                    TransactionRecoverUtils.convert(transactionRecover, objectSerializer),
                     ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             return 1;
         } catch (Exception e) {
@@ -118,7 +119,8 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
             transactionRecover.setVersion(transactionRecover.getVersion() + 1);
             transactionRecover.setRetriedCount(transactionRecover.getRetriedCount() + 1);
             zooKeeper.setData(getRootPath(transactionRecover.getId()),
-                    objectSerializer.serialize(transactionRecover), transactionRecover.getVersion() - 2);
+                    TransactionRecoverUtils.convert(transactionRecover, objectSerializer),
+                    transactionRecover.getVersion() - 2);
             return 1;
         } catch (Exception e) {
             throw new TransactionIoException(e);
@@ -135,8 +137,8 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
     public TransactionRecover findById(String id) {
         try {
             Stat stat = new Stat();
-            byte[] content = zooKeeper.getData(getRootPath(id), false, stat);
-            return objectSerializer.deSerialize(content, TransactionRecover.class);
+            byte[] contents = zooKeeper.getData(getRootPath(id), false, stat);
+            return TransactionRecoverUtils.transformBean(contents, objectSerializer);
         } catch (Exception e) {
             throw new TransactionIoException(e);
         }
@@ -162,8 +164,8 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
                     .filter(StringUtils::isNoneBlank)
                     .map(zNodePath -> {
                         try {
-                            byte[] content = zooKeeper.getData(getRootPath(zNodePath), false, new Stat());
-                            return objectSerializer.deSerialize(content, TransactionRecover.class);
+                            byte[] contents = zooKeeper.getData(getRootPath(zNodePath), false, new Stat());
+                            return  TransactionRecoverUtils.transformBean(contents, objectSerializer);
                         } catch (KeeperException | InterruptedException | TransactionException e) {
                             e.printStackTrace();
                         }

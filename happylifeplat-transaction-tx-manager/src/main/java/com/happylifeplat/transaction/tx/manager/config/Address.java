@@ -17,6 +17,8 @@
  */
 package com.happylifeplat.transaction.tx.manager.config;
 
+import lombok.Data;
+
 /**
  * @author xiaoyu
  */

@@ -21,13 +21,13 @@ import com.happylifeplat.transaction.common.enums.SerializeProtocolEnum;
 import com.happylifeplat.transaction.common.enums.CompensationCacheTypeEnum;
 import com.happylifeplat.transaction.common.exception.TransactionRuntimeException;
 import com.happylifeplat.transaction.common.holder.LogUtil;
+import com.happylifeplat.transaction.common.serializer.ObjectSerializer;
 import com.happylifeplat.transaction.core.compensation.TxCompensationService;
 import com.happylifeplat.transaction.core.helper.SpringBeanUtils;
-import com.happylifeplat.transaction.core.config.TxConfig;
+import com.happylifeplat.transaction.common.config.TxConfig;
 import com.happylifeplat.transaction.core.netty.NettyClientService;
 import com.happylifeplat.transaction.core.service.InitService;
-import com.happylifeplat.transaction.core.spi.ObjectSerializer;
-import com.happylifeplat.transaction.core.spi.ServiceBootstrap;
+import com.happylifeplat.transaction.common.holder.ServiceBootstrap;
 import com.happylifeplat.transaction.core.spi.TransactionRecoverRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,8 +63,8 @@ public class InitServiceImpl implements InitService {
 
     @Override
     public void initialization(TxConfig txConfig) {
-        loadSpi(txConfig);
         try {
+            loadSpi(txConfig);
             nettyClientService.start(txConfig);
             txCompensationService.start(txConfig);
         } catch (Exception e) {

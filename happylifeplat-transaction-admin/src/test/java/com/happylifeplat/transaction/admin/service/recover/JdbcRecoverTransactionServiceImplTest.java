@@ -59,7 +59,7 @@ public class JdbcRecoverTransactionServiceImplTest {
         PageParameter pageParameter = new PageParameter(1,10);
 
         query.setPageParameter(pageParameter);
-        query.setApplicationName("alipay-service");
+        query.setApplicationName("wechat-service");
 
         final CommonPager<TransactionRecoverVO> pager = recoverTransactionService.listByPage(query);
 

@@ -19,7 +19,7 @@ package com.happylifeplat.transaction.core.netty.handler;
 
 import com.happylifeplat.transaction.common.enums.SerializeProtocolEnum;
 import com.happylifeplat.transaction.common.netty.NettyPipelineInit;
-import com.happylifeplat.transaction.core.config.TxConfig;
+import com.happylifeplat.transaction.common.config.TxConfig;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;

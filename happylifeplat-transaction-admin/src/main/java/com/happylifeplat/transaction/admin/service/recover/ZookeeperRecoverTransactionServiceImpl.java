@@ -18,14 +18,35 @@
 
 package com.happylifeplat.transaction.admin.service.recover;
 
+import com.happylifeplat.transaction.admin.helper.ConvertHelper;
+import com.happylifeplat.transaction.admin.helper.PageHelper;
 import com.happylifeplat.transaction.admin.page.CommonPager;
 import com.happylifeplat.transaction.admin.query.RecoverTransactionQuery;
 import com.happylifeplat.transaction.admin.service.RecoverTransactionService;
 import com.happylifeplat.transaction.admin.vo.TransactionRecoverVO;
+import com.happylifeplat.transaction.common.bean.TransactionRecover;
+import com.happylifeplat.transaction.common.bean.adapter.TransactionRecoverAdapter;
+import com.happylifeplat.transaction.common.exception.TransactionException;
+import com.happylifeplat.transaction.common.exception.TransactionIoException;
+import com.happylifeplat.transaction.common.holder.RepositoryPathUtils;
+import com.happylifeplat.transaction.common.serializer.ObjectSerializer;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.data.Stat;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>Description: .</p>
+ * zookeeper实现
  *
  * @author xiaoyu(Myth)
  * @version 1.0
@@ -36,6 +57,9 @@ public class ZookeeperRecoverTransactionServiceImpl implements RecoverTransactio
 
 
     private ZooKeeper zooKeeper;
+
+    @Autowired
+    private ObjectSerializer objectSerializer;
 
 
     public ZookeeperRecoverTransactionServiceImpl(ZooKeeper zooKeeper) {
@@ -51,6 +75,113 @@ public class ZookeeperRecoverTransactionServiceImpl implements RecoverTransactio
      */
     @Override
     public CommonPager<TransactionRecoverVO> listByPage(RecoverTransactionQuery query) {
-        return null;
+
+        CommonPager<TransactionRecoverVO> voCommonPager = new CommonPager<>();
+        final int currentPage = query.getPageParameter().getCurrentPage();
+        final int pageSize = query.getPageParameter().getPageSize();
+
+        int start = (currentPage - 1) * pageSize;
+
+        final String rootPath = RepositoryPathUtils.buildZookeeperPath(query.getApplicationName());
+
+        List<String> zNodePaths;
+        try {
+            zNodePaths = zooKeeper.getChildren(rootPath, false);
+            if (CollectionUtils.isNotEmpty(zNodePaths)) {
+                voCommonPager.setPage(PageHelper.buildPage(query.getPageParameter(), zNodePaths.size()));
+                final List<TransactionRecoverVO> recoverVOS = zNodePaths.stream().skip(start).limit(pageSize)
+                        .filter(StringUtils::isNoneBlank)
+                        .map(zNodePath -> {
+                            try {
+                                byte[] content = zooKeeper.getData(buildRootPath(rootPath,zNodePath),
+                                        false, new Stat());
+                                final TransactionRecoverAdapter adapter =
+                                        objectSerializer.deSerialize(content, TransactionRecoverAdapter.class);
+                                return ConvertHelper.buildVO(adapter);
+
+                            } catch (KeeperException | InterruptedException | TransactionException e) {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        }).collect(Collectors.toList());
+
+                voCommonPager.setDataList(recoverVOS);
+            }
+
+        } catch (Exception e) {
+            throw new TransactionIoException(e);
+        }
+
+        return voCommonPager;
+    }
+
+    /**
+     * 批量删除补偿事务信息
+     *
+     * @param ids             ids 事务id集合
+     * @param applicationName 应用名称
+     * @return true 成功
+     */
+    @Override
+    public Boolean batchRemove(List<String> ids, String applicationName) {
+        if (CollectionUtils.isEmpty(ids) || StringUtils.isBlank(applicationName)) {
+            return Boolean.FALSE;
+        }
+
+        final String rootPath = RepositoryPathUtils.buildZookeeperPath(applicationName);
+        ids.stream().map(id -> {
+            try {
+                final String path = buildRootPath(rootPath, id);
+                byte[] content = zooKeeper.getData(path,
+                        false, new Stat());
+                final TransactionRecover transactionRecover = objectSerializer.deSerialize(content, TransactionRecover.class);
+                zooKeeper.delete(path, transactionRecover.getVersion());
+                return 1;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return -1;
+            }
+
+        }).count();
+
+        return Boolean.TRUE;
+    }
+
+
+
+    /**
+     * 更改恢复次数
+     *
+     * @param id              事务id
+     * @param retry           恢复次数
+     * @param applicationName 应用名称
+     * @return true 成功
+     */
+    @Override
+    public Boolean updateRetry(String id, Integer retry, String applicationName) {
+        if (StringUtils.isBlank(id) || StringUtils.isBlank(applicationName) || Objects.isNull(retry)) {
+            return Boolean.FALSE;
+        }
+        final String rootPath = RepositoryPathUtils.buildZookeeperPath(applicationName);
+        final String path = buildRootPath(rootPath, id);
+        try {
+            byte[] content = zooKeeper.getData(path,
+                    false, new Stat());
+            final TransactionRecover transactionRecover = objectSerializer.deSerialize(content, TransactionRecover.class);
+            transactionRecover.setLastTime(new Date());
+            transactionRecover.setRetriedCount(retry);
+            zooKeeper.create(path,
+                    objectSerializer.serialize(transactionRecover),
+                    ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+            return Boolean.TRUE;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return Boolean.FALSE;
+    }
+
+    private String buildRootPath(String rootPath, String id) {
+        return String.join("/", rootPath, id);
     }
 }

@@ -32,9 +32,16 @@ public interface CommonConstant {
 
     String REDIS_KEYS = "transaction:group:*";
 
-    String PATH_SUFFIX="/tx";
 
-    String DB_SUFFIX="tx_";
+    String REDIS_KEY_SET = "transaction:group";
+
+    double REDIS_SCOPE = 10.0;
+
+    String PATH_SUFFIX = "/tx";
+
+    String DB_SUFFIX = "tx_";
+
+    String RECOVER_REDIS_KEY_PRE="transaction:recover:%s";
 
 
     String DB_MYSQL = "mysql";
@@ -42,4 +49,16 @@ public interface CommonConstant {
     String DB_SQLSERVER = "sqlserver";
 
     String DB_ORACLE = "oracle";
+
+    String COMPENSATE_KEY = "COMPENSATE";
+
+    String COMPENSATE_ID = "COMPENSATE_ID";
+
+    String TX_TRANSACTION_GROUP = "TX_TRANSACTION_GROUP";
+
+    String TX_MANAGER_PRE = "/tx/manager";
+
+    String LOAD_TX_MANAGER_SERVICE_URL = "/loadTxManagerService";
+
+    String FIND_SERVER = "/findTxManagerServer";
 }

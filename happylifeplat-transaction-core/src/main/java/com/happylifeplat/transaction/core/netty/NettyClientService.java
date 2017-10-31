@@ -17,7 +17,7 @@
  */
 package com.happylifeplat.transaction.core.netty;
 
-import com.happylifeplat.transaction.core.config.TxConfig;
+import com.happylifeplat.transaction.common.config.TxConfig;
 
 /**
  * @author xiaoyu

@@ -17,11 +17,14 @@
  */
 package com.happylifeplat.transaction.common.netty.bean;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
  * @author xiaoyu
  */
+@Data
 public class HeartBeat implements Serializable {
 
     private static final long serialVersionUID = 4183978848464761529L;
@@ -50,35 +53,6 @@ public class HeartBeat implements Serializable {
      */
     private TxTransactionGroup txTransactionGroup;
 
-    public int getAction() {
-        return action;
-    }
 
-    public void setAction(int action) {
-        this.action = action;
-    }
 
-    public TxTransactionGroup getTxTransactionGroup() {
-        return txTransactionGroup;
-    }
-
-    public void setTxTransactionGroup(TxTransactionGroup txTransactionGroup) {
-        this.txTransactionGroup = txTransactionGroup;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public int getResult() {
-        return result;
-    }
-
-    public void setResult(int result) {
-        this.result = result;
-    }
 }

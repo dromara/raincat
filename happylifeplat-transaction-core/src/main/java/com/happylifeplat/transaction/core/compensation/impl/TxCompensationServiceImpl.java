@@ -17,21 +17,21 @@
  */
 package com.happylifeplat.transaction.core.compensation.impl;
 
+import com.happylifeplat.transaction.common.constant.CommonConstant;
 import com.happylifeplat.transaction.common.enums.CompensationActionEnum;
 import com.happylifeplat.transaction.common.enums.TransactionStatusEnum;
 import com.happylifeplat.transaction.common.holder.LogUtil;
 import com.happylifeplat.transaction.common.netty.bean.TxTransactionGroup;
 import com.happylifeplat.transaction.common.netty.bean.TxTransactionItem;
-import com.happylifeplat.transaction.core.bean.TransactionInvocation;
-import com.happylifeplat.transaction.core.bean.TransactionRecover;
+import com.happylifeplat.transaction.common.bean.TransactionInvocation;
+import com.happylifeplat.transaction.common.bean.TransactionRecover;
 import com.happylifeplat.transaction.core.compensation.TxCompensationService;
 import com.happylifeplat.transaction.core.compensation.command.TxCompensationAction;
 import com.happylifeplat.transaction.core.concurrent.threadlocal.CompensationLocal;
 import com.happylifeplat.transaction.core.concurrent.threadpool.TransactionThreadPool;
 import com.happylifeplat.transaction.core.concurrent.threadpool.TxTransactionThreadFactory;
-import com.happylifeplat.transaction.core.constant.Constant;
 import com.happylifeplat.transaction.core.helper.SpringBeanUtils;
-import com.happylifeplat.transaction.core.config.TxConfig;
+import com.happylifeplat.transaction.common.config.TxConfig;
 import com.happylifeplat.transaction.core.service.ModelNameService;
 import com.happylifeplat.transaction.core.service.TxManagerMessageService;
 import com.happylifeplat.transaction.core.spi.TransactionRecoverRepository;
@@ -51,7 +51,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -102,7 +101,9 @@ public class TxCompensationServiceImpl implements TxCompensationService {
                         for (TransactionRecover transactionRecover : transactionRecovers) {
                             if (transactionRecover.getRetriedCount() > txConfig.getRetryMax()) {
                                 LogUtil.error(LOGGER, "此事务超过了最大重试次数，不再进行重试：{}",
-                                        () -> transactionRecover);
+                                        () -> transactionRecover.getTransactionInvocation().getTargetClazz().getName()
+                                                + ":" + transactionRecover.getTransactionInvocation().getMethod()
+                                                + "事务组id：" + transactionRecover.getGroupId());
                                 continue;
                             }
                             try {
@@ -128,7 +129,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
                                                         submit(buildCompensate(transactionRecover));
                                                     }
                                                 }
-                                            }else{
+                                            } else {
                                                 //不需要进行补偿，就删除
                                                 submit(buildDel(transactionRecover));
                                             }
@@ -288,7 +289,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
                 final Class[] argumentTypes = transactionInvocation.getArgumentTypes();
                 final Object bean = SpringBeanUtils.getInstance().getBean(clazz);
                 try {
-                    CompensationLocal.getInstance().setCompensationId(Constant.COMPENSATE_ID);
+                    CompensationLocal.getInstance().setCompensationId(CommonConstant.COMPENSATE_ID);
                     MethodUtils.invokeMethod(bean, method, argumentValues, argumentTypes);
                     //通知tm自身已经完成提交 //删除本地信息
                     final Boolean success = txManagerMessageService.completeCommitTxTransaction(transactionRecover.getGroupId(),

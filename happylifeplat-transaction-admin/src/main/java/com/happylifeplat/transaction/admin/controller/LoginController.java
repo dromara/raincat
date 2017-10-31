@@ -18,10 +18,13 @@
 
 package com.happylifeplat.transaction.admin.controller;
 
+import com.happylifeplat.transaction.admin.annotation.Permission;
+import com.happylifeplat.transaction.admin.dto.UserDTO;
 import com.happylifeplat.transaction.admin.service.LoginService;
 import com.happylifeplat.transaction.common.holder.httpclient.AjaxResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,15 +49,20 @@ public class LoginController {
 
 
     @PostMapping("/login")
-    public AjaxResponse login(@RequestParam("userName") String userName,
-                              @RequestParam("password") String password) {
-        final Boolean login = loginService.login(userName, password);
-        if (login) {
-            return AjaxResponse.success("登录成功！");
-        } else {
-            return  AjaxResponse.error("用户名或者密码错误！");
-        }
+    public AjaxResponse login(@RequestBody UserDTO userDTO) {
+        final Boolean login = loginService.login(userDTO.getUserName(), userDTO.getPassword());
+        return AjaxResponse.success(login);
+    }
+
+    @PostMapping("/logout")
+    public AjaxResponse logout() {
+        return AjaxResponse.success(loginService.logout());
+    }
 
 
+    @Permission
+    @PostMapping("/index")
+    public String index(){
+         return  "index";
     }
 }

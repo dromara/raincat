@@ -21,7 +21,7 @@ import com.google.common.base.StandardSystemProperty;
 import com.happylifeplat.transaction.common.entity.TxManagerServer;
 import com.happylifeplat.transaction.common.enums.SerializeProtocolEnum;
 import com.happylifeplat.transaction.common.holder.LogUtil;
-import com.happylifeplat.transaction.core.config.TxConfig;
+import com.happylifeplat.transaction.common.config.TxConfig;
 import com.happylifeplat.transaction.core.netty.NettyClientService;
 import com.happylifeplat.transaction.core.netty.handler.NettyClientHandlerInitializer;
 import com.happylifeplat.transaction.core.netty.handler.NettyClientMessageHandler;
@@ -45,7 +45,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;

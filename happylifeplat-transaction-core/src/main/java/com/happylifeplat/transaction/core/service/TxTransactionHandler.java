@@ -17,7 +17,7 @@
  */
 package com.happylifeplat.transaction.core.service;
 
-import com.happylifeplat.transaction.core.bean.TxTransactionInfo;
+import com.happylifeplat.transaction.common.bean.TxTransactionInfo;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 /**

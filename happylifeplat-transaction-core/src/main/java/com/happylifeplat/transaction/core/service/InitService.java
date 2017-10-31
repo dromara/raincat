@@ -17,7 +17,7 @@
  */
 package com.happylifeplat.transaction.core.service;
 
-import com.happylifeplat.transaction.core.config.TxConfig;
+import com.happylifeplat.transaction.common.config.TxConfig;
 
 /**
  * @author xiaoyu
@@ -28,7 +28,7 @@ public interface InitService {
     /**
      * 框架的初始化
      *
-     * @param txConfig 配置信息{@linkplain com.happylifeplat.transaction.core.config.TxConfig}
+     * @param txConfig 配置信息{@linkplain TxConfig}
      */
     void initialization(TxConfig txConfig);
 }

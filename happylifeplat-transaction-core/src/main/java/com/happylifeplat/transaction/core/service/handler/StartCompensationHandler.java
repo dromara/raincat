@@ -17,11 +17,11 @@
  */
 package com.happylifeplat.transaction.core.service.handler;
 
+import com.happylifeplat.transaction.common.constant.CommonConstant;
 import com.happylifeplat.transaction.common.holder.LogUtil;
-import com.happylifeplat.transaction.core.bean.TxTransactionInfo;
+import com.happylifeplat.transaction.common.bean.TxTransactionInfo;
 import com.happylifeplat.transaction.core.concurrent.threadlocal.CompensationLocal;
 import com.happylifeplat.transaction.core.concurrent.threadlocal.TxTransactionLocal;
-import com.happylifeplat.transaction.core.constant.Constant;
 import com.happylifeplat.transaction.core.service.TxTransactionHandler;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
@@ -61,7 +61,7 @@ public class StartCompensationHandler implements TxTransactionHandler {
      */
     @Override
     public Object handler(ProceedingJoinPoint point, TxTransactionInfo info) throws Throwable {
-        TxTransactionLocal.getInstance().setTxGroupId(Constant.COMPENSATE_ID);
+        TxTransactionLocal.getInstance().setTxGroupId(CommonConstant.COMPENSATE_ID);
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
         TransactionStatus transactionStatus = platformTransactionManager.getTransaction(def);

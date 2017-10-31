@@ -17,12 +17,15 @@
  */
 package com.happylifeplat.transaction.admin.vo;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 
 /**
  * @author xiaoyu
  */
+@Data
 public class TxTransactionItemVO implements Serializable {
 
 
@@ -77,11 +80,11 @@ public class TxTransactionItemVO implements Serializable {
     /**
      * 执行类名称
      */
-    private String targetClazzName;
+    private String targetClass;
     /**
      * 执行方法
      */
-    private String targetMethodName;
+    private String targetMethod;
 
     /**
      * 耗时 秒
@@ -89,124 +92,8 @@ public class TxTransactionItemVO implements Serializable {
     private Long consumeTime;
 
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
+    private Object message;
 
 
 
-
-    public String getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(String createDate) {
-        this.createDate = createDate;
-    }
-
-    public Integer getWaitMaxTime() {
-        return waitMaxTime;
-    }
-
-    public void setWaitMaxTime(Integer waitMaxTime) {
-        this.waitMaxTime = waitMaxTime;
-    }
-
-    public String getTargetClazzName() {
-        return targetClazzName;
-    }
-
-    public void setTargetClazzName(String targetClazzName) {
-        this.targetClazzName = targetClazzName;
-    }
-
-    public String getTargetMethodName() {
-        return targetMethodName;
-    }
-
-    public void setTargetMethodName(String targetMethodName) {
-        this.targetMethodName = targetMethodName;
-    }
-
-    public String getTaskKey() {
-        return taskKey;
-    }
-
-    public void setTaskKey(String taskKey) {
-        this.taskKey = taskKey;
-    }
-
-    public String getTransId() {
-        return transId;
-    }
-
-    public void setTransId(String transId) {
-        this.transId = transId;
-    }
-
-
-
-    public String getModelName() {
-        return modelName;
-    }
-
-    public void setModelName(String modelName) {
-        this.modelName = modelName;
-    }
-
-
-
-    public String getTmDomain() {
-        return tmDomain;
-    }
-
-    public void setTmDomain(String tmDomain) {
-        this.tmDomain = tmDomain;
-    }
-
-    public String getTxGroupId() {
-        return txGroupId;
-    }
-
-    public void setTxGroupId(String txGroupId) {
-        this.txGroupId = txGroupId;
-    }
-
-    public Long getConsumeTime() {
-        return consumeTime;
-    }
-
-    public void setConsumeTime(Long consumeTime) {
-        this.consumeTime = consumeTime;
-    }
-
-    @Override
-    public String toString() {
-        return "TxTransactionItemVO{" +
-                "taskKey='" + taskKey + '\'' +
-                ", transId='" + transId + '\'' +
-                ", status='" + status + '\'' +
-                ", role='" + role + '\'' +
-                ", modelName='" + modelName + '\'' +
-                ", tmDomain='" + tmDomain + '\'' +
-                ", txGroupId='" + txGroupId + '\'' +
-                ", createDate='" + createDate + '\'' +
-                ", waitMaxTime=" + waitMaxTime +
-                ", targetClazzName='" + targetClazzName + '\'' +
-                ", targetMethodName='" + targetMethodName + '\'' +
-                ", consumeTime=" + consumeTime +
-                '}';
-    }
 }

@@ -24,7 +24,7 @@ import com.happylifeplat.transaction.common.holder.DateUtils;
 import com.happylifeplat.transaction.common.holder.IdWorkerUtils;
 import com.happylifeplat.transaction.common.holder.LogUtil;
 import com.happylifeplat.transaction.common.netty.bean.TxTransactionItem;
-import com.happylifeplat.transaction.core.bean.TxTransactionInfo;
+import com.happylifeplat.transaction.common.bean.TxTransactionInfo;
 import com.happylifeplat.transaction.core.compensation.command.TxCompensationCommand;
 import com.happylifeplat.transaction.core.concurrent.task.BlockTask;
 import com.happylifeplat.transaction.core.concurrent.task.BlockTaskHelper;
@@ -111,7 +111,6 @@ public class ActorTxTransactionHandler implements TxTransactionHandler {
                             String compensateId = txCompensationCommand.saveTxCompensation(info.getInvocation(),
                                     info.getTxGroupId(), waitKey);
 
-
                             /*
                              *
                              *等待txManager通知（提交或者回滚） 此线程唤醒（txManager通知客户端，然后唤醒）
@@ -143,8 +142,13 @@ public class ActorTxTransactionHandler implements TxTransactionHandler {
                                 }
 
                             }, info.getWaitMaxTime());
+
+                            waitTask.await();
+
+                            LogUtil.info(LOGGER, "已经成功接收txManager指令，并执行！{}",
+                                    () -> info.getTxGroupId() + ":" + waitKey);
                             try {
-                                waitTask.await();
+
                                 //如果已经被唤醒，就不需要去执行调度线程了 ，关闭上面的调度线程池中的任务
                                 if (!scheduledFuture.isDone()) {
                                     scheduledFuture.cancel(false);
@@ -156,15 +160,17 @@ public class ActorTxTransactionHandler implements TxTransactionHandler {
                                     platformTransactionManager.commit(transactionStatus);
 
                                     //通知tm 自身事务提交
-                                    asyncComplete(info.getTxGroupId(), waitKey,TransactionStatusEnum.COMMIT.getCode());
+                                    asyncComplete(info.getTxGroupId(), waitKey,
+                                            TransactionStatusEnum.COMMIT.getCode(), res);
 
                                 } else {
                                     //回滚当前事务
                                     platformTransactionManager.rollback(transactionStatus);
 
 
-                                    //通知tm 自身事务需要回滚
-                                    asyncComplete(info.getTxGroupId(), waitKey,TransactionStatusEnum.ROLLBACK.getCode());
+                                    //通知tm 自身事务回滚
+                                    asyncComplete(info.getTxGroupId(), waitKey,
+                                            TransactionStatusEnum.ROLLBACK.getCode(), res);
 
                                 }
                             } catch (Throwable throwable) {
@@ -185,8 +191,8 @@ public class ActorTxTransactionHandler implements TxTransactionHandler {
                         //如果有异常 当前项目事务进行回滚
                         platformTransactionManager.rollback(transactionStatus);
                         //通知tm 自身事务失败
-                        asyncComplete(info.getTxGroupId(), waitKey,TransactionStatusEnum.FAILURE.getCode());
-
+                        asyncComplete(info.getTxGroupId(),
+                                waitKey, TransactionStatusEnum.FAILURE.getCode(), throwable.getMessage());
 
                         task.setAsyncCall(objects -> {
                             throw throwable;
@@ -210,12 +216,12 @@ public class ActorTxTransactionHandler implements TxTransactionHandler {
     }
 
 
-    private void asyncComplete(String txGroupId, String waitKey, Integer status) {
+    private void asyncComplete(String txGroupId, String waitKey, Integer status, Object res) {
         //通知tm 自身事务执行状态
         CompletableFuture.runAsync(() ->
                 txManagerMessageService
                         .asyncCompleteCommit(txGroupId, waitKey,
-                                status));
+                                status, res));
 
     }
 
@@ -235,9 +241,9 @@ public class ActorTxTransactionHandler implements TxTransactionHandler {
         //设置创建时间
         item.setCreateDate(DateUtils.getCurrentDateTime());
         //设置执行类名称
-        item.setTargetClazzName(info.getInvocation().getTargetClazz().getName());
+        item.setTargetClass(info.getInvocation().getTargetClazz().getName());
         //设置执行类方法
-        item.setTargetMethodName(info.getInvocation().getMethod());
+        item.setTargetMethod(info.getInvocation().getMethod());
 
         return item;
 

@@ -19,13 +19,13 @@ package com.happylifeplat.transaction.core.service.impl;
 
 import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
+import com.happylifeplat.transaction.common.constant.CommonConstant;
 import com.happylifeplat.transaction.common.entity.TxManagerServer;
 import com.happylifeplat.transaction.common.entity.TxManagerServiceDTO;
 import com.happylifeplat.transaction.common.holder.LogUtil;
 import com.happylifeplat.transaction.common.holder.httpclient.OkHttpTools;
 import com.happylifeplat.transaction.core.concurrent.threadpool.TxTransactionThreadFactory;
-import com.happylifeplat.transaction.core.config.TxConfig;
-import com.happylifeplat.transaction.core.constant.Constant;
+import com.happylifeplat.transaction.common.config.TxConfig;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -92,7 +91,7 @@ public class TxManagerLocator {
             List<TxManagerServiceDTO> randomServices = Lists.newLinkedList(txManagerService);
             Collections.shuffle(randomServices);
             for (TxManagerServiceDTO serviceDTO : randomServices) {
-                String url = String.join("", serviceDTO.getHomepageUrl(), Constant.TX_MANAGER_PRE, Constant.FIND_SERVER);
+                String url = String.join("", serviceDTO.getHomepageUrl(), CommonConstant.TX_MANAGER_PRE, CommonConstant.FIND_SERVER);
                 LOGGER.debug("Loading service from {}", url);
                 try {
                     return OkHttpTools.getInstance().get(url, null, TxManagerServer.class);
@@ -150,7 +149,7 @@ public class TxManagerLocator {
     }
 
     private String assembleUrl() {
-        return String.join("", txConfig.getTxManagerUrl(), Constant.TX_MANAGER_PRE, Constant.LOAD_TX_MANAGER_SERVICE_URL);
+        return String.join("", txConfig.getTxManagerUrl(), CommonConstant.TX_MANAGER_PRE, CommonConstant.LOAD_TX_MANAGER_SERVICE_URL);
     }
 
 }
