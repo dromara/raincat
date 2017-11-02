@@ -19,6 +19,7 @@
 package com.happylifeplat.transaction.admin.query;
 
 import com.happylifeplat.transaction.admin.page.PageParameter;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -30,27 +31,31 @@ import java.io.Serializable;
  * @date 2017/10/19 16:46
  * @since JDK 1.8
  */
+@Data
 public class RecoverTransactionQuery implements Serializable {
 
     private static final long serialVersionUID = 3297929795348894462L;
+
+    /**
+     * 应用名称
+     */
     private String applicationName;
 
+    /**
+     * 事务组id
+     */
+    private String txGroupId;
 
+    /**
+     * 重试次数
+     */
+    private Integer retry;
+
+
+    /**
+     * 分页信息
+     */
     private PageParameter pageParameter;
 
-    public String getApplicationName() {
-        return applicationName;
-    }
 
-    public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
-    }
-
-    public PageParameter getPageParameter() {
-        return pageParameter;
-    }
-
-    public void setPageParameter(PageParameter pageParameter) {
-        this.pageParameter = pageParameter;
-    }
 }

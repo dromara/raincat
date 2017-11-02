@@ -71,12 +71,6 @@ public class TransactionRecoverVO implements Serializable {
 
 
     /**
-     * {@linkplain com.happylifeplat.transaction.common.enums.TransactionStatusEnum}
-     */
-    private String status;
-
-
-    /**
      * 执行类名称
      */
     private String targetClass;

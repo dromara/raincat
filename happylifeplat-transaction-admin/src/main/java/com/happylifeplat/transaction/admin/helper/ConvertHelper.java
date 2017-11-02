@@ -39,19 +39,15 @@ import java.text.SimpleDateFormat;
  */
 public class ConvertHelper {
 
-    private static final SimpleDateFormat DATE_FORMAT =
-            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     public static TransactionRecoverVO buildVO(TransactionRecoverAdapter adapter) {
         TransactionRecoverVO vo = new TransactionRecoverVO();
         vo.setId(adapter.getTransId());
-        vo.setCreateTime(DATE_FORMAT.format(adapter.getCreateTime()));
+        vo.setCreateTime(DateUtils.parseDate(adapter.getCreateTime()));
         vo.setGroupId(adapter.getGroupId());
         vo.setRetriedCount(adapter.getRetriedCount());
-        vo.setLastTime(DATE_FORMAT.format(adapter.getLastTime()));
+        vo.setLastTime(DateUtils.parseDate(adapter.getLastTime()));
         vo.setTaskId(adapter.getTaskId());
         vo.setVersion(adapter.getVersion());
-        vo.setStatus(TransactionStatusEnum.acquireDescByCode(adapter.getStatus()));
         vo.setTargetClass(adapter.getTargetClass());
         vo.setTargetMethod(adapter.getTargetMethod());
         return vo;

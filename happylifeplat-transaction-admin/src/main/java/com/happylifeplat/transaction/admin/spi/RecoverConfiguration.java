@@ -69,7 +69,7 @@ public class RecoverConfiguration {
      * spring.profiles.active = {}
      */
     @Configuration
-    @Profile("jdbc")
+    @Profile("db")
     static class JdbcRecoverConfiguration {
 
         private final Environment env;

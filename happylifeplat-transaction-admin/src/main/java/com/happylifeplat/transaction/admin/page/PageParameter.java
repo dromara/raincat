@@ -18,6 +18,8 @@
 
 package com.happylifeplat.transaction.admin.page;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -28,6 +30,7 @@ import java.io.Serializable;
  * @date 2017/10/18 15:51
  * @since JDK 1.8
  */
+@Data
 public class PageParameter implements Serializable {
     private static final long serialVersionUID = -8324693985921606090L;
     public static final int DEFAULT_PAGE_SIZE = 10;
@@ -43,8 +46,8 @@ public class PageParameter implements Serializable {
     }
     /**
      *
-     * @param currentPage
-     * @param pageSize
+     * @param currentPage 当前页
+     * @param pageSize 每页大小
      */
     public PageParameter(int currentPage, int pageSize) {
         this.currentPage = currentPage;
@@ -53,37 +56,5 @@ public class PageParameter implements Serializable {
     public int getCurrentPage() {
         return currentPage;
     }
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
-    }
-    public int getPageSize() {
-        return pageSize;
-    }
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-    public int getPrePage() {
-        return prePage;
-    }
-    public void setPrePage(int prePage) {
-        this.prePage = prePage;
-    }
-    public int getNextPage() {
-        return nextPage;
-    }
-    public void setNextPage(int nextPage) {
-        this.nextPage = nextPage;
-    }
-    public int getTotalPage() {
-        return totalPage;
-    }
-    public void setTotalPage(int totalPage) {
-        this.totalPage = totalPage;
-    }
-    public int getTotalCount() {
-        return totalCount;
-    }
-    public void setTotalCount(int totalCount) {
-        this.totalCount = totalCount;
-    }
+
 }

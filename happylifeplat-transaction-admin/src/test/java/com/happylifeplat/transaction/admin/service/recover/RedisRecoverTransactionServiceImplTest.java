@@ -53,9 +53,13 @@ public class RedisRecoverTransactionServiceImplTest {
 
         query.setApplicationName("alipay-service");
 
-        PageParameter pageParameter = new PageParameter(1,10);
+        PageParameter pageParameter = new PageParameter(1,1);
 
         query.setPageParameter(pageParameter);
+
+        query.setRetry(2);
+
+        query.setTxGroupId("2075304338");
 
         final CommonPager<TransactionRecoverVO> voCommonPager = recoverTransactionService.listByPage(query);
 

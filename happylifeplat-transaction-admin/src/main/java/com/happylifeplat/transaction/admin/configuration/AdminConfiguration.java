@@ -67,7 +67,12 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
- * @author xiaoyu
+ * <p>Description: .</p>
+ *
+ * @author xiaoyu(Myth)
+ * @version 1.0
+ * @date 2017/10/23 21:08
+ * @since JDK 1.8
  */
 @Configuration
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
@@ -77,14 +82,14 @@ public class AdminConfiguration {
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurerAdapter() {
-            @Override
+         /*   @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/login/*").allowedOrigins("*");
-                registry.addMapping("/recover/*").allowedOrigins("*");
-                registry.addMapping("/tx/*").allowedOrigins("*");
+                registry.addMapping("/login*//*").allowedOrigins("*");
+                registry.addMapping("/recover*//*").allowedOrigins("*");
+                registry.addMapping("/tx*//*").allowedOrigins("*");
 
             }
-
+*/
             @Override
             public void addInterceptors(InterceptorRegistry registry) {
                 registry.addInterceptor(new AuthInterceptor()).addPathPatterns("/**");

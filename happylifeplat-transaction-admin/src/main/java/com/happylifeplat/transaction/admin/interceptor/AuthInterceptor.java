@@ -22,7 +22,6 @@ import com.happylifeplat.transaction.admin.annotation.Permission;
 import com.happylifeplat.transaction.admin.service.login.LoginServiceImpl;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -18,6 +18,8 @@
 
 package com.happylifeplat.transaction.admin.service.recover;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.happylifeplat.transaction.admin.helper.ConvertHelper;
 import com.happylifeplat.transaction.admin.helper.PageHelper;
 import com.happylifeplat.transaction.admin.page.CommonPager;
@@ -28,6 +30,7 @@ import com.happylifeplat.transaction.common.bean.TransactionRecover;
 import com.happylifeplat.transaction.common.bean.adapter.TransactionRecoverAdapter;
 import com.happylifeplat.transaction.common.exception.TransactionException;
 import com.happylifeplat.transaction.common.exception.TransactionIoException;
+import com.happylifeplat.transaction.common.holder.DateUtils;
 import com.happylifeplat.transaction.common.holder.RepositoryPathUtils;
 import com.happylifeplat.transaction.common.serializer.ObjectSerializer;
 import org.apache.commons.collections.CollectionUtils;
@@ -85,35 +88,49 @@ public class ZookeeperRecoverTransactionServiceImpl implements RecoverTransactio
         final String rootPath = RepositoryPathUtils.buildZookeeperPath(query.getApplicationName());
 
         List<String> zNodePaths;
+
+        List<TransactionRecoverVO> voList;
+
+        int totalCount;
+
         try {
-            zNodePaths = zooKeeper.getChildren(rootPath, false);
-            if (CollectionUtils.isNotEmpty(zNodePaths)) {
-                voCommonPager.setPage(PageHelper.buildPage(query.getPageParameter(), zNodePaths.size()));
-                final List<TransactionRecoverVO> recoverVOS = zNodePaths.stream().skip(start).limit(pageSize)
-                        .filter(StringUtils::isNoneBlank)
-                        .map(zNodePath -> {
-                            try {
-                                byte[] content = zooKeeper.getData(buildRootPath(rootPath,zNodePath),
-                                        false, new Stat());
-                                final TransactionRecoverAdapter adapter =
-                                        objectSerializer.deSerialize(content, TransactionRecoverAdapter.class);
-                                return ConvertHelper.buildVO(adapter);
+            //如果只查 重试条件的
+            if (StringUtils.isBlank(query.getTxGroupId()) && Objects.nonNull(query.getRetry())) {
+                zNodePaths = zooKeeper.getChildren(rootPath, false);
+                final List<TransactionRecoverVO> all = findAll(zNodePaths, rootPath);
+                final List<TransactionRecoverVO> collect =
+                        all.stream()
+                                .filter(vo -> vo.getRetriedCount() < query.getRetry())
+                                .collect(Collectors.toList());
+                totalCount = collect.size();
+                voList = collect.stream().skip(start).limit(pageSize).collect(Collectors.toList());
 
-                            } catch (KeeperException | InterruptedException | TransactionException e) {
-                                e.printStackTrace();
-                            }
-                            return null;
-                        }).collect(Collectors.toList());
+            } else if (StringUtils.isNoneBlank(query.getTxGroupId()) && Objects.isNull(query.getRetry())) {
+                zNodePaths = Lists.newArrayList(query.getTxGroupId());
+                totalCount = zNodePaths.size();
+                voList = findAll(zNodePaths, rootPath);
 
-                voCommonPager.setDataList(recoverVOS);
+            } else if (StringUtils.isNoneBlank(query.getTxGroupId()) && Objects.nonNull(query.getRetry())) {
+                zNodePaths = Lists.newArrayList(query.getTxGroupId());
+                totalCount = zNodePaths.size();
+                voList = findAll(zNodePaths, rootPath)
+                        .stream()
+                        .filter(vo -> vo.getRetriedCount() < query.getRetry())
+                        .collect(Collectors.toList());
+            } else {
+                zNodePaths = zooKeeper.getChildren(rootPath, false);
+                totalCount = zNodePaths.size();
+                voList = findByPage(zNodePaths, rootPath, start, pageSize);
             }
-
+            voCommonPager.setPage(PageHelper.buildPage(query.getPageParameter(), totalCount));
+            voCommonPager.setDataList(voList);
         } catch (Exception e) {
-            throw new TransactionIoException(e);
+            e.printStackTrace();
         }
-
         return voCommonPager;
     }
+
+
 
     /**
      * 批量删除补偿事务信息
@@ -134,8 +151,8 @@ public class ZookeeperRecoverTransactionServiceImpl implements RecoverTransactio
                 final String path = buildRootPath(rootPath, id);
                 byte[] content = zooKeeper.getData(path,
                         false, new Stat());
-                final TransactionRecover transactionRecover = objectSerializer.deSerialize(content, TransactionRecover.class);
-                zooKeeper.delete(path, transactionRecover.getVersion());
+                final TransactionRecoverAdapter adapter = objectSerializer.deSerialize(content, TransactionRecoverAdapter.class);
+                zooKeeper.delete(path, adapter.getVersion());
                 return 1;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -146,7 +163,6 @@ public class ZookeeperRecoverTransactionServiceImpl implements RecoverTransactio
 
         return Boolean.TRUE;
     }
-
 
 
     /**
@@ -167,11 +183,11 @@ public class ZookeeperRecoverTransactionServiceImpl implements RecoverTransactio
         try {
             byte[] content = zooKeeper.getData(path,
                     false, new Stat());
-            final TransactionRecover transactionRecover = objectSerializer.deSerialize(content, TransactionRecover.class);
-            transactionRecover.setLastTime(new Date());
-            transactionRecover.setRetriedCount(retry);
+            final TransactionRecoverAdapter adapter = objectSerializer.deSerialize(content, TransactionRecoverAdapter.class);
+            adapter.setLastTime(DateUtils.getDateYYYY());
+            adapter.setRetriedCount(retry);
             zooKeeper.create(path,
-                    objectSerializer.serialize(transactionRecover),
+                    objectSerializer.serialize(adapter),
                     ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             return Boolean.TRUE;
         } catch (Exception e) {
@@ -183,5 +199,32 @@ public class ZookeeperRecoverTransactionServiceImpl implements RecoverTransactio
 
     private String buildRootPath(String rootPath, String id) {
         return String.join("/", rootPath, id);
+    }
+
+    private List<TransactionRecoverVO> findAll(List<String> zNodePaths, String rootPath) {
+        return zNodePaths.stream()
+                .filter(StringUtils::isNoneBlank)
+                .map(zNodePath -> buildByNodePath(rootPath, zNodePath)).collect(Collectors.toList());
+    }
+
+    private List<TransactionRecoverVO> findByPage(List<String> zNodePaths, String rootPath, int start, int pageSize) {
+        return zNodePaths.stream().skip(start).limit(pageSize)
+                .filter(StringUtils::isNoneBlank)
+                .map(zNodePath -> buildByNodePath(rootPath, zNodePath)).collect(Collectors.toList());
+    }
+
+
+    private TransactionRecoverVO buildByNodePath(String rootPath, String zNodePath) {
+        try {
+            byte[] content = zooKeeper.getData(buildRootPath(rootPath, zNodePath),
+                    false, new Stat());
+            final TransactionRecoverAdapter adapter =
+                    objectSerializer.deSerialize(content, TransactionRecoverAdapter.class);
+            return ConvertHelper.buildVO(adapter);
+
+        } catch (KeeperException | InterruptedException | TransactionException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -20,6 +20,7 @@ package com.happylifeplat.transaction.admin.service.recover;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
+import com.google.common.collect.Sets;
 import com.happylifeplat.transaction.admin.helper.ConvertHelper;
 import com.happylifeplat.transaction.admin.helper.PageHelper;
 import com.happylifeplat.transaction.admin.page.CommonPager;
@@ -31,6 +32,7 @@ import com.happylifeplat.transaction.common.bean.TransactionRecover;
 import com.happylifeplat.transaction.common.bean.adapter.TransactionRecoverAdapter;
 import com.happylifeplat.transaction.common.constant.CommonConstant;
 import com.happylifeplat.transaction.common.exception.TransactionException;
+import com.happylifeplat.transaction.common.holder.DateUtils;
 import com.happylifeplat.transaction.common.holder.RedisKeyUtils;
 import com.happylifeplat.transaction.common.holder.RepositoryPathUtils;
 import com.happylifeplat.transaction.common.jedis.JedisClient;
@@ -87,39 +89,80 @@ public class RedisRecoverTransactionServiceImpl implements RecoverTransactionSer
 
         final String redisKey = RepositoryPathUtils.buildRedisKey(query.getApplicationName());
 
-        //transaction:recover:alipay-service:
-        //获取所有的key
-        final Set<byte[]> keys = jedisClient.keys((redisKey + "*").getBytes());
-
-
         final int currentPage = query.getPageParameter().getCurrentPage();
         final int pageSize = query.getPageParameter().getPageSize();
 
         int start = (currentPage - 1) * pageSize;
 
+
+        //transaction:recover:alipay-service:
+        //获取所有的key
+        Set<byte[]> keys;
+
+        List<TransactionRecoverVO> voList;
+
+        int totalCount;
+
+        //如果只查 重试条件的
+        if (StringUtils.isBlank(query.getTxGroupId()) && Objects.nonNull(query.getRetry())) {
+            keys = jedisClient.keys((redisKey + "*").getBytes());
+            final List<TransactionRecoverVO> all = findAll(keys);
+            final List<TransactionRecoverVO> collect =
+                    all.stream()
+                            .filter(vo -> vo.getRetriedCount() < query.getRetry())
+                            .collect(Collectors.toList());
+            totalCount = collect.size();
+            voList = collect.stream().skip(start).limit(pageSize).collect(Collectors.toList());
+        } else if (StringUtils.isNoneBlank(query.getTxGroupId()) && Objects.isNull(query.getRetry())) {
+            keys = Sets.newHashSet(String.join(":", redisKey, query.getTxGroupId()).getBytes());
+            totalCount = keys.size();
+            voList = findAll(keys);
+        } else if (StringUtils.isNoneBlank(query.getTxGroupId()) && Objects.nonNull(query.getRetry())) {
+            keys = Sets.newHashSet(String.join(":", redisKey, query.getTxGroupId()).getBytes());
+            totalCount = keys.size();
+            voList = findAll(keys)
+                    .stream()
+                    .filter(vo -> vo.getRetriedCount() < query.getRetry())
+                    .collect(Collectors.toList());
+        } else {
+            keys = jedisClient.keys((redisKey + "*").getBytes());
+            if (keys.size() <= 0 || keys.size() < start) {
+                return commonPager;
+            }
+            totalCount = keys.size();
+            voList = findByPage(keys, start, pageSize);
+        }
+
         if (keys.size() <= 0 || keys.size() < start) {
             return commonPager;
         }
-        final int totalCount = keys.size();
-
         commonPager.setPage(PageHelper.buildPage(query.getPageParameter(), totalCount));
-
-        final List<TransactionRecoverVO> recoverVOS =
-                keys.parallelStream()
-                        .skip(start)
-                        .limit(pageSize)
-                        .map(key -> {
-                            final byte[] bytes = jedisClient.get(key);
-                            try {
-                                final TransactionRecoverAdapter adapter = objectSerializer.deSerialize(bytes, TransactionRecoverAdapter.class);
-                                return ConvertHelper.buildVO(adapter);
-                            } catch (TransactionException e) {
-                                e.printStackTrace();
-                            }
-                            return null;
-                        }).filter(Objects::nonNull).collect(Collectors.toList());
-        commonPager.setDataList(recoverVOS);
+        commonPager.setDataList(voList);
         return commonPager;
+    }
+
+
+    private List<TransactionRecoverVO> findAll(Set<byte[]> keys) {
+        return keys.parallelStream()
+                .map(this::buildVOByKey).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+
+    private List<TransactionRecoverVO> findByPage(Set<byte[]> keys, int start, int pageSize) {
+        return keys.parallelStream().skip(start).limit(pageSize)
+                .map(this::buildVOByKey).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+
+    private TransactionRecoverVO buildVOByKey(byte[] key) {
+        final byte[] bytes = jedisClient.get(key);
+        try {
+            final TransactionRecoverAdapter adapter = objectSerializer.deSerialize(bytes, TransactionRecoverAdapter.class);
+            return ConvertHelper.buildVO(adapter);
+        } catch (TransactionException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -159,11 +202,11 @@ public class RedisRecoverTransactionServiceImpl implements RecoverTransactionSer
         final String key = cacheKey(keyPrefix, id);
         final byte[] bytes = jedisClient.get(key.getBytes());
         try {
-            final TransactionRecover transactionRecover =
-                    objectSerializer.deSerialize(bytes, TransactionRecover.class);
-            transactionRecover.setRetriedCount(retry);
-            transactionRecover.setLastTime(new Date());
-            jedisClient.set(key, objectSerializer.serialize(transactionRecover));
+            final TransactionRecoverAdapter adapter =
+                    objectSerializer.deSerialize(bytes, TransactionRecoverAdapter.class);
+            adapter.setRetriedCount(retry);
+            adapter.setLastTime(DateUtils.getDateYYYY());
+            jedisClient.set(key, objectSerializer.serialize(adapter));
             return Boolean.TRUE;
         } catch (Exception e) {
             e.printStackTrace();

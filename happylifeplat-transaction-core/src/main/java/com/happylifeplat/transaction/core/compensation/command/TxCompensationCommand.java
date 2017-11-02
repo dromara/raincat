@@ -58,7 +58,7 @@ public class TxCompensationCommand implements Command {
         TransactionRecover recover = new TransactionRecover();
         recover.setRetriedCount(1);
         recover.setStatus(TransactionStatusEnum.BEGIN.getCode());
-        recover.setId(IdWorkerUtils.getInstance().createGroupId());
+        recover.setId(groupId);
         recover.setTransactionInvocation(invocation);
         recover.setGroupId(groupId);
         recover.setTaskId(taskId);

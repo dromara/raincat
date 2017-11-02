@@ -18,12 +18,15 @@
 
 package com.happylifeplat.transaction.admin.page;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author xiaoyu
  */
+@Data
 public class CommonPager<T> implements Serializable {
 
 
@@ -39,29 +42,4 @@ public class CommonPager<T> implements Serializable {
      */
     private List<T> dataList;
 
-    /**
-     * Gets page.
-     *
-     * @return the page
-     */
-    public PageParameter getPage() {
-        return page;
-    }
-
-    /**
-     * Sets page.
-     *
-     * @param page the page
-     */
-    public void setPage(PageParameter page) {
-        this.page = page;
-    }
-
-    public List<T> getDataList() {
-        return dataList;
-    }
-
-    public void setDataList(List<T> dataList) {
-        this.dataList = dataList;
-    }
 }

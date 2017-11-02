@@ -34,9 +34,22 @@ import org.apache.commons.lang3.StringUtils;
  * @since JDK 1.8
  **/
 public class CommonErrorCode {
-    public static final int ERROR = -2;//操作失败全局定义定义
-    public static final int SUCCESSFUL = 200;//成功
-    public static final int PARAMS_ERROR = 10000002;//传入的参数错误
+
+
+    /**
+     * 操作失败全局定义定义
+     */
+    public static final int ERROR = -2;
+
+    /**
+     * 成功
+     */
+    public static final int SUCCESSFUL = 200;
+
+    /**
+     * 传入的参数错误
+     */
+    public static final int PARAMS_ERROR = 10000002;
 
 
     /**

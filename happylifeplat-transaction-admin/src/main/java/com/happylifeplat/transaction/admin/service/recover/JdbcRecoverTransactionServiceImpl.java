@@ -26,6 +26,7 @@ import com.happylifeplat.transaction.admin.service.RecoverTransactionService;
 import com.happylifeplat.transaction.admin.vo.TransactionRecoverVO;
 import com.happylifeplat.transaction.common.bean.TransactionInvocation;
 import com.happylifeplat.transaction.common.exception.TransactionException;
+import com.happylifeplat.transaction.common.holder.DateUtils;
 import com.happylifeplat.transaction.common.holder.DbTypeUtils;
 import com.happylifeplat.transaction.common.holder.RepositoryPathUtils;
 import com.happylifeplat.transaction.common.serializer.ObjectSerializer;
@@ -54,9 +55,6 @@ public class JdbcRecoverTransactionServiceImpl implements RecoverTransactionServ
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private ObjectSerializer objectSerializer;
-
     private String dbType;
 
 
@@ -71,7 +69,23 @@ public class JdbcRecoverTransactionServiceImpl implements RecoverTransactionServ
         final String tableName = RepositoryPathUtils.buildDbTableName(query.getApplicationName());
         final PageParameter pageParameter = query.getPageParameter();
 
-        final String sql = buildPageSql("select * FROM  " + tableName, pageParameter);
+        StringBuilder sqlBuilder = new StringBuilder();
+
+        sqlBuilder.append("select id,target_class,target_method," +
+                " retried_count,create_time,last_time,version,group_id,task_id from ")
+                .append(tableName).append(" where 1= 1 ");
+
+
+        if (StringUtils.isNoneBlank(query.getTxGroupId())) {
+            sqlBuilder.append(" and group_id = ").append(query.getTxGroupId());
+        }
+
+        if (Objects.nonNull(query.getRetry())) {
+
+            sqlBuilder.append(" and retried_count < ").append(query.getRetry());
+        }
+
+        final String sql = buildPageSql(sqlBuilder.toString(), pageParameter);
 
         CommonPager<TransactionRecoverVO> pager = new CommonPager<>();
 
@@ -126,11 +140,16 @@ public class JdbcRecoverTransactionServiceImpl implements RecoverTransactionServ
             return false;
         }
         final String tableName = RepositoryPathUtils.buildDbTableName(applicationName);
-        String sql = " update " + tableName +
-                     " set  retried_count =" + retry + " ,last_time=" + new Date() + " " +
-                     " where id= " + id;
 
-        jdbcTemplate.execute(sql);
+        StringBuilder sqlBuilder = new StringBuilder();
+
+        sqlBuilder.append("update ").append(tableName)
+                .append("  set retried_count = ")
+                .append(retry).append(",last_time= '")
+                .append(DateUtils.getCurrentDateTime()).append("'")
+                .append(" where id =").append(id);
+
+        jdbcTemplate.execute(sqlBuilder.toString());
         return Boolean.TRUE;
     }
 

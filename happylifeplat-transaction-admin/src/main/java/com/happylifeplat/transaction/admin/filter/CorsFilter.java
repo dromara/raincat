@@ -14,7 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
+ **
  */
+
 
 package com.happylifeplat.transaction.admin.filter;
 
@@ -36,7 +38,9 @@ import java.io.IOException;
  * @version 1.0
  * @date 2017/10/23 17:57
  * @since JDK 1.8
- */
+ *//*
+
+*/
 @Component
 public class CorsFilter implements Filter {
 
@@ -63,4 +67,6 @@ public class CorsFilter implements Filter {
 
     }
 
+
 }
+

@@ -48,12 +48,11 @@ public class DateUtils {
     /**
      * 要用到的DATE Format的定义
      */
-    public static final String DATE_FORMAT_DATEONLY = "yyyy-MM-dd"; // 年/月/日
-    public static final String DATE_FORMAT_DATETIME = "yyyy-MM-dd HH:mm:ss"; // 年/月/日
-    public static final String DATE_FORMAT_DATETIME14 = "yyyyMMddHHmmss"; // 年/月/日
+    public static final String DATE_FORMAT_DATEONLY = "yyyy-MM-dd";
+    public static final String DATE_FORMAT_DATETIME = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT_DATETIME14 = "yyyyMMddHHmmss";
     public static final String SHORTDATEFORMAT = "yyyyMMdd";
     public static final String HMS_FORMAT = "HH:mm:ss";
-
 
 
     /**
@@ -68,6 +67,22 @@ public class DateUtils {
     public static LocalDateTime parseLocalDateTime(String str) throws ParseException {
         return LocalDateTime.parse(str, DateTimeFormatter.ofPattern(DATE_FORMAT_DATETIME));
     }
+
+
+    public static Date getDateYYYY() throws  ParseException{
+        LocalDateTime localDateTime = parseLocalDateTime(getCurrentDateTime());
+        ZoneId zone = ZoneId.systemDefault();
+        Instant instant = localDateTime.atZone(zone).toInstant();
+        return Date.from(instant);
+    }
+
+    public static String parseDate(Date date) {
+        Instant instant = date.toInstant();
+        ZoneId zone = ZoneId.systemDefault();
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
+        return formaterLocalDateTime(localDateTime);
+    }
+
 
     /**
      * 获得当前的日期毫秒
@@ -459,6 +474,17 @@ public class DateUtils {
         return getSeasonDate(date)[2].with(TemporalAdjusters.lastDayOfMonth());
     }
 
+    private static final int FIRST_QUARTER = 1;
+
+
+    public static final int SECOND_QUARTER = 2;
+
+    public static final int THREE_QUARTER = 3;
+
+
+    public static final int FOUR_QUARTER = 4;
+
+
     /**
      * 取得季度月的第一天
      *
@@ -469,19 +495,23 @@ public class DateUtils {
         LocalDate[] season = new LocalDate[3];
         int nSeason = getSeason(date);
         int year = date.getYear();
-        if (nSeason == 1) {// 第一季度
+        // 第一季度
+        if (nSeason == FIRST_QUARTER) {
             season[0] = LocalDate.of(year, Month.JANUARY, 1);
             season[1] = LocalDate.of(year, Month.FEBRUARY, 1);
             season[2] = LocalDate.of(year, Month.MARCH, 1);
-        } else if (nSeason == 2) {// 第二季度
+            // 第二季度
+        } else if (nSeason == SECOND_QUARTER) {
             season[0] = LocalDate.of(year, Month.APRIL, 1);
             season[1] = LocalDate.of(year, Month.MAY, 1);
             season[2] = LocalDate.of(year, Month.JUNE, 1);
-        } else if (nSeason == 3) {// 第三季度
+            // 第三季度
+        } else if (nSeason ==THREE_QUARTER) {
             season[0] = LocalDate.of(year, Month.JULY, 1);
             season[1] = LocalDate.of(year, Month.AUGUST, 1);
             season[2] = LocalDate.of(year, Month.SEPTEMBER, 1);
-        } else if (nSeason == 4) {// 第四季度
+            // 第四季度
+        } else if (nSeason == FOUR_QUARTER) {
             season[0] = LocalDate.of(year, Month.OCTOBER, 1);
             season[1] = LocalDate.of(year, Month.NOVEMBER, 1);
             season[2] = LocalDate.of(year, Month.DECEMBER, 1);
@@ -587,7 +617,10 @@ public class DateUtils {
         return LocalDate.now().minusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
     }
 
-    // 获得当天0点时间
+    /**
+     * 获得当天0点时间
+     * @return Date
+     */
     public static Date getTimesmorning() {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -597,22 +630,34 @@ public class DateUtils {
         return cal.getTime();
     }
 
-    // 获得当天近一周
+    /**
+     * 获得当天近一周
+     * @return LocalDateTime
+     */
     public static LocalDateTime getAWeekFromNow() {
         LocalDateTime date = LocalDateTime.now();
-        return date.plusWeeks(-1);//7天前
+        //7天前
+        return date.plusWeeks(-1);
     }
 
-    //获得当天近一月
+    /**
+     * 获得当天近一月
+     * @return LocalDateTime
+     */
     public static LocalDateTime getAMonthFromNow() {
         LocalDateTime date = LocalDateTime.now();
-        return date.plusMonths(-1);//一个月前
+        //一个月前
+        return date.plusMonths(-1);
     }
 
-    // 获得当天近一年
+    /**
+     *  获得当天近一年
+     * @return LocalDateTime
+     */
     public static LocalDateTime getAYearFromNow() {
         LocalDateTime date = LocalDateTime.now();
-        return date.plusYears(-1);//一年前
+        //一年前
+        return date.plusYears(-1);
     }
 
     /**

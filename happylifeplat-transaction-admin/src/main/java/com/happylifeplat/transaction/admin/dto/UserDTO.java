@@ -18,6 +18,8 @@
 
 package com.happylifeplat.transaction.admin.dto;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -28,6 +30,7 @@ import java.io.Serializable;
  * @date 2017/10/23 18:18
  * @since JDK 1.8
  */
+@Data
 public class UserDTO implements Serializable {
 
     private static final long serialVersionUID = -3479973014221253748L;
@@ -35,19 +38,4 @@ public class UserDTO implements Serializable {
 
     private String password;
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

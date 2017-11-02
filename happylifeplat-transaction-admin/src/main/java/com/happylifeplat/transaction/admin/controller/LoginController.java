@@ -58,11 +58,5 @@ public class LoginController {
     public AjaxResponse logout() {
         return AjaxResponse.success(loginService.logout());
     }
-
-
-    @Permission
-    @PostMapping("/index")
-    public String index(){
-         return  "index";
-    }
+    
 }

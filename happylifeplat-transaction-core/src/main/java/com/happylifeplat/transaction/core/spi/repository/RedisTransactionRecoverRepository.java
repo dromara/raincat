@@ -80,7 +80,6 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
     public int create(TransactionRecover transactionRecover) {
         try {
             final String redisKey = RedisHelper.buildRecoverKey(keyName, transactionRecover.getId());
-
             jedisClient.set(redisKey, TransactionRecoverUtils.convert(transactionRecover, objectSerializer));
             return 1;
         } catch (Exception e) {

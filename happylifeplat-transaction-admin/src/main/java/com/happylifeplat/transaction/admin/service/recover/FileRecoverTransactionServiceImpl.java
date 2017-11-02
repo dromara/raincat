@@ -25,9 +25,8 @@ import com.happylifeplat.transaction.admin.page.PageParameter;
 import com.happylifeplat.transaction.admin.query.RecoverTransactionQuery;
 import com.happylifeplat.transaction.admin.service.RecoverTransactionService;
 import com.happylifeplat.transaction.admin.vo.TransactionRecoverVO;
-import com.happylifeplat.transaction.common.bean.TransactionRecover;
 import com.happylifeplat.transaction.common.bean.adapter.TransactionRecoverAdapter;
-import com.happylifeplat.transaction.common.enums.TransactionStatusEnum;
+import com.happylifeplat.transaction.common.holder.DateUtils;
 import com.happylifeplat.transaction.common.holder.RepositoryPathUtils;
 import com.happylifeplat.transaction.common.serializer.ObjectSerializer;
 import org.apache.commons.collections.CollectionUtils;
@@ -39,8 +38,8 @@ import java.io.FileInputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.text.ParseException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -71,25 +70,60 @@ public class FileRecoverTransactionServiceImpl implements RecoverTransactionServ
     public CommonPager<TransactionRecoverVO> listByPage(RecoverTransactionQuery query) {
         final String filePath = RepositoryPathUtils.buildFilePath(query.getApplicationName());
         final PageParameter pageParameter = query.getPageParameter();
-
-
         final int currentPage = pageParameter.getCurrentPage();
         final int pageSize = pageParameter.getPageSize();
 
         int start = (currentPage - 1) * pageSize;
 
         CommonPager<TransactionRecoverVO> voCommonPager = new CommonPager<>();
-        File path = new File(filePath);
-        File[] files = path.listFiles();
-        if (files != null && files.length > 0) {
-            voCommonPager.setDataList(Arrays.stream(files)
-                    .skip(start).limit(pageSize)
-                    .map(this::readTransaction)
-                    .collect(Collectors.toList()));
-            voCommonPager.setPage(PageHelper.buildPage(pageParameter, files.length));
+        File path;
+        File[] files;
+        int totalCount;
+        List<TransactionRecoverVO> voList;
+
+
+        //如果只查 重试条件的
+        if (StringUtils.isBlank(query.getTxGroupId()) && Objects.nonNull(query.getRetry())) {
+            path = new File(filePath);
+            files = path.listFiles();
+            final List<TransactionRecoverVO> all = findAll(files);
+            if (CollectionUtils.isNotEmpty(all)) {
+                final List<TransactionRecoverVO> collect =
+                        all.stream().filter(Objects::nonNull)
+                                .filter(vo -> vo.getRetriedCount() < query.getRetry())
+                                .collect(Collectors.toList());
+                totalCount = collect.size();
+                voList = collect.stream().skip(start).limit(pageSize).collect(Collectors.toList());
+            } else {
+                totalCount = 0;
+                voList = null;
+            }
+        } else if (StringUtils.isNoneBlank(query.getTxGroupId()) && Objects.isNull(query.getRetry())) {
+            final String fullFileName = getFullFileName(filePath, query.getTxGroupId());
+            final File file = new File(fullFileName);
+            files = new File[]{file};
+            totalCount = files.length;
+            voList = findAll(files);
+        } else if (StringUtils.isNoneBlank(query.getTxGroupId()) && Objects.nonNull(query.getRetry())) {
+            final String fullFileName = getFullFileName(filePath, query.getTxGroupId());
+            final File file = new File(fullFileName);
+            files = new File[]{file};
+            totalCount = files.length;
+            voList = findAll(files)
+                    .stream().filter(Objects::nonNull)
+                    .filter(vo -> vo.getRetriedCount() < query.getRetry())
+                    .collect(Collectors.toList());
+        } else {
+            path = new File(filePath);
+            files = path.listFiles();
+            totalCount = files.length;
+            voList = findByPage(files, start, pageSize);
         }
+        voCommonPager.setPage(PageHelper.buildPage(query.getPageParameter(), totalCount));
+        voCommonPager.setDataList(voList);
         return voCommonPager;
     }
+
 
     /**
      * 批量删除补偿事务信息
@@ -127,11 +161,15 @@ public class FileRecoverTransactionServiceImpl implements RecoverTransactionServ
         final String filePath = RepositoryPathUtils.buildFilePath(applicationName);
         final String fullFileName = getFullFileName(filePath, id);
         final File file = new File(fullFileName);
-        final TransactionRecover transactionRecover = readRecover(file);
-        if (Objects.nonNull(transactionRecover)) {
-            transactionRecover.setLastTime(new Date());
-            transactionRecover.setRetriedCount(retry);
-            writeFile(transactionRecover, fullFileName);
+        final TransactionRecoverAdapter adapter = readRecover(file);
+        if (Objects.nonNull(adapter)) {
+            try {
+                adapter.setLastTime(DateUtils.getDateYYYY());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            adapter.setRetriedCount(retry);
+            writeFile(adapter, fullFileName);
             return true;
         }
 
@@ -140,12 +178,12 @@ public class FileRecoverTransactionServiceImpl implements RecoverTransactionServ
     }
 
 
-    private void writeFile(TransactionRecover transaction, String fullFileName) {
+    private void writeFile(TransactionRecoverAdapter adapter, String fullFileName) {
 
         try {
             RandomAccessFile raf = new RandomAccessFile(fullFileName, "rw");
             try (FileChannel channel = raf.getChannel()) {
-                byte[] content = objectSerializer.serialize(transaction);
+                byte[] content = objectSerializer.serialize(adapter);
                 ByteBuffer buffer = ByteBuffer.allocate(content.length);
                 buffer.put(content);
                 buffer.flip();
@@ -160,14 +198,14 @@ public class FileRecoverTransactionServiceImpl implements RecoverTransactionServ
     }
 
 
-    private TransactionRecover readRecover(File file) {
+    private TransactionRecoverAdapter readRecover(File file) {
         try {
             try (FileInputStream fis = new FileInputStream(file)) {
                 byte[] content = new byte[(int) file.length()];
 
                 final int read = fis.read(content);
 
-                return objectSerializer.deSerialize(content, TransactionRecover.class);
+                return objectSerializer.deSerialize(content, TransactionRecoverAdapter.class);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -190,8 +228,24 @@ public class FileRecoverTransactionServiceImpl implements RecoverTransactionServ
             e.printStackTrace();
             return null;
         }
+    }
 
+    private List<TransactionRecoverVO> findAll(File[] files) {
+        if (files != null && files.length > 0) {
+            return Arrays.stream(files)
+                    .map(this::readTransaction)
+                    .collect(Collectors.toList());
+        }
+        return null;
+    }
 
+    private List<TransactionRecoverVO> findByPage(File[] files, int start, int pageSize) {
+        if (files != null && files.length > 0) {
+            return Arrays.stream(files).skip(start).limit(pageSize)
+                    .map(this::readTransaction)
+                    .collect(Collectors.toList());
+        }
+        return null;
     }
 
     private String getFullFileName(String filePath, String id) {

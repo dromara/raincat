@@ -42,7 +42,6 @@ public class RedisCleanTask {
      *
      * @throws InterruptedException 异常
      */
-    //@Scheduled(fixedDelay = 1000 * 300)
     public void removeCommitTxGroup() throws InterruptedException {
         txManagerService.removeCommitTxGroup();
 
@@ -54,7 +53,6 @@ public class RedisCleanTask {
      *
      * @throws InterruptedException 异常
      */
-    //@Scheduled(fixedDelay = 1000 * 600)
     public void removeRollBackTxGroup() throws InterruptedException {
         txManagerService.removeRollBackTxGroup();
     }

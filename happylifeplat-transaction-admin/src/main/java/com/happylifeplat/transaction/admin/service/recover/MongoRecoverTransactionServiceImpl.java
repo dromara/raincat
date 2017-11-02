@@ -31,6 +31,7 @@ import com.happylifeplat.transaction.common.bean.TransactionRecover;
 import com.happylifeplat.transaction.common.enums.TransactionStatusEnum;
 import com.happylifeplat.transaction.common.exception.TransactionException;
 import com.happylifeplat.transaction.common.exception.TransactionRuntimeException;
+import com.happylifeplat.transaction.common.holder.DateUtils;
 import com.happylifeplat.transaction.common.holder.RepositoryPathUtils;
 import com.happylifeplat.transaction.common.serializer.ObjectSerializer;
 import com.mongodb.WriteResult;
@@ -60,9 +61,6 @@ public class MongoRecoverTransactionServiceImpl implements RecoverTransactionSer
 
     private MongoTemplate mongoTemplate;
 
-    @Autowired
-    private ObjectSerializer objectSerializer;
-
 
     public MongoRecoverTransactionServiceImpl(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
@@ -89,6 +87,14 @@ public class MongoRecoverTransactionServiceImpl implements RecoverTransactionSer
         int start = (currentPage - 1) * pageSize;
 
         Query baseQuery = new Query();
+
+        if (StringUtils.isNoneBlank(query.getTxGroupId())) {
+            baseQuery.addCriteria(new Criteria("groupId").is(query.getTxGroupId()));
+        }
+        if (Objects.nonNull(query.getRetry())) {
+            baseQuery.addCriteria(new Criteria("retriedCount").lt(query.getRetry()));
+        }
+
         final long totalCount = mongoTemplate.count(baseQuery, mongoTableName);
         if (totalCount <= 0) {
             return voCommonPager;
@@ -154,7 +160,7 @@ public class MongoRecoverTransactionServiceImpl implements RecoverTransactionSer
         Query query = new Query();
         query.addCriteria(new Criteria("transId").is(id));
         Update update = new Update();
-        update.set("lastTime", new Date());
+        update.set("lastTime", DateUtils.getCurrentDateTime());
         update.set("retriedCount", retry);
         final WriteResult writeResult = mongoTemplate.updateFirst(query, update,
                 MongoAdapter.class, mongoTableName);
@@ -163,7 +169,6 @@ public class MongoRecoverTransactionServiceImpl implements RecoverTransactionSer
         }
         return Boolean.TRUE;
     }
-
 
 
 }

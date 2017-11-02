@@ -19,6 +19,7 @@
 package com.happylifeplat.transaction.admin.query;
 
 import com.happylifeplat.transaction.admin.page.PageParameter;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -30,6 +31,7 @@ import java.io.Serializable;
  * @date 2017/10/19 16:46
  * @since JDK 1.8
  */
+@Data
 public class TxTransactionQuery implements Serializable {
 
     private static final long serialVersionUID = 1897647164293554953L;
@@ -37,31 +39,7 @@ public class TxTransactionQuery implements Serializable {
 
     private String taskKey;
 
-
     private PageParameter pageParameter;
 
 
-    public String getTxGroupId() {
-        return txGroupId;
-    }
-
-    public void setTxGroupId(String txGroupId) {
-        this.txGroupId = txGroupId;
-    }
-
-    public String getTaskKey() {
-        return taskKey;
-    }
-
-    public void setTaskKey(String taskKey) {
-        this.taskKey = taskKey;
-    }
-
-    public PageParameter getPageParameter() {
-        return pageParameter;
-    }
-
-    public void setPageParameter(PageParameter pageParameter) {
-        this.pageParameter = pageParameter;
-    }
 }

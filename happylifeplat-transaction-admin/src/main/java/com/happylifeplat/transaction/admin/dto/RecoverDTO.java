@@ -18,6 +18,8 @@
 
 package com.happylifeplat.transaction.admin.dto;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -29,56 +31,16 @@ import java.util.List;
  * @date 2017/10/24 16:24
  * @since JDK 1.8
  */
+@Data
 public class RecoverDTO implements Serializable {
 
     private static final long serialVersionUID = 6905402148490426011L;
     private String applicationName;
 
-    private List<String> idList;
+    private List<String> ids;
 
     private String id;
 
     private Integer retry;
 
-    public String getApplicationName() {
-        return applicationName;
-    }
-
-    public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
-    }
-
-    public List<String> getIdList() {
-        return idList;
-    }
-
-    public void setIdList(List<String> idList) {
-        this.idList = idList;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Integer getRetry() {
-        return retry;
-    }
-
-    public void setRetry(Integer retry) {
-        this.retry = retry;
-    }
-
-    @Override
-    public String toString() {
-        return "RecoverDTO{" +
-                "applicationName='" + applicationName + '\'' +
-                ", idList=" + idList +
-                ", id='" + id + '\'' +
-                ", retry=" + retry +
-                '}';
-    }
 }

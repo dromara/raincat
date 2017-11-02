@@ -27,6 +27,7 @@ import com.happylifeplat.transaction.admin.service.RecoverTransactionService;
 import com.happylifeplat.transaction.admin.vo.TransactionRecoverVO;
 import com.happylifeplat.transaction.common.holder.httpclient.AjaxResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,6 +53,9 @@ public class RecoverTransactionController {
 
     private final RecoverApplicationNameService recoverApplicationNameService;
 
+    @Value("${recover.retry.max}")
+    private Integer recoverRetryMax;
+
     @Autowired
     public RecoverTransactionController(RecoverTransactionService recoverTransactionService, RecoverApplicationNameService recoverApplicationNameService) {
         this.recoverTransactionService = recoverTransactionService;
@@ -70,7 +74,8 @@ public class RecoverTransactionController {
     @PostMapping(value = "/batchRemove")
     @Permission
     public AjaxResponse batchRemove(@RequestBody RecoverDTO recoverDTO) {
-        final Boolean success = recoverTransactionService.batchRemove(recoverDTO.getIdList(), recoverDTO.getApplicationName());
+
+        final Boolean success = recoverTransactionService.batchRemove(recoverDTO.getIds(), recoverDTO.getApplicationName());
         return AjaxResponse.success(success);
 
     }
@@ -78,6 +83,9 @@ public class RecoverTransactionController {
     @PostMapping(value = "/update")
     @Permission
     public AjaxResponse update(@RequestBody RecoverDTO recoverDTO) {
+        if (recoverRetryMax < recoverDTO.getRetry()) {
+            return AjaxResponse.error("重试次数超过最大设置，请您重新设置！");
+        }
         final Boolean success = recoverTransactionService.updateRetry(recoverDTO.getId(),
                 recoverDTO.getRetry(), recoverDTO.getApplicationName());
         return AjaxResponse.success(success);
@@ -85,6 +93,7 @@ public class RecoverTransactionController {
     }
 
     @PostMapping(value = "/listAppName")
+    @Permission
     public AjaxResponse listAppName() {
         final List<String> list = recoverApplicationNameService.list();
         return AjaxResponse.success(list);
