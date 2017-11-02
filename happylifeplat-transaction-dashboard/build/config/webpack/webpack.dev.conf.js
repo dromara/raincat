@@ -82,7 +82,7 @@ module.exports = {
         //         }
         //     }),
         //new ExtractTextPlugin("[name].css"),
-        new BabiliPlugin(),
+        //new BabiliPlugin(),
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: curDir + '/src/index.html',

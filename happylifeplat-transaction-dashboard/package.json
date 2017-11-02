@@ -3,14 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "",
-  "dependencies": {
-    "babel-generator": "^6.26.0",
-    "element-ui": "^1.4.8",
-    "express": "^4.16.2",
-    "jsprim": "^2.0.0",
-    "lodash": "^4.17.4",
-    "webpack": "^3.4.1"
-  },
   "devDependencies": {
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
