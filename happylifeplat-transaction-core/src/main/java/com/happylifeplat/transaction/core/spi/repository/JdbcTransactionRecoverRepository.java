@@ -202,14 +202,20 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
         dataSource.setDriverClassName(txDbConfig.getDriverClassName());
         dataSource.setUsername(txDbConfig.getUsername());
         dataSource.setPassword(txDbConfig.getPassword());
-        dataSource.setInitialSize(2);
-        dataSource.setMaxActive(20);
-        dataSource.setMinIdle(0);
-        dataSource.setMaxWait(60000);
-        dataSource.setValidationQuery("SELECT 1");
-        dataSource.setTestOnBorrow(false);
-        dataSource.setTestWhileIdle(true);
-        dataSource.setPoolPreparedStatements(false);
+
+
+        dataSource.setInitialSize(txDbConfig.getInitialSize());
+        dataSource.setMaxActive(txDbConfig.getMaxActive());
+        dataSource.setMinIdle(txDbConfig.getMinIdle());
+        dataSource.setMaxWait(txDbConfig.getMaxWait());
+        dataSource.setValidationQuery(txDbConfig.getValidationQuery());
+        dataSource.setTestOnBorrow(txDbConfig.getTestOnBorrow());
+        dataSource.setTestOnReturn(txDbConfig.getTestOnReturn());
+        dataSource.setTestWhileIdle(txDbConfig.getTestWhileIdle());
+        dataSource.setPoolPreparedStatements(txDbConfig.getPoolPreparedStatements());
+        dataSource.setMaxPoolPreparedStatementPerConnectionSize(txDbConfig.getMaxPoolPreparedStatementPerConnectionSize());
+
+
         this.tableName = RepositoryPathUtils.buildDbTableName(modelName);
         executeUpdate(SqlHelper.buildCreateTableSql(tableName, txDbConfig.getDriverClassName()));
     }

@@ -27,27 +27,27 @@ import java.util.Optional;
 public enum CompensationCacheTypeEnum {
 
     /**
-     * Db compensation cache type enum.
+     * Db compensate cache type enum.
      */
     DB("db"),
 
     /**
-     * File compensation cache type enum.
+     * File compensate cache type enum.
      */
     FILE("file"),
 
     /**
-     * Redis compensation cache type enum.
+     * Redis compensate cache type enum.
      */
     REDIS("redis"),
 
     /**
-     * Mongodb compensation cache type enum.
+     * Mongodb compensate cache type enum.
      */
     MONGODB("mongodb"),
 
     /**
-     * Zookeeper compensation cache type enum.
+     * Zookeeper compensate cache type enum.
      */
     ZOOKEEPER("zookeeper");
 
@@ -58,10 +58,10 @@ public enum CompensationCacheTypeEnum {
     }
 
     /**
-     * Acquire compensation cache type compensation cache type enum.
+     * Acquire compensate cache type compensate cache type enum.
      *
-     * @param compensationCacheType the compensation cache type
-     * @return the compensation cache type enum
+     * @param compensationCacheType the compensate cache type
+     * @return the compensate cache type enum
      */
     public static CompensationCacheTypeEnum acquireCompensationCacheType(String compensationCacheType) {
         Optional<CompensationCacheTypeEnum> serializeProtocolEnum =
@@ -72,18 +72,18 @@ public enum CompensationCacheTypeEnum {
     }
 
     /**
-     * Gets compensation cache type.
+     * Gets compensate cache type.
      *
-     * @return the compensation cache type
+     * @return the compensate cache type
      */
     public String getCompensationCacheType() {
         return compensationCacheType;
     }
 
     /**
-     * Sets compensation cache type.
+     * Sets compensate cache type.
      *
-     * @param compensationCacheType the compensation cache type
+     * @param compensationCacheType the compensate cache type
      */
     public void setCompensationCacheType(String compensationCacheType) {
         this.compensationCacheType = compensationCacheType;

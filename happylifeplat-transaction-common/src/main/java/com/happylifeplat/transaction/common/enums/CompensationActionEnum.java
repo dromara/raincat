@@ -24,22 +24,22 @@ package com.happylifeplat.transaction.common.enums;
 public enum CompensationActionEnum {
 
     /**
-     * Save compensation action enum.
+     * Save compensate action enum.
      */
     SAVE(0,"保存"),
 
     /**
-     * Delete compensation action enum.
+     * Delete compensate action enum.
      */
     DELETE(1,"删除"),
 
     /**
-     * Update compensation action enum.
+     * Update compensate action enum.
      */
     UPDATE(2,"更新"),
 
     /**
-     * Compensate compensation action enum.
+     * Compensate compensate action enum.
      */
     COMPENSATE(3,"补偿"),
 
