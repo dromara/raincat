@@ -5,7 +5,7 @@ happylifeplat-transaction
 
 基于java语言来开发（JDK1.8），支持dubbo，springcloud进行分布式事务。
 
-#####  因为文件名太长，大家在拉取代码的时候执git命令：git config core.longpaths true</font>
+#####  因为文件名太长，大家在拉取代码的时候执git命令：git config --global core.longpaths true
 
  # Features
 
