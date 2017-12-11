@@ -3,7 +3,7 @@ happylifeplat-transaction
 
 碧桂园旺生活平台强一致性分布式事务，是基于二阶段提交+本地事务补偿机制来实现。[原理介绍](http://www.hollischuang.com/archives/681)
 
-基于java语言来开发（JDK1.8），支持dubbo，springcloud进行分布式事务。
+基于java语言来开发（JDK1.8），支持dubbo,motan,springcloud进行分布式事务。
 
 #####  因为文件名太长，大家在拉取代码的时候执git命令：git config --global core.longpaths true
 
@@ -11,7 +11,7 @@ happylifeplat-transaction
 
   * **框架特性**
 
-      * 支持dubbo，springcloud等rpc框架进行分布式事务。
+      * 支持dubbo,motan,springcloud,等rpc框架进行分布式事务。
 
       * 事务发起者，参与者与协调者底层基于netty长连接通信,稳定高效。
 
@@ -26,11 +26,11 @@ happylifeplat-transaction
 
  * ***事务角色***
 
-  * 事务发起者（可理解为消费者 如：dubbo的消费者,springcloud的调用方）,发起分布式事务
+   * 事务发起者（可理解为消费者 如：dubbo的消费者,springcloud的调用方）,发起分布式事务
 
-  * 事务参与者（可理解为提供者 如：dubbo的提供者,springcloud的rest服务提供者),参与事务发起者的事务
+   * 事务参与者（可理解为提供者 如：dubbo的提供者,springcloud的rest服务提供者),参与事务发起者的事务
 
-  * 事务协调者（tx-manager），协调分布式事务的提交，回滚等。
+   * 事务协调者（tx-manager），协调分布式事务的提交，回滚等。
 
  * ***技术方案***
 
