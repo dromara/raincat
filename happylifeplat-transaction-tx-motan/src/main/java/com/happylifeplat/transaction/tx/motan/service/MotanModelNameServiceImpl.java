@@ -15,22 +15,30 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.happylifeplat.transaction.tx.dubbo.configuration;
+package com.happylifeplat.transaction.tx.motan.service;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.ImportResource;
+import com.happylifeplat.transaction.core.service.ModelNameService;
+import com.weibo.api.motan.config.springsupport.BasicServiceConfigBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 
 /**
  * @author xiaoyu
  */
-@Configuration
-@EnableAspectJAutoProxy(proxyTargetClass=true)
-public class DubboConfiguration {
+@Service
+public class MotanModelNameServiceImpl implements ModelNameService {
 
 
-    @Configuration
-    static class DubboAspectConfiguration {
+    private final BasicServiceConfigBean basicServiceConfigBean;
 
+    @Autowired
+    public MotanModelNameServiceImpl(BasicServiceConfigBean basicServiceConfigBean) {
+        this.basicServiceConfigBean = basicServiceConfigBean;
+    }
+
+    @Override
+    public String findModelName() {
+        return basicServiceConfigBean.getModule();
     }
 }

@@ -28,6 +28,7 @@ package com.happylifeplat.transaction.common.constant;
  */
 public interface CommonConstant {
 
+
     String REDIS_PRE_FIX = "transaction:group:%s";
 
     String REDIS_KEYS = "transaction:group:*";
@@ -41,7 +42,7 @@ public interface CommonConstant {
 
     String DB_SUFFIX = "tx_";
 
-    String RECOVER_REDIS_KEY_PRE="transaction:recover:%s";
+    String RECOVER_REDIS_KEY_PRE = "transaction:recover:%s";
 
 
     String DB_MYSQL = "mysql";

@@ -15,13 +15,13 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.happylifeplat.transaction.tx.dubbo.interceptor;
+package com.happylifeplat.transaction.tx.motan.interceptor;
 
 
-import com.alibaba.dubbo.rpc.RpcContext;
 import com.happylifeplat.transaction.common.constant.CommonConstant;
 import com.happylifeplat.transaction.core.interceptor.TxTransactionInterceptor;
 import com.happylifeplat.transaction.core.service.AspectTransactionService;
+import com.weibo.api.motan.rpc.RpcContext;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,20 +30,21 @@ import org.springframework.stereotype.Component;
  * @author xiaoyu
  */
 @Component
-public class DubboTxTransactionInterceptor implements TxTransactionInterceptor {
+public class MotanTxTransactionInterceptor implements TxTransactionInterceptor {
 
     private final AspectTransactionService aspectTransactionService;
 
     @Autowired
-    public DubboTxTransactionInterceptor(AspectTransactionService aspectTransactionService) {
+    public MotanTxTransactionInterceptor(AspectTransactionService aspectTransactionService) {
         this.aspectTransactionService = aspectTransactionService;
     }
 
 
     @Override
     public Object interceptor(ProceedingJoinPoint pjp) throws Throwable {
-        String groupId = RpcContext.getContext().getAttachment(CommonConstant.TX_TRANSACTION_GROUP);
-        return aspectTransactionService.invoke(groupId,pjp);
+        String groupId = String.valueOf(RpcContext.getContext()
+                .getAttribute(CommonConstant.TX_TRANSACTION_GROUP));
+        return aspectTransactionService.invoke(groupId, pjp);
     }
 
 }

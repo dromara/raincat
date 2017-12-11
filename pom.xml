@@ -34,6 +34,7 @@
         <module>happylifeplat-transaction-common</module>
         <module>happylifeplat-transaction-tx-sample</module>
         <module>happylifeplat-transaction-admin</module>
+        <module>happylifeplat-transaction-tx-motan</module>
     </modules>
 
 
@@ -102,6 +103,7 @@
         <druid.version>1.0.29</druid.version>
         <springfox.version>2.6.1</springfox.version>
         <lombok.version>1.16.14</lombok.version>
+        <motan.version>1.0.0</motan.version>
     </properties>
 
 
@@ -138,6 +140,12 @@
             <dependency>
                 <groupId>com.happylifeplat.transaction</groupId>
                 <artifactId>happylifeplat-transaction-tx-springcloud</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.happylifeplat.transaction</groupId>
+                <artifactId>happylifeplat-transaction-tx-motan</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -197,6 +205,33 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
+            <!-- motan config start-->
+            <dependency>
+                <groupId>com.weibo</groupId>
+                <artifactId>motan-core</artifactId>
+                <version>${motan.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.weibo</groupId>
+                <artifactId>motan-transport-netty</artifactId>
+                <version>${motan.version}</version>
+            </dependency>
+
+            <!-- only needed for spring-based features -->
+            <dependency>
+                <groupId>com.weibo</groupId>
+                <artifactId>motan-springsupport</artifactId>
+                <version>${motan.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.weibo</groupId>
+                <artifactId>motan-registry-zookeeper</artifactId>
+                <version>${motan.version}</version>
+            </dependency>
+            <!-- motan config end-->
+
             <dependency>
                 <groupId>org.mongodb</groupId>
                 <artifactId>mongo-java-driver</artifactId>

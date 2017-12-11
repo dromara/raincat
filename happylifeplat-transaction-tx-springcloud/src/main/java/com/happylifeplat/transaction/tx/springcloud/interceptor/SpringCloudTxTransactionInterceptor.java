@@ -17,6 +17,7 @@
  */
 package com.happylifeplat.transaction.tx.springcloud.interceptor;
 
+import com.happylifeplat.transaction.common.constant.CommonConstant;
 import com.happylifeplat.transaction.core.concurrent.threadlocal.CompensationLocal;
 import com.happylifeplat.transaction.core.interceptor.TxTransactionInterceptor;
 import com.happylifeplat.transaction.core.service.AspectTransactionService;
@@ -52,7 +53,7 @@ public class SpringCloudTxTransactionInterceptor implements TxTransactionInterce
             //如果不是本地反射调用补偿
             RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
             HttpServletRequest request = requestAttributes == null ? null : ((ServletRequestAttributes) requestAttributes).getRequest();
-            groupId = request == null ? null : request.getHeader("tx-group");
+            groupId = request == null ? null : request.getHeader(CommonConstant.TX_TRANSACTION_GROUP);
         }
 
         return aspectTransactionService.invoke(groupId, pjp);

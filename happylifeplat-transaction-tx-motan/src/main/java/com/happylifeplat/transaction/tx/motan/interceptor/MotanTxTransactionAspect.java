@@ -15,22 +15,31 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.happylifeplat.transaction.tx.springcloud.feign;
+package com.happylifeplat.transaction.tx.motan.interceptor;
 
-import com.happylifeplat.transaction.common.constant.CommonConstant;
-import com.happylifeplat.transaction.core.concurrent.threadlocal.TxTransactionLocal;
-import feign.RequestInterceptor;
-import feign.RequestTemplate;
+import com.happylifeplat.transaction.core.interceptor.AbstractTxTransactionAspect;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
+import org.springframework.stereotype.Component;
 
 /**
  * @author xiaoyu
  */
-public class RestTemplateInterceptor implements RequestInterceptor {
+@Aspect
+@Component
+public class MotanTxTransactionAspect extends AbstractTxTransactionAspect implements Ordered {
 
+    @Autowired
+    public MotanTxTransactionAspect(MotanTxTransactionInterceptor motanTxTransactionInterceptor) {
+        this.setTxTransactionInterceptor(motanTxTransactionInterceptor);
+    }
+    public void init() {
 
-    @Override
-    public void apply(RequestTemplate requestTemplate) {
-        requestTemplate.header(CommonConstant.TX_TRANSACTION_GROUP, TxTransactionLocal.getInstance().getTxGroupId());
     }
 
+    @Override
+    public int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
 }

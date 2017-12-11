@@ -17,6 +17,7 @@
  */
 package com.happylifeplat.transaction.tx.springcloud.http;
 
+import com.happylifeplat.transaction.common.constant.CommonConstant;
 import com.happylifeplat.transaction.core.concurrent.threadlocal.TxTransactionLocal;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -32,7 +33,7 @@ public class HttpRequestInterceptor implements ClientHttpRequestInterceptor {
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-        request.getHeaders().add("tx-group", TxTransactionLocal.getInstance().getTxGroupId());
+        request.getHeaders().add(CommonConstant.TX_TRANSACTION_GROUP, TxTransactionLocal.getInstance().getTxGroupId());
         return execution.execute(request, body);
     }
 }

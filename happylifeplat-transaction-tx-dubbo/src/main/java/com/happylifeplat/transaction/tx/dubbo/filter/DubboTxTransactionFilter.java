@@ -26,18 +26,19 @@ import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.Result;
 import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.RpcException;
+import com.happylifeplat.transaction.common.constant.CommonConstant;
 import com.happylifeplat.transaction.core.concurrent.threadlocal.TxTransactionLocal;
 
 /**
  * @author xiaoyu
  */
 @Activate(group = {Constants.SERVER_KEY, Constants.CONSUMER})
-public class TxTransactionFilter implements Filter {
+public class DubboTxTransactionFilter implements Filter {
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         if (RpcContext.getContext().isConsumerSide()) {
-            RpcContext.getContext().setAttachment("tx-group",
+            RpcContext.getContext().setAttachment(CommonConstant.TX_TRANSACTION_GROUP,
                     TxTransactionLocal.getInstance().getTxGroupId());
         }
         return invoker.invoke(invocation);
