@@ -21,10 +21,14 @@ package com.happylifeplat.transaction.tx.motan.interceptor;
 import com.happylifeplat.transaction.common.constant.CommonConstant;
 import com.happylifeplat.transaction.core.interceptor.TxTransactionInterceptor;
 import com.happylifeplat.transaction.core.service.AspectTransactionService;
+import com.weibo.api.motan.rpc.Request;
 import com.weibo.api.motan.rpc.RpcContext;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author xiaoyu
@@ -42,8 +46,15 @@ public class MotanTxTransactionInterceptor implements TxTransactionInterceptor {
 
     @Override
     public Object interceptor(ProceedingJoinPoint pjp) throws Throwable {
-        String groupId = String.valueOf(RpcContext.getContext()
-                .getAttribute(CommonConstant.TX_TRANSACTION_GROUP));
+
+        String groupId = "";
+        final Request request = RpcContext.getContext().getRequest();
+        if (Objects.nonNull(request)) {
+            final Map<String, String> attachments = request.getAttachments();
+            if (attachments != null && !attachments.isEmpty()) {
+                groupId = attachments.get(CommonConstant.TX_TRANSACTION_GROUP);
+            }
+        }
         return aspectTransactionService.invoke(groupId, pjp);
     }
 
