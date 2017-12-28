@@ -51,6 +51,33 @@ happylifeplat-transaction
 
   ###  [配置详解](https://github.com/yu199195/happylifeplat-transaction/wiki/configuration%EF%BC%88%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3%EF%BC%89)
 
+
+# Prerequisite
+
+  *   #### JDK 1.8+
+
+  *   #### Maven 3.2.x
+
+  *   #### Git
+
+  *   ####  RPC framework dubbo or motan or springcloud。
+
+# Quick Start
+
+   * ### Clone & Build
+      ```
+      > git clone https://github.com/yu199195/happylifeplat-transaction.git
+   
+      > cd happylifeplat-transaction
+   
+      > mvn -DskipTests clean install -U
+      ```
+
+   ### [快速体验(dubbo)](https://github.com/yu199195/happylifeplat-transaction/wiki/quick-start-%EF%BC%88dubbo%EF%BC%89)
+
+   ### [快速体验(springcloud)](https://github.com/yu199195/happylifeplat-transaction/wiki/quick-start-%EF%BC%88springcloud%EF%BC%89)
+
+
 # User Guide
 
 ###  [dubbo 用户](https://github.com/yu199195/happylifeplat-transaction/wiki/dubbo%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97)
@@ -59,14 +86,16 @@ happylifeplat-transaction
 
 
 
-# Quick Start
-
-   ### [快速体验(dubbo)](https://github.com/yu199195/happylifeplat-transaction/wiki/quick-start-%EF%BC%88dubbo%EF%BC%89)
-
-   ### [快速体验(springcloud)](https://github.com/yu199195/happylifeplat-transaction/wiki/quick-start-%EF%BC%88springcloud%EF%BC%89)
 
 
 
+# FAQ
+
+* ### 为什么我下载的代码后，用idea打开没有相应的get set 方法呢？
+   ##### 答：因为框架使用了Lombok包，它是在编译的时期，自动生成get set方法，并不影响运行，如果觉得提示错误难受，请自行下载lombok包插件，[lombok官网](http://projectlombok.org/)
+
+* ### 为什么我运行demo工程，找不到applicationContent.xml呢？
+  ##### 答：请设置项目的资源文件夹。
 
  # Support
    ###  如有任何问题欢迎加入QQ群：162614487 进行讨论
