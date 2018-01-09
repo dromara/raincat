@@ -97,9 +97,11 @@ happylifeplat-transaction
 * ### 为什么我运行demo工程，找不到applicationContent.xml呢？
   ##### 答：请设置项目的资源文件夹。
 
- # Support
-   ###  如有任何问题欢迎加入QQ群：162614487 进行讨论
-   ![](https://yu199195.github.io/images/weixin.jpg)
+
+# Support
+
+ * ###  如有任何问题欢迎加入QQ群进行讨论
+   ![](https://yu199195.github.io/images/qq.png)
 
 
  # Contribution
