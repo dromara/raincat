@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.happylifeplat.transaction</groupId>
-    <artifactId>happylifeplat-transaction</artifactId>
+    <groupId>com.raincat</groupId>
+    <artifactId>rain-cat</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.0-RELEASE</version>
+    <version>1.0.0-SNAPSHOT</version>
 
 
     <licenses>
@@ -17,7 +17,7 @@
         </license>
     </licenses>
     <scm>
-        <url>https://github.com/yu199195/happylifeplat-transaction.git</url>
+        <url>https://github.com/yu199195/Raincat.git</url>
     </scm>
 
     <parent>
@@ -27,14 +27,14 @@
     </parent>
 
     <modules>
-        <module>happylifeplat-transaction-core</module>
-        <module>happylifeplat-transaction-tx-manager</module>
-        <module>happylifeplat-transaction-tx-dubbo</module>
-        <module>happylifeplat-transaction-tx-springcloud</module>
-        <module>happylifeplat-transaction-common</module>
-        <module>happylifeplat-transaction-tx-sample</module>
-        <module>happylifeplat-transaction-admin</module>
-        <module>happylifeplat-transaction-tx-motan</module>
+        <module>raincat-core</module>
+        <module>raincat-manager</module>
+        <module>raincat-dubbo</module>
+        <module>raincat-springcloud</module>
+        <module>raincat-common</module>
+        <module>raincat-sample</module>
+        <module>raincat-admin</module>
+        <module>raincat-motan</module>
     </modules>
 
 
@@ -110,42 +110,42 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.happylifeplat.transaction</groupId>
-                <artifactId>happylifeplat-transaction-admin</artifactId>
+                <groupId>com.raincat</groupId>
+                <artifactId>raincat-admin</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.happylifeplat.transaction</groupId>
-                <artifactId>happylifeplat-transaction-common</artifactId>
+                <groupId>com.raincat</groupId>
+                <artifactId>raincat-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.happylifeplat.transaction</groupId>
-                <artifactId>happylifeplat-transaction-core</artifactId>
+                <groupId>com.raincat</groupId>
+                <artifactId>raincat-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.happylifeplat.transaction</groupId>
-                <artifactId>happylifeplat-transaction-tx-dubbo</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.happylifeplat.transaction</groupId>
-                <artifactId>happylifeplat-transaction-tx-manager</artifactId>
+                <groupId>com.raincat</groupId>
+                <artifactId>raincat-dubbo</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.happylifeplat.transaction</groupId>
-                <artifactId>happylifeplat-transaction-tx-springcloud</artifactId>
+                <groupId>com.raincat</groupId>
+                <artifactId>raincat-manager</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.happylifeplat.transaction</groupId>
-                <artifactId>happylifeplat-transaction-tx-motan</artifactId>
+                <groupId>com.raincat</groupId>
+                <artifactId>raincat-springcloud</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.raincat</groupId>
+                <artifactId>raincat-motan</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -498,17 +498,5 @@
             <url>https://repo.spring.io/libs-release</url>
         </pluginRepository>
     </pluginRepositories>
-
-    <distributionManagement>
-        <repository>
-            <id>releases</id>
-            <url>http://maven.wang-guanjia.com/nexus/content/repositories/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <url>http://maven.wang-guanjia.com/nexus/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
 
 </project>

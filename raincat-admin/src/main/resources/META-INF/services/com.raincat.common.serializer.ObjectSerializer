@@ -1,0 +1,4 @@
+com.raincat.common.serializer.KryoSerializer
+com.raincat.common.serializer.ProtostuffSerializer
+com.raincat.common.serializer.HessianSerializer
+com.raincat.common.serializer.JavaSerializer

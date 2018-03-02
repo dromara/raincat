@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>raincat-sample</artifactId>
+        <groupId>com.raincat</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>raincat-springcloud-sample</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>raincat-springcloud-sample-pay</module>
+        <module>raincat-springcloud-sample-alipay</module>
+        <module>raincat-springcloud-sample-wechat</module>
+    </modules>
+
+
+</project>

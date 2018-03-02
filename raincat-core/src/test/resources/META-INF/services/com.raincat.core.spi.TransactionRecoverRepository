@@ -1,0 +1,5 @@
+com.raincat.core.spi.repository.JdbcTransactionRecoverRepository
+com.raincat.core.spi.repository.FileTransactionRecoverRepository
+com.raincat.core.spi.repository.MongoTransactionRecoverRepository
+com.raincat.core.spi.repository.RedisTransactionRecoverRepository
+com.raincat.core.spi.repository.ZookeeperTransactionRecoverRepository
