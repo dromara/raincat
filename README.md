@@ -45,11 +45,11 @@ Raincat
      * netty通信序列化方式，支持 hessian，kryo，protostuff
 
 # Design
- ### [架构设计](https://github.com/yu199195/happylifeplat-transaction/wiki/design)
+ ### [架构设计](https://github.com/yu199195/Raincat/wiki/design)
 
 #   Configuration
 
-  ###  [配置详解](https://github.com/yu199195/happylifeplat-transaction/wiki/configuration%EF%BC%88%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3%EF%BC%89)
+  ###  [配置详解](https://github.com/yu199195/Raincat/wiki/configuration%EF%BC%88%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3%EF%BC%89)
 
 
 # Prerequisite
@@ -66,23 +66,23 @@ Raincat
 
    * ### Clone & Build
       ```
-      > git clone https://github.com/yu199195/happylifeplat-transaction.git
+      > git clone https://github.com/yu199195/Raincat.git
    
-      > cd happylifeplat-transaction
+      > cd Raincat
    
       > mvn -DskipTests clean install -U
       ```
 
-   ### [快速体验(dubbo)](https://github.com/yu199195/happylifeplat-transaction/wiki/quick-start-%EF%BC%88dubbo%EF%BC%89)
+   ### [快速体验(dubbo)](https://github.com/yu199195/Raincat/wiki/quick-start-%EF%BC%88dubbo%EF%BC%89)
 
-   ### [快速体验(springcloud)](https://github.com/yu199195/happylifeplat-transaction/wiki/quick-start-%EF%BC%88springcloud%EF%BC%89)
+   ### [快速体验(springcloud)](https://github.com/yu199195/Raincat/wiki/quick-start-%EF%BC%88springcloud%EF%BC%89)
 
 
 # User Guide
 
-###  [dubbo 用户](https://github.com/yu199195/happylifeplat-transaction/wiki/dubbo%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97)
+###  [dubbo 用户](https://github.com/yu199195/Raincat/wiki/dubbo%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97)
 
-###  [springcloud 用户](https://github.com/yu199195/happylifeplat-transaction/wiki/springcloud%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97)
+###  [springcloud 用户](https://github.com/yu199195/Raincat/wiki/springcloud%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97)
 
 
 
