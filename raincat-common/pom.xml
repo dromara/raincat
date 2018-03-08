@@ -12,6 +12,13 @@
     <artifactId>raincat-common</artifactId>
     <packaging>jar</packaging>
     <dependencies>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -36,15 +43,6 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
         <!-- sl4j + logback end-->
-
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
