@@ -47,6 +47,10 @@ Raincat
 # Design
  ### [架构设计](https://github.com/yu199195/Raincat/wiki/design)
 
+# 流程图
+
+ ![](https://yu199195.github.io/images/Raincat/2pc.png)
+
 #   Configuration
 
   ###  [配置详解](https://github.com/yu199195/Raincat/wiki/configuration%EF%BC%88%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3%EF%BC%89)
@@ -67,9 +71,9 @@ Raincat
    * ### Clone & Build
       ```
       > git clone https://github.com/yu199195/Raincat.git
-   
+
       > cd Raincat
-   
+
       > mvn -DskipTests clean install -U
       ```
 
@@ -99,7 +103,7 @@ Raincat
 
 * ### 为什么我启动admin项目的时候，会报mongo 集群连接错误呢？
   ##### 答：这是因为项目里面有mongo代码，spring boot会自动配置，该错误没有关系，只要admin项目能正常启动就行。
-  
+
 
 # Support
 
