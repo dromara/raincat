@@ -37,12 +37,12 @@ public class BlockTask {
     /**
      * 是否被唤醒
      */
-    private volatile static boolean Notify = false;
+    private volatile boolean notify = false;
 
     /**
      * 是否被唤醒
      */
-    private volatile static boolean remove = false;
+    private volatile boolean remove = false;
 
     /**
      * 唯一标示key
@@ -78,7 +78,7 @@ public class BlockTask {
     public void signal() {
         try {
             lock.lock();
-            Notify = true;
+            notify = true;
             condition.signal();
         } finally {
             lock.unlock();
@@ -107,19 +107,19 @@ public class BlockTask {
     }
 
     public boolean isNotify() {
-        return Notify;
+        return notify;
     }
 
-    public static void setNotify(boolean notify) {
-        Notify = notify;
+    public  void setNotify(boolean notify) {
+        this.notify = notify;
     }
 
-    public static boolean isRemove() {
+    public  boolean isRemove() {
         return remove;
     }
 
-    public static void setRemove(boolean remove) {
-        BlockTask.remove = remove;
+    public  void setRemove(boolean remove) {
+        this.remove = remove;
     }
 
     public String getKey() {
