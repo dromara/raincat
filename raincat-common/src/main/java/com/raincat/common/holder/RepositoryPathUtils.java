@@ -21,26 +21,18 @@ package com.raincat.common.holder;
 import com.raincat.common.constant.CommonConstant;
 
 /**
- * <p>Description: .</p>
- * 获取资源路径的工具类
- *
+ * RepositoryPathUtils.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/19 10:58
- * @since JDK 1.8
  */
 public class RepositoryPathUtils {
-
 
     public static String buildFilePath(String applicationName) {
         return String.join("/", CommonConstant.PATH_SUFFIX, applicationName.replaceAll("-", "_"));
     }
 
-
     public static String buildDbTableName(String applicationName) {
         return CommonConstant.DB_SUFFIX + applicationName.replaceAll("-", "_");
     }
-
 
     public static String buildMongoTableName(String applicationName) {
         return CommonConstant.DB_SUFFIX + applicationName.replaceAll("-", "_");
@@ -53,6 +45,5 @@ public class RepositoryPathUtils {
     public static String buildZookeeperPath(String applicationName) {
         return String.join("_", CommonConstant.PATH_SUFFIX, applicationName);
     }
-
 
 }

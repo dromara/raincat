@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.enums;
 
 import java.util.Arrays;
@@ -22,9 +23,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
+ * SerializeProtocolEnum.
  * @author xiaoyu
  */
-
 public enum SerializeProtocolEnum {
 
     /**
@@ -49,7 +50,7 @@ public enum SerializeProtocolEnum {
 
     private String serializeProtocol;
 
-    SerializeProtocolEnum(String serializeProtocol) {
+    SerializeProtocolEnum(final String serializeProtocol) {
         this.serializeProtocol = serializeProtocol;
     }
 
@@ -59,13 +60,12 @@ public enum SerializeProtocolEnum {
      * @param serializeProtocol the serialize protocol
      * @return the serialize protocol enum
      */
-    public static SerializeProtocolEnum acquireSerializeProtocol(String serializeProtocol) {
+    public static SerializeProtocolEnum acquireSerializeProtocol(final String serializeProtocol) {
         Optional<SerializeProtocolEnum> serializeProtocolEnum =
                 Arrays.stream(SerializeProtocolEnum.values())
                         .filter(v -> Objects.equals(v.getSerializeProtocol(), serializeProtocol))
                         .findFirst();
         return serializeProtocolEnum.orElse(SerializeProtocolEnum.KRYO);
-
     }
 
     /**
@@ -76,15 +76,5 @@ public enum SerializeProtocolEnum {
     public String getSerializeProtocol() {
         return serializeProtocol;
     }
-
-    /**
-     * Sets serialize protocol.
-     *
-     * @param serializeProtocol the serialize protocol
-     */
-    public void setSerializeProtocol(String serializeProtocol) {
-        this.serializeProtocol = serializeProtocol;
-    }
-
 
 }

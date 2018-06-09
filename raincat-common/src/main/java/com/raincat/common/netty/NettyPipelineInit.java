@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty;
 
 import com.raincat.common.enums.SerializeProtocolEnum;
@@ -31,10 +32,17 @@ import com.raincat.common.netty.serizlize.protostuff.ProtostuffEncoder;
 import io.netty.channel.ChannelPipeline;
 
 /**
+ * NettyPipelineInit.
  * @author xiaoyu
  */
 public class NettyPipelineInit {
-    public static void serializePipeline(SerializeProtocolEnum serializeProtocol, ChannelPipeline pipeline) {
+
+    /**
+     * add encoder and decoder in NettyPipeline.
+     * @param serializeProtocol {@linkplain SerializeProtocolEnum}
+     * @param pipeline {@linkplain ChannelPipeline}
+     */
+    public static void serializePipeline(final SerializeProtocolEnum serializeProtocol, final ChannelPipeline pipeline) {
         switch (serializeProtocol) {
             case KRYO:
                 KryoCodecServiceImpl kryoCodecServiceImpl = new KryoCodecServiceImpl(KryoPoolFactory.getKryoPoolInstance());

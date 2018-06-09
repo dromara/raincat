@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty.serizlize.kryo;
 
 import com.esotericsoftware.kryo.pool.KryoPool;
@@ -27,19 +28,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
+ * KryoCodecServiceImpl.
  * @author xiaoyu
  */
 public class KryoCodecServiceImpl implements MessageCodecService {
 
-    private KryoPool pool;
     private static Closer closer = Closer.create();
 
-    public KryoCodecServiceImpl(KryoPool pool) {
+    private KryoPool pool;
+
+    public KryoCodecServiceImpl(final KryoPool pool) {
         this.pool = pool;
     }
 
     @Override
-    public void encode(ByteBuf out, Object message) throws IOException {
+    public void encode(final ByteBuf out, final Object message) throws IOException {
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             closer.register(byteArrayOutputStream);
@@ -55,14 +58,14 @@ public class KryoCodecServiceImpl implements MessageCodecService {
     }
 
     @Override
-    public Object decode(byte[] body) throws IOException {
+    public Object decode(final byte[] body) throws IOException {
         try {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(body);
             closer.register(byteArrayInputStream);
             KryoSerialize kryoSerialization = new KryoSerialize(pool);
             return kryoSerialization.deserialize(byteArrayInputStream);
         } finally {
-           // closer.close();
+            closer.close();
         }
     }
 }

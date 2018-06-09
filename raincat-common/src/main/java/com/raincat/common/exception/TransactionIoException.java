@@ -15,20 +15,22 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.exception;
 
 /**
+ * TransactionIoException.
  * @author xiaoyu
  */
 public class TransactionIoException extends RuntimeException {
 
     private static final long serialVersionUID = 6508064607297986329L;
 
-    public TransactionIoException(String message) {
+    public TransactionIoException(final String message) {
         super(message);
     }
 
-    public TransactionIoException(Throwable e) {
+    public TransactionIoException(final Throwable e) {
         super(e);
     }
 }

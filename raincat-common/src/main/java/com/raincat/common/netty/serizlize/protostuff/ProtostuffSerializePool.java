@@ -15,21 +15,34 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty.serizlize.protostuff;
 
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 /**
+ * ProtostuffSerializePool.
  * @author xiaoyu
  */
 public class ProtostuffSerializePool {
 
-    private GenericObjectPool<ProtostuffSerialize> protostuffpool;
-    private static volatile ProtostuffSerializePool poolFactory = null;
+    private static volatile ProtostuffSerializePool poolFactory;
+
+    private GenericObjectPool<ProtostuffSerialize> protostuffPool;
 
     private ProtostuffSerializePool() {
-        protostuffpool = new GenericObjectPool<>(new ProtostuffSerializeFactory());
+        protostuffPool = new GenericObjectPool<>(new ProtostuffSerializeFactory());
+    }
+
+    public ProtostuffSerializePool(final int maxTotal, final int minIdle, final long maxWaitMillis, final long minEvictableIdleTimeMillis) {
+        protostuffPool = new GenericObjectPool<>(new ProtostuffSerializeFactory());
+        GenericObjectPoolConfig config = new GenericObjectPoolConfig();
+        config.setMaxTotal(maxTotal);
+        config.setMinIdle(minIdle);
+        config.setMaxWaitMillis(maxWaitMillis);
+        config.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
+        protostuffPool.setConfig(config);
     }
 
     public static ProtostuffSerializePool getProtostuffPoolInstance() {
@@ -43,22 +56,9 @@ public class ProtostuffSerializePool {
         return poolFactory;
     }
 
-    public ProtostuffSerializePool(final int maxTotal, final int minIdle, final long maxWaitMillis, final long minEvictableIdleTimeMillis) {
-        protostuffpool = new GenericObjectPool<>(new ProtostuffSerializeFactory());
-
-        GenericObjectPoolConfig config = new GenericObjectPoolConfig();
-
-        config.setMaxTotal(maxTotal);
-        config.setMinIdle(minIdle);
-        config.setMaxWaitMillis(maxWaitMillis);
-        config.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
-
-        protostuffpool.setConfig(config);
-    }
-
     public ProtostuffSerialize borrow() {
         try {
-            return getProtostuffpool().borrowObject();
+            return getProtostuffPool().borrowObject();
         } catch (final Exception ex) {
             ex.printStackTrace();
             return null;
@@ -66,11 +66,11 @@ public class ProtostuffSerializePool {
     }
 
     public void restore(final ProtostuffSerialize object) {
-        getProtostuffpool().returnObject(object);
+        getProtostuffPool().returnObject(object);
     }
 
-    public GenericObjectPool<ProtostuffSerialize> getProtostuffpool() {
-        return protostuffpool;
+    public GenericObjectPool<ProtostuffSerialize> getProtostuffPool() {
+        return protostuffPool;
     }
 }
 

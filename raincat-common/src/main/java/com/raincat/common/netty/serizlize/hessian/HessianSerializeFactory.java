@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty.serizlize.hessian;
 
 import org.apache.commons.pool2.BasePooledObjectFactory;
@@ -22,17 +23,18 @@ import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
 
 /**
+ * HessianSerializeFactory.
  * @author xiaoyu
  */
 public class HessianSerializeFactory extends BasePooledObjectFactory<HessianSerialize> {
 
     @Override
-    public HessianSerialize create() throws Exception {
+    public HessianSerialize create() {
         return createHessian();
     }
 
     @Override
-    public PooledObject<HessianSerialize> wrap(HessianSerialize hessian) {
+    public PooledObject<HessianSerialize> wrap(final HessianSerialize hessian) {
         return new DefaultPooledObject<>(hessian);
     }
 

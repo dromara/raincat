@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty.serizlize.hessian;
 
 import com.caucho.hessian.io.Hessian2Input;
@@ -26,12 +27,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * HessianSerialize.
  * @author xiaoyu
  */
 public class HessianSerialize implements NettyTransferSerialize {
 
     @Override
-    public void serialize(OutputStream output, Object object) {
+    public void serialize(final OutputStream output, final Object object) {
         Hessian2Output ho = new Hessian2Output(output);
         try {
             ho.startMessage();
@@ -45,7 +47,7 @@ public class HessianSerialize implements NettyTransferSerialize {
     }
 
     @Override
-    public Object deserialize(InputStream input) {
+    public Object deserialize(final InputStream input) {
         Object result = null;
         try {
             Hessian2Input hi = new Hessian2Input(input);
@@ -59,4 +61,5 @@ public class HessianSerialize implements NettyTransferSerialize {
         }
         return result;
     }
+
 }

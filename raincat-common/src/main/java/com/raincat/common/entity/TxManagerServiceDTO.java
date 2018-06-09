@@ -15,12 +15,13 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.common.entity;
 
+package com.raincat.common.entity;
 
 import lombok.Data;
 
 /**
+ * TxManagerServiceDTO.
  * @author xiaoyu
  */
 @Data

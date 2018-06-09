@@ -1,22 +1,21 @@
 /*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Copyright 2017-2018 549477611@qq.com(xiaoyu)
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * This copyrighted material is made available to anyone wishing to use, modify,
- * copy, or redistribute it subject to the terms and conditions of the GNU
- * Lesser General Public License, as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package com.raincat.common.serializer;
 
+package com.raincat.common.serializer;
 
 import com.raincat.common.enums.SerializeProtocolEnum;
 import com.raincat.common.exception.TransactionException;
@@ -30,38 +29,34 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
 /**
+ * JavaSerializer.
  * @author xiaoyu
  */
 @SuppressWarnings("unchecked")
 public class JavaSerializer implements ObjectSerializer {
+
     @Override
-    public byte[] serialize(Object obj) throws TransactionException {
-        ByteArrayOutputStream arrayOutputStream;
-        try {
-            arrayOutputStream = new ByteArrayOutputStream();
-            ObjectOutput objectOutput = new ObjectOutputStream(arrayOutputStream);
+    public byte[] serialize(final Object obj) throws TransactionException {
+        try (ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream(); ObjectOutput objectOutput = new ObjectOutputStream(arrayOutputStream)) {
             objectOutput.writeObject(obj);
             objectOutput.flush();
-            objectOutput.close();
+            return arrayOutputStream.toByteArray();
         } catch (IOException e) {
-            throw new TransactionException("JAVA serialize error " + e.getMessage());
+            throw new TransactionException("java serialize error " + e.getMessage());
         }
-        return arrayOutputStream.toByteArray();
     }
 
     @Override
-    public <T> T deSerialize(byte[] param, Class<T> clazz) throws TransactionException {
-        ByteArrayInputStream arrayInputStream = new ByteArrayInputStream(param);
-        try {
-            ObjectInput input = new ObjectInputStream(arrayInputStream);
+    public <T> T deSerialize(final byte[] param, final Class<T> clazz) throws TransactionException {
+        try (ByteArrayInputStream arrayInputStream = new ByteArrayInputStream(param); ObjectInput input = new ObjectInputStream(arrayInputStream)) {
             return (T) input.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            throw new TransactionException("JAVA deSerialize error " + e.getMessage());
+            throw new TransactionException("java deSerialize error " + e.getMessage());
         }
     }
 
     /**
-     * 设置scheme
+     * 设置scheme.
      *
      * @return scheme 命名
      */

@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.bean.adapter;
 
 import lombok.Data;
@@ -23,6 +24,7 @@ import org.bson.types.ObjectId;
 import java.io.Serializable;
 
 /**
+ * MongoAdapter.
  * @author xiaoyu
  */
 @Data

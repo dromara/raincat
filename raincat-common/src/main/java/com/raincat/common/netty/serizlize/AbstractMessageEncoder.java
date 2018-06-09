@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty.serizlize;
 
 import com.raincat.common.netty.MessageCodecService;
@@ -23,11 +24,12 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
 /**
+ * AbstractMessageEncoder.
  * @author xiaoyu
  */
 public abstract class AbstractMessageEncoder extends MessageToByteEncoder<Object> {
 
-    private MessageCodecService util = null;
+    private MessageCodecService util;
 
     public AbstractMessageEncoder(final MessageCodecService util) {
         this.util = util;

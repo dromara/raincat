@@ -19,20 +19,14 @@
 package com.raincat.common.constant;
 
 /**
- * <p>Description: .</p>
- *
+ * CommonConstant.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/18 15:36
- * @since JDK 1.8
  */
 public interface CommonConstant {
-
 
     String REDIS_PRE_FIX = "transaction:group:%s";
 
     String REDIS_KEYS = "transaction:group:*";
-
 
     String REDIS_KEY_SET = "transaction:group";
 
@@ -43,7 +37,6 @@ public interface CommonConstant {
     String DB_SUFFIX = "tx_";
 
     String RECOVER_REDIS_KEY_PRE = "transaction:recover:%s";
-
 
     String DB_MYSQL = "mysql";
 

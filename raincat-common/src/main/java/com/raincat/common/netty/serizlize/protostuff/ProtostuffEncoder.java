@@ -15,18 +15,19 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.common.netty.serizlize.protostuff;
 
+package com.raincat.common.netty.serizlize.protostuff;
 
 import com.raincat.common.netty.MessageCodecService;
 import com.raincat.common.netty.serizlize.AbstractMessageEncoder;
 
 /**
+ * ProtostuffEncoder.
  * @author xiaoyu
  */
 public class ProtostuffEncoder extends AbstractMessageEncoder {
 
-    public ProtostuffEncoder(MessageCodecService util) {
+    public ProtostuffEncoder(final MessageCodecService util) {
         super(util);
     }
 }

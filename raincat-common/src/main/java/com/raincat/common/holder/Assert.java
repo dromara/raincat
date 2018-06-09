@@ -17,11 +17,10 @@
  */
 package com.raincat.common.holder;
 
-
 import com.raincat.common.exception.TransactionRuntimeException;
 
-
 /**
+ * Assert.
  * @author xiaoyu
  */
 public class Assert {

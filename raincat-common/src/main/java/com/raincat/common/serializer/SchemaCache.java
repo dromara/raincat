@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.serializer;
 
 import com.dyuproject.protostuff.Schema;
@@ -26,22 +27,19 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * SchemaCache.
  * @author xiaoyu
  */
 public class SchemaCache {
-    private static class SchemaCacheHolder {
-        private static SchemaCache cache = new SchemaCache();
-    }
 
-    public static SchemaCache getInstance() {
+    private Cache<Class<?>, Schema<?>> cache = CacheBuilder.newBuilder()
+            .maximumSize(1024).expireAfterWrite(1, TimeUnit.HOURS).build();
+
+    protected static SchemaCache getInstance() {
         return SchemaCacheHolder.cache;
     }
 
-    private Cache<Class<?>, Schema<?>> cache = CacheBuilder.newBuilder()
-            .maximumSize(1024).expireAfterWrite(1, TimeUnit.HOURS)
-            .build();
-
-    private Schema<?> get(final Class<?> cls, Cache<Class<?>, Schema<?>> cache) {
+    private Schema<?> get(final Class<?> cls, final Cache<Class<?>, Schema<?>> cache) {
         try {
             return cache.get(cls, () -> RuntimeSchema.createFrom(cls));
         } catch (ExecutionException e) {
@@ -49,8 +47,17 @@ public class SchemaCache {
         }
     }
 
-    public Schema<?> get(final Class<?> cls) {
-        return get(cls, cache);
+    /**
+     * acquire Schema with class.
+     * @param clazz Class
+     * @return Schema<?>
+     */
+    public Schema<?> get(final Class<?> clazz) {
+        return get(clazz, cache);
+    }
+
+    private static class SchemaCacheHolder {
+        private static SchemaCache cache = new SchemaCache();
     }
 }
 

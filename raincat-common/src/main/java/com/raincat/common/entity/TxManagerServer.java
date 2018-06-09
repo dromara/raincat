@@ -15,25 +15,26 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.entity;
 
 import lombok.Data;
 
 /**
+ * TxManagerServer.
  * @author xiaoyu
  */
 @Data
 public class TxManagerServer {
 
     /**
-     * TxManagerServer host
+     * TxManagerServer host.
      */
     private String host;
 
     /**
-     * TxManagerServer port
+     * TxManagerServer port.
      */
     private Integer port;
-
 
 }

@@ -15,9 +15,11 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.exception;
 
 /**
+ * TransactionException.
  * @author xiaoyu
  */
 public class TransactionException extends Exception {
@@ -26,15 +28,15 @@ public class TransactionException extends Exception {
     public TransactionException() {
     }
 
-    public TransactionException(String message) {
+    public TransactionException(final String message) {
         super(message);
     }
 
-    public TransactionException(String message, Throwable cause) {
+    public TransactionException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public TransactionException(Throwable cause) {
+    public TransactionException(final Throwable cause) {
         super(cause);
     }
 }

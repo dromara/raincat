@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty.bean;
 
 import com.raincat.common.enums.TransactionStatusEnum;
@@ -23,31 +24,30 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.List;
 
-
 /**
+ * TxTransactionGroup.
  * @author xiaoyu
  */
 @Data
 public class TxTransactionGroup implements Serializable {
 
-
     private static final long serialVersionUID = -8826219545126676832L;
 
     /**
-     * 事务组id
+     * 事务组id.
      */
     private String id;
 
     /**
-     * 事务等待时间
+     * 事务等待时间.
      */
     private int waitTime;
 
     /**
-     * 事务状态 {@linkplain TransactionStatusEnum}
+     * 事务状态. {@linkplain TransactionStatusEnum}
      */
     private int status;
 
-    private  List<TxTransactionItem> itemList;
+    private List<TxTransactionItem> itemList;
 
 }

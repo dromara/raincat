@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty.serizlize;
 
 import com.raincat.common.netty.MessageCodecService;
@@ -28,36 +29,34 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * AbstractMessageDecoder.
  * @author xiaoyu
  */
-public  abstract class AbstractMessageDecoder extends ByteToMessageDecoder {
+public abstract class AbstractMessageDecoder extends ByteToMessageDecoder {
 
-    final private static int MESSAGE_LENGTH = MessageCodecService.MESSAGE_LENGTH;
-    private MessageCodecService util = null;
+    private static final int MESSAGE_LENGTH = MessageCodecService.MESSAGE_LENGTH;
+
+    private MessageCodecService util;
 
     public AbstractMessageDecoder(final MessageCodecService service) {
         this.util = service;
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
+    protected void decode(final ChannelHandlerContext ctx, final ByteBuf in, final List<Object> out) {
         if (in.readableBytes() < AbstractMessageDecoder.MESSAGE_LENGTH) {
             return;
         }
-
         in.markReaderIndex();
         int messageLength = in.readInt();
-
         if (messageLength < 0) {
             ctx.close();
         }
-
         if (in.readableBytes() < messageLength) {
             in.resetReaderIndex();
         } else {
             byte[] messageBody = new byte[messageLength];
             in.readBytes(messageBody);
-
             try {
                 Object obj = util.decode(messageBody);
                 out.add(obj);

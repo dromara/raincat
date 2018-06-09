@@ -15,10 +15,11 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.enums;
 
-
 /**
+ * PropagationEnum.
  * @author xiaoyu
  */
 public enum PropagationEnum {
@@ -61,7 +62,7 @@ public enum PropagationEnum {
 
     private final int value;
 
-    PropagationEnum(int value) {
+    PropagationEnum(final int value) {
         this.value = value;
     }
 
@@ -73,10 +74,5 @@ public enum PropagationEnum {
     public int getValue() {
         return this.value;
     }
-
-
-
-
-
 
 }

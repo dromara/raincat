@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.enums;
 
 import java.util.Arrays;
@@ -22,6 +23,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
+ * CompensationCacheTypeEnum.
  * @author xiaoyu
  */
 public enum CompensationCacheTypeEnum {
@@ -53,7 +55,7 @@ public enum CompensationCacheTypeEnum {
 
     private String compensationCacheType;
 
-    CompensationCacheTypeEnum(String compensationCacheType) {
+    CompensationCacheTypeEnum(final String compensationCacheType) {
         this.compensationCacheType = compensationCacheType;
     }
 
@@ -63,7 +65,7 @@ public enum CompensationCacheTypeEnum {
      * @param compensationCacheType the compensate cache type
      * @return the compensate cache type enum
      */
-    public static CompensationCacheTypeEnum acquireCompensationCacheType(String compensationCacheType) {
+    public static CompensationCacheTypeEnum acquireCompensationCacheType(final String compensationCacheType) {
         Optional<CompensationCacheTypeEnum> serializeProtocolEnum =
                 Arrays.stream(CompensationCacheTypeEnum.values())
                         .filter(v -> Objects.equals(v.getCompensationCacheType(), compensationCacheType))
@@ -85,7 +87,7 @@ public enum CompensationCacheTypeEnum {
      *
      * @param compensationCacheType the compensate cache type
      */
-    public void setCompensationCacheType(String compensationCacheType) {
+    public void setCompensationCacheType(final String compensationCacheType) {
         this.compensationCacheType = compensationCacheType;
     }
 }

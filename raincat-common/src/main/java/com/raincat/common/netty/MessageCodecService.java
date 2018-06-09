@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty;
 
 import io.netty.buffer.ByteBuf;
@@ -22,35 +23,27 @@ import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 
 /**
+ * MessageCodecService.
  * @author xiaoyu
  */
 public interface MessageCodecService {
 
     /**
-     * 消息定长
+     * 消息定长.
      */
     int MESSAGE_LENGTH = 4;
 
-
     /**
-     * netty 将java对象转成byteBuf
+     * netty 将java对象转成byteBuf.
      *
      * @param out     输出byteBuf
      * @param message 对象信息
      * @throws IOException io异常
      */
-    void encode(final ByteBuf out, final Object message) throws IOException;
-
-
-    /**
-     * netty 将java对象转成byteBuf
-     * @param out 输出byteBuf
-     * @param message  对象信息
-     * @throws IOException io异常
-     */
+    void encode(ByteBuf out, Object message) throws IOException;
 
     /**
-     * netty 将byteBuf转成java对象
+     * netty 将byteBuf转成java对象.
      *
      * @param body byte数组
      * @return Object

@@ -15,42 +15,60 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.config;
 
 import lombok.Data;
 
 /**
+ * TxRedisConfig.
  * @author xiaoyu
  */
 @Data
 public class TxRedisConfig {
 
     /**
-     * 是否集群模式
+     * 是否集群模式.
      */
     private Boolean cluster = false;
 
     /**
-     * 集群url   ip:port;ip:port
+     * 集群url   ip:port;ip:port.
      */
     private String clusterUrl;
 
     private String hostName;
+
     private int port;
+
     private String password;
+
     private int maxTotal = 8;
+
     private int maxIdle = 8;
-    private int minIdle = 0;
+
+    private int minIdle;
+
     private long maxWaitMillis = -1L;
+
     private long minEvictableIdleTimeMillis = 1800000L;
+
     private long softMinEvictableIdleTimeMillis = 1800000L;
+
     private int numTestsPerEvictionRun = 3;
+
     private Boolean testOnCreate = false;
+
     private Boolean testOnBorrow = false;
+
     private Boolean testOnReturn = false;
+
     private Boolean testWhileIdle = false;
+
     private long timeBetweenEvictionRunsMillis = -1L;
+
     private Boolean blockWhenExhausted = true;
+
     private int timeOut = 10000;
 
 }

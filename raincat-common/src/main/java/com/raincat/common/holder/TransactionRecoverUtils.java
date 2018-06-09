@@ -25,18 +25,12 @@ import com.raincat.common.exception.TransactionException;
 import com.raincat.common.serializer.ObjectSerializer;
 
 /**
- * <p>Description: .</p>
- *
+ * TransactionRecoverUtils.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/30 11:04
- * @since JDK 1.8
  */
 public class TransactionRecoverUtils {
 
-
-    public static byte[] convert(TransactionRecover transactionRecover,
-                                 ObjectSerializer objectSerializer) throws TransactionException {
+    public static byte[] convert(final TransactionRecover transactionRecover, final ObjectSerializer objectSerializer) throws TransactionException {
         TransactionRecoverAdapter adapter = new TransactionRecoverAdapter();
         final TransactionInvocation transactionInvocation = transactionRecover.getTransactionInvocation();
         adapter.setGroupId(transactionRecover.getGroupId());
@@ -53,16 +47,9 @@ public class TransactionRecoverUtils {
         return objectSerializer.serialize(adapter);
     }
 
-
-
-    public static TransactionRecover transformVO(byte[] contents,
-                                                   ObjectSerializer objectSerializer) throws TransactionException {
+    public static TransactionRecover transformVO(final byte[] contents, final ObjectSerializer objectSerializer) throws TransactionException {
         TransactionRecover transactionRecover = new TransactionRecover();
-
-        final TransactionRecoverAdapter adapter =
-                objectSerializer.deSerialize(contents, TransactionRecoverAdapter.class);
-
-
+        final TransactionRecoverAdapter adapter = objectSerializer.deSerialize(contents, TransactionRecoverAdapter.class);
         transactionRecover.setLastTime(adapter.getLastTime());
         transactionRecover.setRetriedCount(adapter.getRetriedCount());
         transactionRecover.setCreateTime(adapter.getCreateTime());
@@ -70,25 +57,14 @@ public class TransactionRecoverUtils {
         transactionRecover.setId(adapter.getTransId());
         transactionRecover.setTaskId(adapter.getTaskId());
         transactionRecover.setStatus(adapter.getStatus());
-
         transactionRecover.setVersion(adapter.getVersion());
         return transactionRecover;
-
-
     }
 
-
-
-    public static TransactionRecover transformBean(byte[] contents,
-                                                   ObjectSerializer objectSerializer) throws TransactionException {
+    public static TransactionRecover transformBean(final byte[] contents, final ObjectSerializer objectSerializer) throws TransactionException {
         TransactionRecover transactionRecover = new TransactionRecover();
-
-        final TransactionRecoverAdapter adapter =
-                objectSerializer.deSerialize(contents, TransactionRecoverAdapter.class);
-
-        TransactionInvocation transactionInvocation =
-                objectSerializer.deSerialize(adapter.getContents(), TransactionInvocation.class);
-
+        final TransactionRecoverAdapter adapter = objectSerializer.deSerialize(contents, TransactionRecoverAdapter.class);
+        TransactionInvocation transactionInvocation = objectSerializer.deSerialize(adapter.getContents(), TransactionInvocation.class);
         transactionRecover.setLastTime(adapter.getLastTime());
         transactionRecover.setRetriedCount(adapter.getRetriedCount());
         transactionRecover.setCreateTime(adapter.getCreateTime());
@@ -99,7 +75,5 @@ public class TransactionRecoverUtils {
         transactionRecover.setTransactionInvocation(transactionInvocation);
         transactionRecover.setVersion(adapter.getVersion());
         return transactionRecover;
-
-
     }
 }

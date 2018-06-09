@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.bean;
 
 import lombok.AllArgsConstructor;
@@ -25,33 +26,38 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
+ * TransactionInvocation.
  * @author xiaoyu
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionInvocation implements Serializable {
+
     private static final long serialVersionUID = 7722060715819141844L;
+
     /**
-     * 事务执行器
+     * 事务执行器.
      */
     @Getter
     private Class targetClazz;
+
     /**
-     * 方法
+     * 方法.
      */
     @Getter
     private String method;
+
     /**
-     * 参数值
+     * 参数值.
      */
     @Getter
     private Object[] argumentValues;
+
     /**
-     * 参数类型
+     * 参数类型.
      */
     @Getter
     private Class[] argumentTypes;
-
 
 }

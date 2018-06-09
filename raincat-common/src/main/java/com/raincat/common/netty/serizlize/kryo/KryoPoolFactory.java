@@ -15,8 +15,8 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.common.netty.serizlize.kryo;
 
+package com.raincat.common.netty.serizlize.kryo;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.pool.KryoFactory;
@@ -25,11 +25,12 @@ import com.raincat.common.netty.bean.HeartBeat;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
 /**
+ * KryoPoolFactory.
  * @author xiaoyu
  */
-public class KryoPoolFactory {
+public final class KryoPoolFactory {
 
-    private static volatile KryoPoolFactory poolFactory = null;
+    private static volatile KryoPoolFactory poolFactory;
 
     private KryoFactory factory = () -> {
         Kryo kryo = new Kryo();

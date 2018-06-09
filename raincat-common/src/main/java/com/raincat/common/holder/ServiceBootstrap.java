@@ -15,18 +15,19 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.holder;
 
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
 /**
+ * ServiceBootstrap.
  * @author xiaoyu
  */
 public class ServiceBootstrap {
 
-
-    public static <S> S loadFirst(Class<S> clazz) {
+    public static <S> S loadFirst(final Class<S> clazz) {
         final ServiceLoader<S> loader = loadAll(clazz);
         final Iterator<S> iterator = loader.iterator();
         if (!iterator.hasNext()) {
@@ -37,7 +38,7 @@ public class ServiceBootstrap {
         return iterator.next();
     }
 
-    public static <S> ServiceLoader<S> loadAll(Class<S> clazz) {
+    public static <S> ServiceLoader<S> loadAll(final Class<S> clazz) {
         return ServiceLoader.load(clazz);
     }
 }

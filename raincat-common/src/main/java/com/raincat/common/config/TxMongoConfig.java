@@ -15,32 +15,35 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.config;
 
 import lombok.Data;
 
 /**
+ * TxMongoConfig.
  * @author xiaoyu
  */
 @Data
 public class TxMongoConfig {
 
     /**
-     * mongo数据库设置
+     * mongo数据库设置.
      */
     private String mongoDbName;
 
     /**
-     * mongo数据库URL
+     * mongo数据库URL.
      */
     private String mongoDbUrl;
+
     /**
-     * mongo数据库用户名
+     * mongo数据库用户名.
      */
     private String mongoUserName;
 
     /**
-     * mongo数据库密码
+     * mongo数据库密码.
      */
     private String mongoUserPwd;
 

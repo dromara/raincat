@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.enums;
 
 /**
@@ -26,32 +27,30 @@ public enum CompensationActionEnum {
     /**
      * Save compensate action enum.
      */
-    SAVE(0,"保存"),
+    SAVE(0, "保存"),
 
     /**
      * Delete compensate action enum.
      */
-    DELETE(1,"删除"),
+    DELETE(1, "删除"),
 
     /**
      * Update compensate action enum.
      */
-    UPDATE(2,"更新"),
+    UPDATE(2, "更新"),
 
     /**
      * Compensate compensate action enum.
      */
-    COMPENSATE(3,"补偿"),
-
-    ;
+    COMPENSATE(3, "补偿");
 
     private int code;
 
     private String desc;
 
-    CompensationActionEnum(int code,String desc){
-        this.code=code;
-        this.desc=desc;
+    CompensationActionEnum(final int code, final String desc) {
+        this.code = code;
+        this.desc = desc;
     }
 
     /**
@@ -68,7 +67,7 @@ public enum CompensationActionEnum {
      *
      * @param code the code
      */
-    public void setCode(int code) {
+    public void setCode(final int code) {
         this.code = code;
     }
 
@@ -86,7 +85,7 @@ public enum CompensationActionEnum {
      *
      * @param desc the desc
      */
-    public void setDesc(String desc) {
+    public void setDesc(final String desc) {
         this.desc = desc;
     }
 }

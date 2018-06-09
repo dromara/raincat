@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.enums;
 
 import java.util.Arrays;
@@ -28,12 +29,10 @@ import java.util.Optional;
  */
 public enum TransactionRoleEnum {
 
-
     /**
      * Start transaction role enum.
      */
     START(0, "发起者"),
-
 
     /**
      * Actor transaction role enum.
@@ -41,22 +40,20 @@ public enum TransactionRoleEnum {
     ACTOR(1, "参与者"),
 
     /**
-     * 事务组
+     * 事务组.
      */
-    GROUP(2,"事务组")
-    ;
-
+    GROUP(2, "事务组");
 
     private int code;
 
     private String desc;
 
-    TransactionRoleEnum(int code, String desc) {
+    TransactionRoleEnum(final int code, final String desc) {
         this.code = code;
         this.desc = desc;
     }
 
-    public static TransactionRoleEnum acquireByCode(int code) {
+    public static TransactionRoleEnum acquireByCode(final int code) {
         Optional<TransactionRoleEnum> roleEnum =
                 Arrays.stream(TransactionRoleEnum.values())
                         .filter(v -> Objects.equals(v.getCode(), code))
@@ -65,7 +62,7 @@ public enum TransactionRoleEnum {
 
     }
 
-    public static String acquireDescByCode(int code) {
+    public static String acquireDescByCode(final int code) {
         return acquireByCode(code).getDesc();
     }
 
@@ -84,7 +81,7 @@ public enum TransactionRoleEnum {
      *
      * @param code the code
      */
-    public void setCode(int code) {
+    public void setCode(final int code) {
         this.code = code;
     }
 
@@ -102,7 +99,7 @@ public enum TransactionRoleEnum {
      *
      * @param desc the desc
      */
-    public void setDesc(String desc) {
+    public void setDesc(final String desc) {
         this.desc = desc;
     }
 }

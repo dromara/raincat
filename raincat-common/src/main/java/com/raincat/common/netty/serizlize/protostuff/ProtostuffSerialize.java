@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty.serizlize.protostuff;
 
 import com.dyuproject.protostuff.LinkedBuffer;
@@ -29,18 +30,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * ProtostuffSerialize.
  * @author xiaoyu
  */
 public class ProtostuffSerialize implements NettyTransferSerialize {
+
     private static SchemaCache cachedSchema = SchemaCache.getInstance();
+
     private static Objenesis objenesis = new ObjenesisStd(true);
 
-    private static <T> Schema<T> getSchema(Class<T> cls) {
+    private static <T> Schema<T> getSchema(final Class<T> cls) {
         return (Schema<T>) cachedSchema.get(cls);
     }
 
     @Override
-    public Object deserialize(InputStream input) {
+    public Object deserialize(final InputStream input) {
         try {
             HeartBeat message = objenesis.newInstance(HeartBeat.class);
             Schema<HeartBeat> schema = getSchema(HeartBeat.class);
@@ -52,7 +56,7 @@ public class ProtostuffSerialize implements NettyTransferSerialize {
     }
 
     @Override
-    public void serialize(OutputStream output, Object object) {
+    public void serialize(final OutputStream output, final Object object) {
         Class cls = object.getClass();
         LinkedBuffer buffer = LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE);
         try {

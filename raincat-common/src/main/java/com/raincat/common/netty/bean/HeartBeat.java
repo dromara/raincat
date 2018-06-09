@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty.bean;
 
 import com.raincat.common.enums.NettyMessageActionEnum;
@@ -24,6 +25,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
+ * HeartBeat.
  * @author xiaoyu
  */
 @Data
@@ -31,30 +33,24 @@ public class HeartBeat implements Serializable {
 
     private static final long serialVersionUID = 4183978848464761529L;
 
-
     /**
-     * 执行动作 {@linkplain NettyMessageActionEnum}
+     * 执行动作. {@linkplain NettyMessageActionEnum}
      */
     private int action;
 
-
     /**
-     * 执行发送数据任务task key
+     * 执行发送数据任务task key.
      */
     private String key;
 
-
     /**
-     * {@linkplain NettyResultEnum}
+     * result. {@linkplain NettyResultEnum}
      */
     private int result;
 
-
     /**
-     * 事务组信息
+     * 事务组信息.
      */
     private TxTransactionGroup txTransactionGroup;
-
-
 
 }

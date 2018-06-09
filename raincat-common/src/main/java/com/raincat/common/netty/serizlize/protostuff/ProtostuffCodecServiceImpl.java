@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty.serizlize.protostuff;
 
 import com.google.common.io.Closer;
@@ -26,11 +27,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
+ * ProtostuffCodecServiceImpl.
  * @author xiaoyu
  */
 public class ProtostuffCodecServiceImpl implements MessageCodecService {
+
     private static Closer closer = Closer.create();
+
     private ProtostuffSerializePool pool = ProtostuffSerializePool.getProtostuffPoolInstance();
+
     @Override
     public void encode(final ByteBuf out, final Object message) throws IOException {
         try {
@@ -49,7 +54,7 @@ public class ProtostuffCodecServiceImpl implements MessageCodecService {
     }
 
     @Override
-    public Object decode(byte[] body) throws IOException {
+    public Object decode(final byte[] body) {
         try {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(body);
             closer.register(byteArrayInputStream);
@@ -58,7 +63,11 @@ public class ProtostuffCodecServiceImpl implements MessageCodecService {
             pool.restore(protostuffSerialization);
             return obj;
         } finally {
-            //closer.close();
+            try {
+                closer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

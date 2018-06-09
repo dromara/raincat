@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.config;
 
 import com.raincat.common.enums.BlockingQueueTypeEnum;
@@ -24,132 +25,120 @@ import com.raincat.common.enums.SerializeProtocolEnum;
 import lombok.Data;
 
 /**
+ * TxConfig.
  * @author xiaoyu
  */
 @Data
 public class TxConfig {
 
     /**
-     * 提供不同的序列化对象 {@linkplain SerializeProtocolEnum}
+     * 提供不同的序列化对象. {@linkplain SerializeProtocolEnum}
      */
     private String serializer = "kryo";
 
-
     /**
-     * netty 传输的序列化协议
+     * netty 传输的序列化协议.
      */
     private String nettySerializer = "kryo";
 
-
     /**
-     * 延迟时间
+     * 延迟时间.
      */
     private int delayTime = 30;
 
-
     /**
-     * 执行事务的线程数大小
+     * 执行事务的线程数大小.
      */
     private int transactionThreadMax = Runtime.getRuntime().availableProcessors() << 1;
 
-
     /**
-     * netty 工作线程大小
+     * netty 工作线程大小.
      */
     private int nettyThreadMax = Runtime.getRuntime().availableProcessors() << 1;
 
     /**
-     * 心跳时间 默认10秒
+     * 心跳时间 默认10秒.
      */
     private int heartTime = 10;
 
-
     /**
-     * 线程池的拒绝策略 {@linkplain RejectedPolicyTypeEnum}
+     * 线程池的拒绝策略. {@linkplain RejectedPolicyTypeEnum}
      */
     private String rejectPolicy = "Abort";
 
     /**
-     * 线程池的队列类型 {@linkplain BlockingQueueTypeEnum}
+     * 线程池的队列类型. {@linkplain BlockingQueueTypeEnum}
      */
     private String blockingQueueType = "Linked";
 
     /**
-     * 是否需要补偿
+     * 是否需要补偿.
      */
     private Boolean compensation = false;
 
     /**
-     * 补偿存储类型 {@linkplain CompensationCacheTypeEnum}
+     * 补偿存储类型. {@linkplain CompensationCacheTypeEnum}
      */
     private String compensationCacheType;
 
-
     /**
-     * 回滚队列大小
+     * 回滚队列大小.
      */
     private int compensationQueueMax = 5000;
+
     /**
-     * 监听回滚队列线程数
+     * 监听回滚队列线程数.
      */
     private int compensationThreadMax = Runtime.getRuntime().availableProcessors() << 1;
 
-
     /**
-     * 补偿恢复时间 单位秒
+     * 补偿恢复时间 单位秒.
      */
     private int compensationRecoverTime = 60;
 
-
     /**
-     * 更新tmInfo 的时间间隔
+     * 更新tmInfo 的时间间隔.
      */
     private int refreshInterval = 60;
 
-
     /**
-     * 最大重试次数
+     * 最大重试次数.
      */
     private int retryMax = 10;
 
-
     /**
-     * 事务恢复间隔时间 单位秒（注意 此时间表示本地事务创建的时间多少秒以后才会执行）
+     * 事务恢复间隔时间 单位秒（注意 此时间表示本地事务创建的时间多少秒以后才会执行）.
      */
     private int recoverDelayTime = 60;
 
-
     /**
-     * txManagerUrl服务地址
+     * txManagerUrl服务地址.
      */
     private String txManagerUrl;
 
-
     /**
-     * db存储方式时候 数据库配置信息
+     * db存储方式时候 数据库配置信息.
      */
     private TxDbConfig txDbConfig;
 
     /**
-     * mongo存储方式时候的 mongo配置信息
+     * mongo存储方式时候的 mongo配置信息.
      */
     private TxMongoConfig txMongoConfig;
 
-
     /**
-     * redis存储方式时候的 redis配置信息
+     * redis存储方式时候的 redis配置信息.
      */
     private TxRedisConfig txRedisConfig;
 
     /**
-     * 文件存储配置
+     * 文件存储配置.
      */
     private TxFileConfig txFileConfig;
 
     /**
-     * zookeeper 存储的配置
+     * zookeeper 存储的配置.
      */
     private TxZookeeperConfig txZookeeperConfig;
-
 
 }

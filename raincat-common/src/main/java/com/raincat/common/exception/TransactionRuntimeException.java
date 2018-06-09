@@ -15,9 +15,11 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.exception;
 
 /**
+ * TransactionRuntimeException.
  * @author xiaoyu
  */
 public class TransactionRuntimeException extends RuntimeException {
@@ -26,15 +28,15 @@ public class TransactionRuntimeException extends RuntimeException {
     public TransactionRuntimeException() {
     }
 
-    public TransactionRuntimeException(String message) {
+    public TransactionRuntimeException(final String message) {
         super(message);
     }
 
-    public TransactionRuntimeException(String message, Throwable cause) {
+    public TransactionRuntimeException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public TransactionRuntimeException(Throwable cause) {
+    public TransactionRuntimeException(final Throwable cause) {
         super(cause);
     }
 }

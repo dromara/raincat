@@ -15,18 +15,19 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.common.netty.serizlize.hessian;
 
+package com.raincat.common.netty.serizlize.hessian;
 
 import com.raincat.common.netty.MessageCodecService;
 import com.raincat.common.netty.serizlize.AbstractMessageDecoder;
 
 /**
+ * HessianDecoder.
  * @author xiaoyu
  */
 public class HessianDecoder extends AbstractMessageDecoder {
 
-    public HessianDecoder(MessageCodecService util) {
+    public HessianDecoder(final MessageCodecService util) {
         super(util);
     }
 }

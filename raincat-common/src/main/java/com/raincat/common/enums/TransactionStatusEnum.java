@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.enums;
 
 import java.util.Arrays;
@@ -22,9 +23,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
+ * TransactionStatusEnum.
  * @author xiaoyu
  */
-
 public enum TransactionStatusEnum {
 
     /**
@@ -68,13 +69,12 @@ public enum TransactionStatusEnum {
 
     private String desc;
 
-    TransactionStatusEnum(int code, String desc) {
+    TransactionStatusEnum(final int code, final String desc) {
         this.code = code;
         this.desc = desc;
     }
 
-
-    public static TransactionStatusEnum acquireByCode(int code) {
+    public static TransactionStatusEnum acquireByCode(final int code) {
         Optional<TransactionStatusEnum> transactionStatusEnum =
                 Arrays.stream(TransactionStatusEnum.values())
                         .filter(v -> Objects.equals(v.getCode(), code))
@@ -83,7 +83,7 @@ public enum TransactionStatusEnum {
 
     }
 
-    public static String acquireDescByCode(int code) {
+    public static String acquireDescByCode(final int code) {
         return acquireByCode(code).getDesc();
     }
 
@@ -101,7 +101,7 @@ public enum TransactionStatusEnum {
      *
      * @param code the code
      */
-    public void setCode(int code) {
+    public void setCode(final int code) {
         this.code = code;
     }
 
@@ -119,7 +119,7 @@ public enum TransactionStatusEnum {
      *
      * @param desc the desc
      */
-    public void setDesc(String desc) {
+    public void setDesc(final String desc) {
         this.desc = desc;
     }
 }

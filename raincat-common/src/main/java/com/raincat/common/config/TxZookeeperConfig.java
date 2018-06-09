@@ -15,11 +15,13 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.config;
 
 import lombok.Data;
 
 /**
+ * TxZookeeperConfig.
  * @author xiaoyu
  */
 @Data

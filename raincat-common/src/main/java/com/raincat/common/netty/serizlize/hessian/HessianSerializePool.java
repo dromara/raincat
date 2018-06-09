@@ -15,22 +15,34 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty.serizlize.hessian;
 
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
-
 /**
+ * HessianSerializePool.
  * @author xiaoyu
  */
 public class HessianSerializePool {
 
+    private static volatile HessianSerializePool poolFactory;
+
     private GenericObjectPool<HessianSerialize> hessianPool;
-    private static volatile HessianSerializePool poolFactory = null;
 
     private HessianSerializePool() {
         hessianPool = new GenericObjectPool<>(new HessianSerializeFactory());
+    }
+
+    public HessianSerializePool(final int maxTotal, final int minIdle, final long maxWaitMillis, final long minEvictableIdleTimeMillis) {
+        hessianPool = new GenericObjectPool<>(new HessianSerializeFactory());
+        GenericObjectPoolConfig config = new GenericObjectPoolConfig();
+        config.setMaxTotal(maxTotal);
+        config.setMinIdle(minIdle);
+        config.setMaxWaitMillis(maxWaitMillis);
+        config.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
+        hessianPool.setConfig(config);
     }
 
     public static HessianSerializePool getHessianPoolInstance() {
@@ -42,19 +54,6 @@ public class HessianSerializePool {
             }
         }
         return poolFactory;
-    }
-
-    public HessianSerializePool(final int maxTotal, final int minIdle, final long maxWaitMillis, final long minEvictableIdleTimeMillis) {
-        hessianPool = new GenericObjectPool<>(new HessianSerializeFactory());
-
-        GenericObjectPoolConfig config = new GenericObjectPoolConfig();
-
-        config.setMaxTotal(maxTotal);
-        config.setMinIdle(minIdle);
-        config.setMaxWaitMillis(maxWaitMillis);
-        config.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
-
-        hessianPool.setConfig(config);
     }
 
     public HessianSerialize borrow() {

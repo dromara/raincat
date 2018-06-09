@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty;
 
 import java.io.IOException;
@@ -22,12 +23,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * NettyTransferSerialize.
  * @author xiaoyu
  */
 public interface NettyTransferSerialize {
 
     /**
-     * netty 将object序列化成 OutputStream
+     * netty 将object序列化成 OutputStream.
      *
      * @param output OutputStream
      * @param object 对象
@@ -36,7 +38,7 @@ public interface NettyTransferSerialize {
     void serialize(OutputStream output, Object object) throws IOException;
 
     /**
-     * netty 将 InputStream 反序列成对象
+     * netty 将 InputStream 反序列成对象.
      *
      * @param input 输出流
      * @return object

@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.bean;
 
 import com.raincat.common.enums.PropagationEnum;
@@ -22,37 +23,35 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
+ * TxTransactionInfo.
  * @author xiaoyu
  */
 @AllArgsConstructor
 public class TxTransactionInfo {
 
     /**
-     * 补偿方法对象
+     * 补偿方法对象.
      */
     @Getter
     private TransactionInvocation invocation;
 
-
     /**
-     * 分布式事务组
+     * 分布式事务组.
      */
     @Getter
     private String txGroupId;
 
     /**
-     * 事务补偿id
+     * 事务补偿id.
      */
     @Getter
     private String compensationId;
 
-
     /**
-     * 事务等待时间
+     * 事务等待时间.
      */
     @Getter
-    private int waitMaxTime = 60;
-
+    private int waitMaxTime;
 
     @Getter
     private PropagationEnum propagationEnum;

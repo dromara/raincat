@@ -15,15 +15,16 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.common.enums;
 
+package com.raincat.common.enums;
 
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-
 /**
+ * NettyMessageActionEnum.
+ *
  * @author xiaoyu
  */
 public enum NettyMessageActionEnum {
@@ -32,7 +33,6 @@ public enum NettyMessageActionEnum {
      * Begin transaction status enum.
      */
     CREATE_GROUP(0, "创建事务组"),
-
 
     /**
      * Add transaction netty message action enum.
@@ -48,7 +48,6 @@ public enum NettyMessageActionEnum {
      * Commit netty message action enum.
      */
     PRE_COMMIT(3, "预提交"),
-
 
     /**
      * Complete commit netty message action enum.
@@ -72,33 +71,28 @@ public enum NettyMessageActionEnum {
     /**
      * Send netty message action enum.
      */
-    SEND(8,"发送"),
+    SEND(8, "发送"),
 
     /**
      * Receive netty message action enum.
      */
-    RECEIVE(9,"接收"),
-
+    RECEIVE(9, "接收"),
 
     /**
      * Get transaction group netty message action enum.
      */
-    GET_TRANSACTION_GROUP_STATUS(10,"获取事务组状态"),
+    GET_TRANSACTION_GROUP_STATUS(10, "获取事务组状态"),
 
+    /**
+     * Find transaction group info netty message action enum.
+     */
+    FIND_TRANSACTION_GROUP_INFO(11, "获取事务组信息");
 
-
-    FIND_TRANSACTION_GROUP_INFO(11,"获取事务组信息"),
-
-
-
-
-
-    ;
     private int code;
 
     private String desc;
 
-    NettyMessageActionEnum(int code, String desc) {
+    NettyMessageActionEnum(final int code, final String desc) {
         this.code = code;
         this.desc = desc;
     }
@@ -110,13 +104,12 @@ public enum NettyMessageActionEnum {
      * @param code the code
      * @return the netty message action enum
      */
-    public static NettyMessageActionEnum acquireByCode(int code) {
+    public static NettyMessageActionEnum acquireByCode(final int code) {
         Optional<NettyMessageActionEnum> actionEnum =
                 Arrays.stream(NettyMessageActionEnum.values())
                         .filter(v -> Objects.equals(v.getCode(), code))
                         .findFirst();
         return actionEnum.orElse(NettyMessageActionEnum.HEART);
-
     }
 
     /**
@@ -133,7 +126,7 @@ public enum NettyMessageActionEnum {
      *
      * @param code the code
      */
-    public void setCode(int code) {
+    public void setCode(final int code) {
         this.code = code;
     }
 
@@ -151,7 +144,7 @@ public enum NettyMessageActionEnum {
      *
      * @param desc the desc
      */
-    public void setDesc(String desc) {
+    public void setDesc(final String desc) {
         this.desc = desc;
     }
 }

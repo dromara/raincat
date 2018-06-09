@@ -15,7 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.common.netty.serizlize;
+package com.raincat.common.holder.httpclient;
 
 import com.raincat.common.enums.NettyMessageActionEnum;
 import com.raincat.common.enums.TransactionStatusEnum;

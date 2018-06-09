@@ -15,13 +15,12 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.common.enums;
 
+package com.raincat.common.enums;
 
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
-
 
 /**
  * The enum Blocking queue type enum.
@@ -45,7 +44,7 @@ public enum BlockingQueueTypeEnum {
 
     private String value;
 
-    BlockingQueueTypeEnum(String value) {
+    BlockingQueueTypeEnum(final String value) {
         this.value = value;
     }
 
@@ -64,7 +63,7 @@ public enum BlockingQueueTypeEnum {
      * @param value the value
      * @return the blocking queue type enum
      */
-    public static BlockingQueueTypeEnum fromString(String value) {
+    public static BlockingQueueTypeEnum fromString(final String value) {
         Optional<BlockingQueueTypeEnum> blockingQueueTypeEnum =
                 Arrays.stream(BlockingQueueTypeEnum.values())
                         .filter(v -> Objects.equals(v.getValue(), value))

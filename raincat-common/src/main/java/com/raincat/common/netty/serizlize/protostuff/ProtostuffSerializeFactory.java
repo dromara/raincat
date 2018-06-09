@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty.serizlize.protostuff;
 
 import org.apache.commons.pool2.BasePooledObjectFactory;
@@ -22,17 +23,18 @@ import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
 
 /**
+ * ProtostuffSerializeFactory.
  * @author xiaoyu
  */
 public class ProtostuffSerializeFactory extends BasePooledObjectFactory<ProtostuffSerialize> {
 
     @Override
-    public ProtostuffSerialize create() throws Exception {
+    public ProtostuffSerialize create() {
         return createProtostuff();
     }
 
     @Override
-    public PooledObject<ProtostuffSerialize> wrap(ProtostuffSerialize protostuffSerialize) {
+    public PooledObject<ProtostuffSerialize> wrap(final ProtostuffSerialize protostuffSerialize) {
         return new DefaultPooledObject<>(protostuffSerialize);
     }
 

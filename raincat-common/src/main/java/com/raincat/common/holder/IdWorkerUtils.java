@@ -15,11 +15,13 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.holder;
 
 import java.util.UUID;
 
 /**
+ * IdWorkerUtils.
  * @author xiaoyu
  */
 public final class IdWorkerUtils {

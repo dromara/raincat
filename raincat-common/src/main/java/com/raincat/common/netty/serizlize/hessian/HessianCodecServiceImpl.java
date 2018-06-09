@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty.serizlize.hessian;
 
 import com.google.common.io.Closer;
@@ -26,13 +27,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
+ * HessianCodecServiceImpl.
  * @author xiaoyu
  */
 public class HessianCodecServiceImpl implements MessageCodecService {
 
-    private HessianSerializePool pool = HessianSerializePool.getHessianPoolInstance();
     private static Closer closer = Closer.create();
 
+    private HessianSerializePool pool = HessianSerializePool.getHessianPoolInstance();
 
     @Override
     public void encode(final ByteBuf out, final Object message) throws IOException {
@@ -52,7 +54,7 @@ public class HessianCodecServiceImpl implements MessageCodecService {
     }
 
     @Override
-    public Object decode(byte[] body) throws IOException {
+    public Object decode(final byte[] body) throws IOException {
         try {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(body);
             closer.register(byteArrayInputStream);

@@ -19,12 +19,8 @@
 package com.raincat.common.holder;
 
 /**
- * <p>Description: .</p>
- *
+ * RedisKeyUtils.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/19 11:24
- * @since JDK 1.8
  */
 public class RedisKeyUtils {
 

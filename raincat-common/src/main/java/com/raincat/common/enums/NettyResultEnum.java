@@ -15,15 +15,16 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.common.enums;
 
+package com.raincat.common.enums;
 
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-
 /**
+ * NettyResultEnum.
+ *
  * @author xiaoyu
  */
 public enum NettyResultEnum {
@@ -33,25 +34,21 @@ public enum NettyResultEnum {
      */
     SUCCESS(0, "成功"),
 
-
     /**
      * Fail netty result enum.
      */
     FAIL(1, "失败"),
 
-
-    TIME_OUT(-1,"tmManager未连接或者响应超时！"),
-
-
-    ;
-
-
+    /**
+     * Time out netty result enum.
+     */
+    TIME_OUT(-1,"tmManager未连接或者响应超时！");
 
     private int code;
 
     private String desc;
 
-    NettyResultEnum(int code, String desc) {
+    NettyResultEnum(final int code, final String desc) {
         this.code = code;
         this.desc = desc;
     }
@@ -63,7 +60,7 @@ public enum NettyResultEnum {
      * @param code the code
      * @return the netty result enum
      */
-    public static NettyResultEnum acquireByCode(int code) {
+    public static NettyResultEnum acquireByCode(final int code) {
         Optional<NettyResultEnum> actionEnum =
                 Arrays.stream(NettyResultEnum.values())
                         .filter(v -> Objects.equals(v.getCode(), code))
@@ -86,7 +83,7 @@ public enum NettyResultEnum {
      *
      * @param code the code
      */
-    public void setCode(int code) {
+    public void setCode(final int code) {
         this.code = code;
     }
 
@@ -104,7 +101,7 @@ public enum NettyResultEnum {
      *
      * @param desc the desc
      */
-    public void setDesc(String desc) {
+    public void setDesc(final String desc) {
         this.desc = desc;
     }
 }

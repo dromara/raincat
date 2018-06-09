@@ -15,25 +15,26 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.config;
 
 import lombok.Data;
 
 /**
+ * TxFileConfig.
  * @author xiaoyu
  */
 @Data
 public class TxFileConfig {
 
     /**
-     * 文件保存路径
+     * 文件保存路径.
      */
     private String path;
 
     /**
-     * 文件前缀
+     * 文件前缀.
      */
     private String prefix;
-
 
 }

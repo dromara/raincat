@@ -15,17 +15,19 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.common.netty.serizlize.kryo;
 
 import com.raincat.common.netty.MessageCodecService;
 import com.raincat.common.netty.serizlize.AbstractMessageDecoder;
 
 /**
+ * KryoDecoder.
  * @author xiaoyu
  */
 public class KryoDecoder extends AbstractMessageDecoder {
 
-    public KryoDecoder(MessageCodecService service) {
+    public KryoDecoder(final MessageCodecService service) {
         super(service);
     }
 }
