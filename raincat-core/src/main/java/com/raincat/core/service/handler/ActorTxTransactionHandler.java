@@ -28,6 +28,7 @@ import com.raincat.common.bean.TxTransactionInfo;
 import com.raincat.core.compensation.command.TxCompensationCommand;
 import com.raincat.core.concurrent.task.BlockTask;
 import com.raincat.core.concurrent.task.BlockTaskHelper;
+import com.raincat.core.concurrent.threadlocal.TxTransactionLocal;
 import com.raincat.core.concurrent.threadpool.TransactionThreadPool;
 import com.raincat.core.service.TxManagerMessageService;
 import com.raincat.core.service.TxTransactionHandler;
@@ -77,10 +78,12 @@ public class ActorTxTransactionHandler implements TxTransactionHandler {
         LogUtil.info(LOGGER, "分布式事务参与方，开始执行,事务组id：{}", info::getTxGroupId);
         final String taskKey = IdWorkerUtils.getInstance().createTaskKey();
         final BlockTask task = BlockTaskHelper.getInstance().getTask(taskKey);
+        TxTransactionLocal.getInstance().setTxGroupId(info.getTxGroupId());
 
         transactionThreadPool
                 .newFixedThreadPool()
                 .execute(() -> {
+                    TxTransactionLocal.getInstance().setTxGroupId(info.getTxGroupId());
                     final String waitKey = IdWorkerUtils.getInstance().createTaskKey();
                     final BlockTask waitTask = BlockTaskHelper.getInstance().getTask(waitKey);
                     DefaultTransactionDefinition def = new DefaultTransactionDefinition();
