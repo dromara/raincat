@@ -26,7 +26,7 @@ import org.springframework.context.annotation.ImportResource;
  * @author xiaoyu
  */
 @SpringBootApplication
-@ImportResource({"classpath:applicationContext.xml"})
+@ImportResource({"classpath:spring-dubbo.xml"})
 @MapperScan("com.raincat.dubbo.sample.consume.mapper")
 public class ConsumeApplication {
     public static void main(String[] args) {

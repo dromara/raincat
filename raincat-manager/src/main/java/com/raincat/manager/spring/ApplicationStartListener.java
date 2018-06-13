@@ -19,23 +19,24 @@
 package com.raincat.manager.spring;
 
 import com.raincat.manager.config.Address;
-import org.springframework.boot.web.context.WebServerInitializedEvent;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+
 /**
  * ApplicationStartListener.
  * @author xiaoyu
  */
 @Component
-public class ApplicationStartListener implements ApplicationListener<WebServerInitializedEvent> {
+public class ApplicationStartListener implements ApplicationListener<EmbeddedServletContainerInitializedEvent> {
 
     @Override
-    public void onApplicationEvent(final WebServerInitializedEvent event) {
-        int port = event.getWebServer().getPort();
+    public void onApplicationEvent(final EmbeddedServletContainerInitializedEvent event) {
+        int port = event.getEmbeddedServletContainer().getPort();
         final String host = getHost();
         Address.getInstance()
                 .setHost(host)
@@ -51,5 +52,4 @@ public class ApplicationStartListener implements ApplicationListener<WebServerIn
             return "127.0.0.1";
         }
     }
-
 }

@@ -6,12 +6,23 @@ server:
 spring:
     datasource:
         driver-class-name:  com.mysql.jdbc.Driver
-        url: jdbc:mysql://192.168.1.68:3306/order?useUnicode=true&characterEncoding=utf8
-        username: xiaoyu
-        password: Wgj@555888
+        url: jdbc:mysql://10.4.4.202:3306/order?useUnicode=true&characterEncoding=utf8
+        username: root
+        password: 123123
     application:
       name: order-service
-
+raincat:
+     tx :
+       txManagerUrl: http://localhost:8761
+       serializer: kroy
+       nettySerializer: kroy
+       compensation: true
+       compensationCacheType : db
+       txDbConfig :
+              driverClassName  : com.mysql.jdbc.Driver
+              url :  jdbc:mysql://10.4.4.202:3306/tx?useUnicode=true&amp;characterEncoding=utf8
+              username : root
+              password : 123123
 mybatis:
   type-aliases-package: com.raincat.dubbo.sample.order.api.entity
   config-location: classpath:mybatis/mybatis-config.xml

@@ -15,10 +15,6 @@ eureka:
       enabled: true
     eurekaServiceUrlPollIntervalSeconds: 60
 
-endpoints:
-  health:
-    sensitive: false
-
 
 
 logging:

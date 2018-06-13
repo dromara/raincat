@@ -1,0 +1,37 @@
+server:
+   port: 8761
+spring:
+  application:
+   name: tx-manager
+  thymeleaf:
+    cache: true
+    encoding: utf-8
+    content-type: text/html
+    enabled: true
+    prefix: classpath:/html/
+    suffix: .html
+
+
+
+transactionWaitMaxTime: 500
+redisSaveMaxTime: 3000
+
+tx:
+  manager:
+    netty :
+       port: 9998
+       serialize: kryo
+       maxConnection: 100
+       maxThreads : 16
+       delayTime : 5
+       heartTime : 20
+    redis :
+       cluster : false
+       hostName : 10.40.6.151
+       port: 6379
+       password : 123456
+
+
+
+
+

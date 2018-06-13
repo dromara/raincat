@@ -33,7 +33,6 @@ import org.springframework.stereotype.Component;
  * TxTransactionBootstrap.
  * @author xiaoyu
  */
-@Component
 public class TxTransactionBootstrap extends TxConfig implements ApplicationContextAware {
 
     private final TxTransactionInitialize txTransactionInitialize;

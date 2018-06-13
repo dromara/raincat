@@ -95,15 +95,15 @@ public class TxManagerConfiguration {
         }
 
         @Bean
-        @ConfigurationProperties(prefix = "tx.redis")
+        @ConfigurationProperties(prefix = "tx.manager.redis")
         public JedisPoolConfig getRedisPoolConfig() {
             return new JedisPoolConfig();
         }
 
         @Bean
-        @ConfigurationProperties(prefix = "tx.redis")
+        @ConfigurationProperties(prefix = "tx.manager.redis")
         public JedisConnectionFactory getConnectionFactory() {
-            final Boolean cluster = env.getProperty("tx.redis.cluster", Boolean.class);
+            final Boolean cluster = env.getProperty("tx.manager.redis.cluster", Boolean.class);
             if (cluster) {
                 return new JedisConnectionFactory(getClusterConfiguration(), getRedisPoolConfig());
             } else {
@@ -130,8 +130,8 @@ public class TxManagerConfiguration {
 
         private RedisClusterConfiguration getClusterConfiguration() {
             Map<String, Object> source = Maps.newHashMap();
-            source.put("spring.redis.cluster.nodes", env.getProperty("tx.redis.cluster.nodes"));
-            source.put("spring.redis.cluster.max-redirects", env.getProperty("tx.redis.cluster.redirects"));
+            source.put("spring.redis.cluster.nodes", env.getProperty("tx.manager.redis.cluster.nodes"));
+            source.put("spring.redis.cluster.max-redirects", env.getProperty("tx.manager.redis.cluster.redirects"));
             return new RedisClusterConfiguration(new MapPropertySource("RedisClusterConfiguration", source));
         }
     }

@@ -5,9 +5,9 @@ server:
 spring:
     datasource:
         driver-class-name:  com.mysql.jdbc.Driver
-        url: jdbc:mysql://192.168.1.68:3306/test_1?useUnicode=true&characterEncoding=utf8
-        username: xiaoyu
-        password: Wgj@555888
+        url: jdbc:mysql://10.4.4.202:3306/test_1?useUnicode=true&characterEncoding=utf8
+        username: root
+        password: 123123
     application:
       name: consume-service
 
@@ -19,16 +19,40 @@ mybatis:
 
 raincat:
      tx :
-       txManagerUrl: http://192.168.1.109:8761
+       txManagerUrl: http://localhost:8761
        serializer: kroy
        nettySerializer: kroy
        compensation: true
        compensationCacheType : db
        txDbConfig :
               driverClassName  : com.mysql.jdbc.Driver
-              url :  jdbc:mysql://10.4.4.202:3306/tcc?useUnicode=true&amp;characterEncoding=utf8
+              url :  jdbc:mysql://10.4.4.202:3306/tx?useUnicode=true&amp;characterEncoding=utf8
               username : root
               password : 123123
+
+      # repositorySupport : redis
+      # txRedisConfig :
+            # hostName  : 192.168.1.68
+            # port      :  6379
+            # password  :
+
+      # repositorySupport : zookeeper
+      # tx-zookeeper-config :
+            # host      : 92.168.1.73:2181
+            # sessionTimeOut      :  100000
+            # rootPath  : /tx
+
+     # repositorySupport : mongodb
+     # tx-mongo-config :
+            # mongoDbUrl  : localost:27017
+            # mongoDbName  :  xiaoyu
+            # mongoUserName  : xiaoyu
+            # mongoUserPwd   : 123456
+
+     # repositorySupport : file
+    #  tx-file-config:
+            # path      : /consume
+            # prefix    :  consume
 logging:
     level:
         root: error
