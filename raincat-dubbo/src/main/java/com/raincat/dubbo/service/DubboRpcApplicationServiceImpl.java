@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.dubbo.service;
 
 import com.alibaba.dubbo.config.ApplicationConfig;
@@ -22,21 +23,24 @@ import com.raincat.core.service.RpcApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
+ * DubboRpcApplicationServiceImpl.
  * @author xiaoyu
  */
 @Service("rpcApplicationService")
 public class DubboRpcApplicationServiceImpl implements RpcApplicationService {
 
-
     /**
-     * dubbo ApplicationConfig
+     * dubbo ApplicationConfig.
      */
     @Autowired(required = false)
     private ApplicationConfig applicationConfig;
 
     @Override
     public String findModelName() {
-        return applicationConfig.getName();
+        return Optional.ofNullable(applicationConfig).orElse(new ApplicationConfig("tx-transaction-dubbo")).getName();
+
     }
 }

@@ -15,35 +15,33 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.spring;
 
 import com.raincat.manager.config.Address;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
+import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-
 /**
+ * ApplicationStartListener.
  * @author xiaoyu
  */
 @Component
-public class ApplicationStartListener implements ApplicationListener<EmbeddedServletContainerInitializedEvent> {
-
+public class ApplicationStartListener implements ApplicationListener<WebServerInitializedEvent> {
 
     @Override
-    public void onApplicationEvent(EmbeddedServletContainerInitializedEvent event) {
-        int port = event.getEmbeddedServletContainer().getPort();
+    public void onApplicationEvent(final WebServerInitializedEvent event) {
+        int port = event.getWebServer().getPort();
         final String host = getHost();
         Address.getInstance()
                 .setHost(host)
                 .setPort(port)
                 .setDomain(String.join(":", host, String.valueOf(port)));
-
     }
-
 
     private String getHost() {
         try {
@@ -53,4 +51,5 @@ public class ApplicationStartListener implements ApplicationListener<EmbeddedSer
             return "127.0.0.1";
         }
     }
+
 }

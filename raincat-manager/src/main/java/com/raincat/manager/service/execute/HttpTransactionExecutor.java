@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.service.execute;
 
 import com.raincat.common.enums.TransactionStatusEnum;
@@ -33,29 +34,24 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 /**
+ * HttpTransactionExecutor.
  * @author xiaoyu
  */
 @Component
 public class HttpTransactionExecutor {
 
-    /**
-     * logger
-     */
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpTransactionExecutor.class);
 
-
-    public void rollBack(List<TxTransactionItem> txTransactionItems) {
+    public void rollBack(final List<TxTransactionItem> txTransactionItems) {
         try {
             execute(txTransactionItems, TransactionStatusEnum.ROLLBACK);
         } catch (Exception e) {
             e.printStackTrace();
             LogUtil.info(LOGGER, "txManger 发送rollback指令异常 ", e::getMessage);
         }
-
     }
 
-
-    public void commit(List<TxTransactionItem> txTransactionItems) {
+    public void commit(final List<TxTransactionItem> txTransactionItems) {
         try {
             execute(txTransactionItems, TransactionStatusEnum.COMMIT);
         } catch (Exception e) {
@@ -64,8 +60,8 @@ public class HttpTransactionExecutor {
         }
     }
 
-
-    private void execute(List<TxTransactionItem> txTransactionItems, TransactionStatusEnum transactionStatusEnum) {
+    private void execute(final List<TxTransactionItem> txTransactionItems,
+                         final TransactionStatusEnum transactionStatusEnum) {
         if (CollectionUtils.isNotEmpty(txTransactionItems)) {
             final CompletableFuture[] cfs = txTransactionItems
                     .stream()
@@ -87,6 +83,5 @@ public class HttpTransactionExecutor {
             CompletableFuture.allOf(cfs).join();
         }
     }
-
 
 }

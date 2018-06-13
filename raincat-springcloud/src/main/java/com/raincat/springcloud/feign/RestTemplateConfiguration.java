@@ -15,8 +15,8 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.springcloud.feign;
 
+package com.raincat.springcloud.feign;
 
 import feign.Feign;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 /**
+ * RestTemplateConfiguration.
  * @author xiaoyu
  */
 @Configuration

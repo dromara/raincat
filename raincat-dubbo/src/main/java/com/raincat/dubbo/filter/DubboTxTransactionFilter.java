@@ -15,8 +15,8 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.dubbo.filter;
 
+package com.raincat.dubbo.filter;
 
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.extension.Activate;
@@ -30,13 +30,14 @@ import com.raincat.common.constant.CommonConstant;
 import com.raincat.core.concurrent.threadlocal.TxTransactionLocal;
 
 /**
+ * DubboTxTransactionFilter.
  * @author xiaoyu
  */
 @Activate(group = {Constants.SERVER_KEY, Constants.CONSUMER})
 public class DubboTxTransactionFilter implements Filter {
 
     @Override
-    public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
+    public Result invoke(final Invoker<?> invoker, final Invocation invocation) throws RpcException {
         if (RpcContext.getContext().isConsumerSide()) {
             RpcContext.getContext().setAttachment(CommonConstant.TX_TRANSACTION_GROUP,
                     TxTransactionLocal.getInstance().getTxGroupId());

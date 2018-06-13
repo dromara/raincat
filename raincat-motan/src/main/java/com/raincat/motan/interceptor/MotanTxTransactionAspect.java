@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.motan.interceptor;
 
 import com.raincat.core.interceptor.AbstractTxTransactionAspect;
@@ -24,6 +25,7 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
 /**
+ * MotanTxTransactionAspect.
  * @author xiaoyu
  */
 @Aspect
@@ -31,11 +33,8 @@ import org.springframework.stereotype.Component;
 public class MotanTxTransactionAspect extends AbstractTxTransactionAspect implements Ordered {
 
     @Autowired
-    public MotanTxTransactionAspect(MotanTxTransactionInterceptor motanTxTransactionInterceptor) {
+    public MotanTxTransactionAspect(final MotanTxTransactionInterceptor motanTxTransactionInterceptor) {
         this.setTxTransactionInterceptor(motanTxTransactionInterceptor);
-    }
-    public void init() {
-
     }
 
     @Override

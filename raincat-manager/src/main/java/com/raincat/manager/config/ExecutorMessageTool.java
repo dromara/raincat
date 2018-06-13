@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.config;
 
 import com.raincat.common.enums.NettyMessageActionEnum;
@@ -29,12 +30,14 @@ import java.util.Collections;
 import java.util.Objects;
 
 /**
+ * ExecutorMessageTool.
  * @author xiaoyu
  */
 public class ExecutorMessageTool {
 
-
-    public static HeartBeat buildMessage(TxTransactionItem item, ChannelSender channelSender, TransactionStatusEnum transactionStatusEnum) {
+    public static HeartBeat buildMessage(final TxTransactionItem item,
+                                         final ChannelSender channelSender,
+                                         final TransactionStatusEnum transactionStatusEnum) {
         HeartBeat heartBeat = new HeartBeat();
         Channel channel = SocketManager.getInstance().getChannelByModelName(item.getModelName());
         if (Objects.nonNull(channel)) {

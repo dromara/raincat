@@ -15,23 +15,22 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.springcloud.service;
 
+package com.raincat.springcloud.service;
 
 import com.raincat.core.service.RpcApplicationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-
 /**
+ * SpringCloudRpcApplicationServiceImpl.
  * @author xiaoyu
  */
-@Service
+@Service("rpcApplicationService")
 public class SpringCloudRpcApplicationServiceImpl implements RpcApplicationService {
 
     @Value("${spring.application.name}")
     private String modelName;
-
 
     @Override
     public String findModelName() {

@@ -49,11 +49,11 @@ public class TxTransactionInitialize {
      * 初始化服务
      */
     public void init(TxConfig txConfig) {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> LOGGER.error("系统关闭")));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> LOGGER.error("raincat init error")));
         try {
             initService.initialization(txConfig);
         } catch (RuntimeException ex) {
-            LogUtil.error(LOGGER, "初始化异常:{}", ex::getMessage);
+            LogUtil.error(LOGGER, "raincat init exception:{}", ex::getMessage);
             //非正常关闭
             System.exit(1);
         }

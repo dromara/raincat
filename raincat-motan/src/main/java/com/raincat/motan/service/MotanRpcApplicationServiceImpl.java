@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.motan.service;
 
 import com.raincat.core.service.RpcApplicationService;
@@ -22,18 +23,17 @@ import com.weibo.api.motan.config.springsupport.BasicServiceConfigBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 /**
+ * MotanRpcApplicationServiceImpl.
  * @author xiaoyu
  */
-@Service
+@Service("rpcApplicationService")
 public class MotanRpcApplicationServiceImpl implements RpcApplicationService {
-
 
     private final BasicServiceConfigBean basicServiceConfigBean;
 
     @Autowired
-    public MotanRpcApplicationServiceImpl(BasicServiceConfigBean basicServiceConfigBean) {
+    public MotanRpcApplicationServiceImpl(final BasicServiceConfigBean basicServiceConfigBean) {
         this.basicServiceConfigBean = basicServiceConfigBean;
     }
 

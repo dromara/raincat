@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.service.impl;
 
 import com.raincat.common.constant.CommonConstant;
@@ -42,37 +43,26 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
+ * TxManagerServiceImpl.
  * @author xiaoyu
  */
 @Component
 @SuppressWarnings("unchecked")
 public class TxManagerServiceImpl implements TxManagerService {
 
-
     private final RedisTemplate redisTemplate;
 
-
     @Autowired
-    public TxManagerServiceImpl(RedisTemplate redisTemplate) {
+    public TxManagerServiceImpl(final RedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
-
-    /**
-     * 保存事务组 在事务发起方的时候进行调用
-     *
-     * @param txTransactionGroup 事务组
-     * @return true 成功 false 失败
-     */
     @Override
-
-    public Boolean saveTxTransactionGroup(TxTransactionGroup txTransactionGroup) {
+    public Boolean saveTxTransactionGroup(final TxTransactionGroup txTransactionGroup) {
         try {
             final String groupId = txTransactionGroup.getId();
             //保存数据 到sortSet
-            redisTemplate.opsForZSet()
-                    .add(CommonConstant.REDIS_KEY_SET, groupId, CommonConstant.REDIS_SCOPE);
-
+            redisTemplate.opsForZSet().add(CommonConstant.REDIS_KEY_SET, groupId, CommonConstant.REDIS_SCOPE);
             final List<TxTransactionItem> itemList = txTransactionGroup.getItemList();
             if (CollectionUtils.isNotEmpty(itemList)) {
                 for (TxTransactionItem item : itemList) {
@@ -82,19 +72,11 @@ public class TxManagerServiceImpl implements TxManagerService {
         } catch (Exception e) {
             return false;
         }
-
         return true;
     }
 
-    /**
-     * 往事务组添加事务
-     *
-     * @param txGroupId         事务组id
-     * @param txTransactionItem 子事务项
-     * @return true 成功 false 失败
-     */
     @Override
-    public Boolean addTxTransaction(String txGroupId, TxTransactionItem txTransactionItem) {
+    public Boolean addTxTransaction(final String txGroupId, final TxTransactionItem txTransactionItem) {
         try {
             redisTemplate.opsForHash().put(cacheKey(txGroupId), txTransactionItem.getTaskKey(), txTransactionItem);
         } catch (Exception e) {
@@ -103,42 +85,22 @@ public class TxManagerServiceImpl implements TxManagerService {
         return true;
     }
 
-    /**
-     * 根据事务组id 获取所有的子项目  我觉得要排除掉第一个，因为第一个不需要进行处理 （它就是事务组信息）
-     *
-     * @param txGroupId 事务组id
-     * @return List<TxTransactionItem>
-     */
     @Override
-    public List<TxTransactionItem> listByTxGroupId(String txGroupId) {
-        final Map<Object, TxTransactionItem> entries = redisTemplate.opsForHash().entries(cacheKey(txGroupId));
+    public List<TxTransactionItem> listByTxGroupId(final String txGroupId) {
+        final Map<Object, TxTransactionItem> entries =
+                redisTemplate.opsForHash().entries(cacheKey(txGroupId));
         final Collection<TxTransactionItem> values = entries.values();
         return new ArrayList<>(values);
-
-
     }
 
-    /**
-     * 删除事务组信息  当回滚的时候 或者事务组完全提交的时候
-     *
-     * @param txGroupId txGroupId 事务组id
-     */
     @Override
-    public void removeRedisByTxGroupId(String txGroupId) {
+    public void removeRedisByTxGroupId(final String txGroupId) {
         redisTemplate.delete(cacheKey(txGroupId));
     }
 
-    /**
-     * 更新事务状态
-     *
-     * @param key     redis key 也就是txGroupId
-     * @param hashKey 也就是taskKey
-     * @param status  事务状态
-     * @param message 执行结果信息
-     * @return true 成功 false 失败
-     */
     @Override
-    public Boolean updateTxTransactionItemStatus(String key, String hashKey, int status, Object message) {
+    public void updateTxTransactionItemStatus(final String key, final String hashKey,
+                                              final int status, final Object message) {
         try {
             final TxTransactionItem item = (TxTransactionItem)
                     redisTemplate.opsForHash().get(cacheKey(key), hashKey);
@@ -148,9 +110,7 @@ public class TxManagerServiceImpl implements TxManagerService {
             }
             //计算耗时
             final String createDate = item.getCreateDate();
-
             final LocalDateTime now = LocalDateTime.now();
-
             try {
                 final LocalDateTime createDateTime = DateUtils.parseLocalDateTime(createDate);
                 final long consumeTime = DateUtils.getSecondsBetween(createDateTime, now);
@@ -158,21 +118,17 @@ public class TxManagerServiceImpl implements TxManagerService {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-
             redisTemplate.opsForHash().put(cacheKey(key), item.getTaskKey(), item);
         } catch (BeansException e) {
-            return false;
+            e.printStackTrace();
         }
-        return true;
     }
 
     @Override
-    public int findTxTransactionGroupStatus(String txGroupId) {
+    public int findTxTransactionGroupStatus(final String txGroupId) {
         try {
             final TxTransactionItem item = (TxTransactionItem)
                     redisTemplate.opsForHash().get(cacheKey(txGroupId), txGroupId);
-           /* TxTransactionItem item = new TxTransactionItem();
-            BeanUtils.copyProperties(object, item);*/
             return item.getStatus();
         } catch (BeansException e) {
             e.printStackTrace();
@@ -181,7 +137,7 @@ public class TxManagerServiceImpl implements TxManagerService {
     }
 
     @Override
-    public Boolean removeCommitTxGroup() {
+    public void removeCommitTxGroup() {
         final Set<String> keys = redisTemplate.keys(Constant.REDIS_KEYS);
         keys.parallelStream().forEach(key -> {
             final Map<Object, TxTransactionItem> entries = redisTemplate.opsForHash().entries(key);
@@ -193,16 +149,10 @@ public class TxManagerServiceImpl implements TxManagerService {
             }
         });
 
-        return true;
     }
 
-    /**
-     * 删除回滚的事务组
-     *
-     * @return true 成功  false 失败
-     */
     @Override
-    public Boolean removeRollBackTxGroup() {
+    public void removeRollBackTxGroup() {
         final Set<String> keys = redisTemplate.keys(Constant.REDIS_KEYS);
         keys.parallelStream().forEach(key -> {
             final Map<Object, TxTransactionItem> entries = redisTemplate.opsForHash().entries(key);
@@ -216,10 +166,9 @@ public class TxManagerServiceImpl implements TxManagerService {
             }
         });
 
-        return true;
     }
 
-    private String cacheKey(String key) {
+    private String cacheKey(final String key) {
         return String.format(CommonConstant.REDIS_PRE_FIX, key);
     }
 }

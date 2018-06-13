@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.eureka;
 
 import com.raincat.manager.config.Constant;
@@ -30,20 +31,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * DiscoveryService.
  * @author xiaoyu
  */
 @Service
 public class DiscoveryService {
 
-    /**
-     * logger
-     */
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscoveryService.class);
 
     private final EurekaClient eurekaClient;
 
     @Autowired(required = false)
-    public DiscoveryService(EurekaClient eurekaClient) {
+    public DiscoveryService(final EurekaClient eurekaClient) {
         this.eurekaClient = eurekaClient;
     }
 

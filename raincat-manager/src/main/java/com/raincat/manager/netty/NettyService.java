@@ -15,26 +15,20 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.netty;
 
 /**
+ * NettyService.
  * @author xiaoyu
  */
 public interface NettyService {
 
-
     /**
-     * 启动netty服务
+     * start netty server.
      *
-     * @throws InterruptedException 异常
+     * @throws InterruptedException ex
      */
     void start() throws InterruptedException;
-
-
-    /**
-     * 关闭服务
-     */
-    void stop();
-
 
 }

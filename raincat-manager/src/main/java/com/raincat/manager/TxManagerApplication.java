@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager;
 
 import org.springframework.boot.SpringApplication;
@@ -23,6 +24,7 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
+ * TxManagerApplication.
  * @author xiaoyu
  */
 @SpringBootApplication

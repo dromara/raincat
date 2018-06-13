@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.raincat.spring.boot.starter.parent.configuration.RaincatAutoConfiguration

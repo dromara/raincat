@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.springcloud.interceptor;
 
 import com.raincat.common.constant.CommonConstant;
@@ -32,6 +33,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ * SpringCloudTxTransactionInterceptor.
  * @author xiaoyu
  */
 @Component
@@ -40,13 +42,12 @@ public class SpringCloudTxTransactionInterceptor implements TxTransactionInterce
     private final AspectTransactionService aspectTransactionService;
 
     @Autowired
-    public SpringCloudTxTransactionInterceptor(AspectTransactionService aspectTransactionService) {
+    public SpringCloudTxTransactionInterceptor(final AspectTransactionService aspectTransactionService) {
         this.aspectTransactionService = aspectTransactionService;
     }
 
-
     @Override
-    public Object interceptor(ProceedingJoinPoint pjp) throws Throwable {
+    public Object interceptor(final ProceedingJoinPoint pjp) throws Throwable {
         final String compensationId = CompensationLocal.getInstance().getCompensationId();
         String groupId = null;
         if (StringUtils.isBlank(compensationId)) {
@@ -55,7 +56,6 @@ public class SpringCloudTxTransactionInterceptor implements TxTransactionInterce
             HttpServletRequest request = requestAttributes == null ? null : ((ServletRequestAttributes) requestAttributes).getRequest();
             groupId = request == null ? null : request.getHeader(CommonConstant.TX_TRANSACTION_GROUP);
         }
-
         return aspectTransactionService.invoke(groupId, pjp);
     }
 

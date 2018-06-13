@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.springcloud.interceptor;
 
 import com.raincat.core.interceptor.AbstractTxTransactionAspect;
@@ -24,6 +25,7 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
 /**
+ * SpringCloudTxTransactionAspect.
  * @author xiaoyu
  */
 @Aspect
@@ -32,13 +34,8 @@ public class SpringCloudTxTransactionAspect extends AbstractTxTransactionAspect 
 
 
     @Autowired
-    public SpringCloudTxTransactionAspect(SpringCloudTxTransactionInterceptor springCloudTxTransactionInterceptor) {
+    public SpringCloudTxTransactionAspect(final SpringCloudTxTransactionInterceptor springCloudTxTransactionInterceptor) {
         this.setTxTransactionInterceptor(springCloudTxTransactionInterceptor);
-    }
-
-
-    public void init() {
-
     }
 
     @Override

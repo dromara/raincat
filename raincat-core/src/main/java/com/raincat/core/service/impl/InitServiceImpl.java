@@ -72,7 +72,7 @@ public class InitServiceImpl implements InitService {
             loadSpi(txConfig);
             nettyClientService.start(txConfig);
             txCompensationService.start(txConfig);
-            txTransactionEventPublisher.start(txConfig.getBuffSize());
+            txTransactionEventPublisher.start(txConfig.getBufferSize());
         } catch (Exception e) {
             throw new TransactionRuntimeException("tx transaction ex:{}：" + e.getMessage());
         }

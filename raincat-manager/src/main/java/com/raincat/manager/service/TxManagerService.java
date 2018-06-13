@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.service;
 
 import com.raincat.common.netty.bean.TxTransactionGroup;
@@ -23,13 +24,14 @@ import com.raincat.common.netty.bean.TxTransactionItem;
 import java.util.List;
 
 /**
+ * TxManagerService.
  * @author xiaoyu
  */
 public interface TxManagerService {
 
 
     /**
-     * 保存事务组 在事务发起方的时候进行调用
+     * 保存事务组 在事务发起方的时候进行调用.
      *
      * @param txTransactionGroup 事务组
      * @return true 成功 false 失败
@@ -38,7 +40,7 @@ public interface TxManagerService {
 
 
     /**
-     * 往事务组添加事务
+     * 往事务组添加事务.
      *
      * @param txGroupId         事务组id
      * @param txTransactionItem 子事务项
@@ -47,36 +49,34 @@ public interface TxManagerService {
     Boolean addTxTransaction(String txGroupId, TxTransactionItem txTransactionItem);
 
     /**
-     * 根据事务组id 获取所有的子项目
+     * 根据事务组id 获取所有的子项目.
      *
      * @param txGroupId 事务组id
-     * @return List<TxTransactionItem>
+     * @return List TxTransactionItem
      */
     List<TxTransactionItem> listByTxGroupId(String txGroupId);
 
 
     /**
-     * 删除事务组信息  当回滚的时候 或者事务组完全提交的时候
+     * 删除事务组信息  当回滚的时候 或者事务组完全提交的时候.
      *
      * @param txGroupId txGroupId 事务组id
      */
     void removeRedisByTxGroupId(String txGroupId);
 
-
     /**
-     * 更新事务状态
+     * 更新事务状态.
      *
      * @param key     redis key 也就是txGroupId
      * @param hashKey 也就是taskKey
      * @param status  事务状态
      * @param message  执行结果信息
-     * @return true 成功 false 失败
      */
-    Boolean updateTxTransactionItemStatus(String key, String hashKey, int status,Object message);
+    void updateTxTransactionItemStatus(String key, String hashKey, int status, Object message);
 
 
     /**
-     * 获取事务组的状态
+     * 获取事务组的状态.
      *
      * @param txGroupId 事务组id
      * @return 事务组状态
@@ -85,17 +85,13 @@ public interface TxManagerService {
 
 
     /**
-     * 删除已经提交的事务组 每个子项都必须提交才删除
-     *
-     * @return true 成功  false 失败
+     * 删除已经提交的事务组 每个子项都必须提交才删除.
      */
-    Boolean removeCommitTxGroup();
+    void removeCommitTxGroup();
 
 
     /**
-     * 删除回滚的事务组
-     *
-     * @return true 成功  false 失败
+     * 删除回滚的事务组.
      */
-    Boolean removeRollBackTxGroup();
+    void removeRollBackTxGroup();
 }
