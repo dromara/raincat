@@ -15,18 +15,28 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.core.compensation.command;
+package com.raincat.dubbo.service;
+
+import com.alibaba.dubbo.config.ApplicationConfig;
+import com.raincat.core.service.RpcApplicationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @author xiaoyu
  */
-@FunctionalInterface
-public interface Command {
+@Service("rpcApplicationService")
+public class DubboRpcApplicationServiceImpl implements RpcApplicationService {
+
 
     /**
-     * 执行命令接口
-     *
-     * @param txCompensationAction 封装命令信息
+     * dubbo ApplicationConfig
      */
-    void execute(TxCompensationAction txCompensationAction);
+    @Autowired(required = false)
+    private ApplicationConfig applicationConfig;
+
+    @Override
+    public String findModelName() {
+        return applicationConfig.getName();
+    }
 }

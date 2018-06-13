@@ -15,18 +15,20 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.interceptor;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 
 /**
+ * TxTransactionInterceptor.
  * @author xiaoyu
  */
 @FunctionalInterface
 public interface TxTransactionInterceptor {
 
     /**
-     * 事务切面的拦截方法
+     * 事务切面的拦截方法.
      *
      * @param pjp spring事务切点
      * @return Object

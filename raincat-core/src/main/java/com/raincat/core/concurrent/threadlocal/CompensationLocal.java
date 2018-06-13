@@ -15,28 +15,27 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.concurrent.threadlocal;
 
 /**
+ * CompensationLocal.
  * @author xiaoyu
  */
-public class CompensationLocal {
+public final class CompensationLocal {
 
     private static final CompensationLocal COMPENSATION_LOCAL = new CompensationLocal();
 
-    private CompensationLocal() {
+    private static final ThreadLocal<String> CURRENT_LOCAL = new ThreadLocal<>();
 
+    private CompensationLocal() {
     }
 
     public static CompensationLocal getInstance() {
         return COMPENSATION_LOCAL;
     }
 
-
-    private static final ThreadLocal<String> CURRENT_LOCAL = new ThreadLocal<>();
-
-
-    public void setCompensationId(String compensationId) {
+    public void setCompensationId(final String compensationId) {
         CURRENT_LOCAL.set(compensationId);
     }
 

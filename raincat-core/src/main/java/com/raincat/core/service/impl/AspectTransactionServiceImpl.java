@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.service.impl;
 
 import com.raincat.common.enums.PropagationEnum;
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Method;
 
 /**
+ * AspectTransactionServiceImpl.
  * @author xiaoyu
  */
 @Service
@@ -42,31 +44,26 @@ public class AspectTransactionServiceImpl implements AspectTransactionService {
     private final TxTransactionFactoryService txTransactionFactoryService;
 
     @Autowired
-    public AspectTransactionServiceImpl(TxTransactionFactoryService txTransactionFactoryService) {
+    public AspectTransactionServiceImpl(final TxTransactionFactoryService txTransactionFactoryService) {
         this.txTransactionFactoryService = txTransactionFactoryService;
     }
 
     @Override
-    public Object invoke(String transactionGroupId, ProceedingJoinPoint point) throws Throwable {
+    public Object invoke(final String transactionGroupId, final ProceedingJoinPoint point) throws Throwable {
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
         Class<?> clazz = point.getTarget().getClass();
         Object[] args = point.getArgs();
         Method thisMethod = clazz.getMethod(method.getName(), method.getParameterTypes());
-
         final String compensationId = CompensationLocal.getInstance().getCompensationId();
-
         final TxTransaction txTransaction = method.getAnnotation(TxTransaction.class);
-
         final int waitMaxTime = txTransaction.waitMaxTime();
-
         final PropagationEnum propagation = txTransaction.propagation();
-
         TransactionInvocation invocation = new TransactionInvocation(clazz, thisMethod.getName(), args, method.getParameterTypes());
-        TxTransactionInfo info = new TxTransactionInfo(invocation,transactionGroupId,compensationId,waitMaxTime,propagation);
-        final Class c = txTransactionFactoryService.factoryOf(info);
+        TxTransactionInfo info = new TxTransactionInfo(invocation, transactionGroupId, compensationId, waitMaxTime, propagation);
+        final Class css = txTransactionFactoryService.factoryOf(info);
         final TxTransactionHandler txTransactionHandler =
-                (TxTransactionHandler) SpringBeanUtils.getInstance().getBean(c);
+                (TxTransactionHandler) SpringBeanUtils.getInstance().getBean(css);
         return txTransactionHandler.handler(point, info);
     }
 }

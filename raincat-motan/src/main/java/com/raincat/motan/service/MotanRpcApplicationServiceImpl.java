@@ -15,15 +15,30 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.core.concurrent.threadpool.policy;
+package com.raincat.motan.service;
+
+import com.raincat.core.service.RpcApplicationService;
+import com.weibo.api.motan.config.springsupport.BasicServiceConfigBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 
 /**
  * @author xiaoyu
  */
-public interface RejectedRunnable extends Runnable {
+@Service
+public class MotanRpcApplicationServiceImpl implements RpcApplicationService {
 
-    /**
-     * 线程池拒绝策略
-     */
-    void rejected();
+
+    private final BasicServiceConfigBean basicServiceConfigBean;
+
+    @Autowired
+    public MotanRpcApplicationServiceImpl(BasicServiceConfigBean basicServiceConfigBean) {
+        this.basicServiceConfigBean = basicServiceConfigBean;
+    }
+
+    @Override
+    public String findModelName() {
+        return basicServiceConfigBean.getModule();
+    }
 }

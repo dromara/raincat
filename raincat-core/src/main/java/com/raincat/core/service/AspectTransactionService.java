@@ -15,18 +15,20 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.service;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 
 /**
+ * AspectTransactionService.
  * @author xiaoyu
  */
 @FunctionalInterface
 public interface AspectTransactionService {
 
     /**
-     * 切面方法调用
+     * 切面方法调用.
      *
      * @param transactionGroupId 事务组id
      * @param point              切点

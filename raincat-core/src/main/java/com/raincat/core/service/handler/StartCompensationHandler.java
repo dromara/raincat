@@ -15,17 +15,15 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.service.handler;
 
-import com.raincat.common.constant.CommonConstant;
-import com.raincat.common.holder.LogUtil;
 import com.raincat.common.bean.TxTransactionInfo;
+import com.raincat.common.constant.CommonConstant;
 import com.raincat.core.concurrent.threadlocal.CompensationLocal;
 import com.raincat.core.concurrent.threadlocal.TxTransactionLocal;
 import com.raincat.core.service.TxTransactionHandler;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -34,33 +32,29 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
+ * this is execute compensation.
  * @author xiaoyu
  */
 @Component
 public class StartCompensationHandler implements TxTransactionHandler {
 
-    /**
-     * logger
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(StartCompensationHandler.class);
-
     private final PlatformTransactionManager platformTransactionManager;
 
     @Autowired
-    public StartCompensationHandler(PlatformTransactionManager platformTransactionManager) {
+    public StartCompensationHandler(final PlatformTransactionManager platformTransactionManager) {
         this.platformTransactionManager = platformTransactionManager;
     }
 
     /**
-     * 补偿的时候，不走分布式事务处理
+     * 补偿的时候，不走分布式事务处理.
      *
      * @param point point 切点
      * @param info  信息
      * @return Object
-     * @throws Throwable
+     * @throws Throwable ex
      */
     @Override
-    public Object handler(ProceedingJoinPoint point, TxTransactionInfo info) throws Throwable {
+    public Object handler(final ProceedingJoinPoint point, final TxTransactionInfo info) throws Throwable {
         TxTransactionLocal.getInstance().setTxGroupId(CommonConstant.COMPENSATE_ID);
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
@@ -68,10 +62,8 @@ public class StartCompensationHandler implements TxTransactionHandler {
         try {
             final Object proceed = point.proceed();
             platformTransactionManager.commit(transactionStatus);
-            LogUtil.info(LOGGER, "补偿事务执行成功!事务组id为:{}", info::getTxGroupId);
             return proceed;
         } catch (Throwable e) {
-            LogUtil.info(LOGGER, "补偿事务执行失败!事务组id为:{}", info::getTxGroupId);
             platformTransactionManager.rollback(transactionStatus);
             throw e;
         } finally {

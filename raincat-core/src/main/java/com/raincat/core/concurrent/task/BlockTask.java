@@ -15,65 +15,37 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.concurrent.task;
 
-
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
+ * BlockTask.
  * @author xiaoyu
  */
 public class BlockTask {
 
     private Lock lock;
+
     private Condition condition;
-    private CountDownLatch countDownLatch;
 
     private AsyncCall asyncCall;
 
-    /**
-     * 是否被唤醒
-     */
-    private volatile boolean notify = false;
+    private volatile boolean notify;
 
-    /**
-     * 是否被唤醒
-     */
-    private volatile boolean remove = false;
+    private volatile boolean remove;
 
-    /**
-     * 唯一标示key
-     */
     private String key;
-
-    /**
-     * 数据状态用于业务处理
-     */
-    private int state = 0;
-
 
     public BlockTask() {
         lock = new ReentrantLock();
         condition = lock.newCondition();
-        //countDownLatch = new CountDownLatch(1);
-
+        notify = false;
+        remove = false;
     }
-
-    public void countDownAwait() {
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            countDownLatch.countDown();
-        }
-    }
-
-    public void countDown() {
-        countDownLatch.countDown();
-    }
-
 
     public void signal() {
         try {
@@ -83,22 +55,20 @@ public class BlockTask {
         } finally {
             lock.unlock();
         }
-
     }
-
 
     public void await() {
         try {
             lock.lock();
             condition.await();
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         } finally {
             lock.unlock();
         }
     }
 
-
-    public void setAsyncCall(AsyncCall asyncCall) {
+    public void setAsyncCall(final AsyncCall asyncCall) {
         this.asyncCall = asyncCall;
     }
 
@@ -110,15 +80,11 @@ public class BlockTask {
         return notify;
     }
 
-    public  void setNotify(boolean notify) {
-        this.notify = notify;
-    }
-
-    public  boolean isRemove() {
+    public boolean isRemove() {
         return remove;
     }
 
-    public  void setRemove(boolean remove) {
+    public void setRemove(final boolean remove) {
         this.remove = remove;
     }
 
@@ -126,17 +92,8 @@ public class BlockTask {
         return key;
     }
 
-    public void setKey(String key) {
+    public void setKey(final String key) {
         this.key = key;
     }
-
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-
 
 }

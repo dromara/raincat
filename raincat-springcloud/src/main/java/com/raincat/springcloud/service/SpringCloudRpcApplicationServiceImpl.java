@@ -15,25 +15,26 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.core.bootstrap;
+package com.raincat.springcloud.service;
 
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 
-import java.util.Set;
+import com.raincat.core.service.RpcApplicationService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 
 /**
  * @author xiaoyu
  */
-public class Scanner extends ClassPathBeanDefinitionScanner {
-    public Scanner(BeanDefinitionRegistry registry) {
-        super(registry);
-    }
+@Service
+public class SpringCloudRpcApplicationServiceImpl implements RpcApplicationService {
+
+    @Value("${spring.application.name}")
+    private String modelName;
+
 
     @Override
-    protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
-        return super.doScan(basePackages);
+    public String findModelName() {
+        return modelName;
     }
-
 }

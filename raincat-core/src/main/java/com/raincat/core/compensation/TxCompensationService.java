@@ -15,62 +15,55 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.compensation;
 
 import com.raincat.common.bean.TransactionRecover;
-import com.raincat.core.compensation.command.TxCompensationAction;
 import com.raincat.common.config.TxConfig;
 
 /**
+ * this save transaction log.
  * @author xiaoyu
  */
 public interface TxCompensationService {
 
     /**
-     * 补偿操作
-     */
-    void compensate();
-
-
-    /**
-     * 启动本地补偿事务，根据配置是否进行补偿
+     * this is start.
      *
-     * @param txConfig 配置信息
-     * @throws Exception 异常信息
+     * @param txConfig {@linkplain TxConfig }
+     * @throws Exception ex
      */
     void start(TxConfig txConfig) throws Exception;
 
     /**
-     * 保存补偿事务信息
+     * save transaction recover.
      *
-     * @param transactionRecover 实体对象
-     * @return 主键id
+     * @param transactionRecover {@linkplain TransactionRecover }
+     * @return pk
      */
     String save(TransactionRecover transactionRecover);
 
 
     /**
-     * 删除补偿事务信息
+     * remove transaction recover.
      *
-     * @param id 主键id
-     * @return true成功 false 失败
+     * @param id pk
+     * @return true success
      */
     boolean remove(String id);
 
 
     /**
-     * 更新
-     *
-     * @param transactionRecover 实体对象
+     * update transactionRecover.
+     * @param transactionRecover  {@linkplain TransactionRecover }
      */
     void update(TransactionRecover transactionRecover);
 
 
     /**
-     * 提交补偿
-     *
-     * @param txCompensationAction 补偿命令
-     * @return true 成功
+     * 执行补偿.
+     * @param transactionRecover {@linkplain TransactionRecover}
      */
-    Boolean submit(TxCompensationAction txCompensationAction);
+    void compensation(TransactionRecover transactionRecover);
+
 }

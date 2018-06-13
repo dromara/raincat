@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.service.handler;
 
 import com.raincat.common.bean.TxTransactionInfo;
@@ -28,21 +29,21 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
+ * InsideCompensationHandler.
  * @author xiaoyu
  */
 @Component
 public class InsideCompensationHandler implements TxTransactionHandler {
 
-
     private final PlatformTransactionManager platformTransactionManager;
 
     @Autowired
-    public InsideCompensationHandler(PlatformTransactionManager platformTransactionManager) {
+    public InsideCompensationHandler(final PlatformTransactionManager platformTransactionManager) {
         this.platformTransactionManager = platformTransactionManager;
     }
 
     /**
-     * 处理补偿内嵌的远程方法的时候，不提交，只调用
+     * 处理补偿内嵌的远程方法的时候，不提交，只调用.
      *
      * @param point point 切点
      * @param info  信息
@@ -50,8 +51,7 @@ public class InsideCompensationHandler implements TxTransactionHandler {
      * @throws Throwable 异常
      */
     @Override
-    public Object handler(ProceedingJoinPoint point, TxTransactionInfo info) throws Throwable {
-
+    public Object handler(final ProceedingJoinPoint point, final TxTransactionInfo info) throws Throwable {
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
         TransactionStatus transactionStatus = platformTransactionManager.getTransaction(def);

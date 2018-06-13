@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.annotation;
 
 import com.raincat.common.enums.PropagationEnum;
@@ -25,17 +26,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 二阶段分布式事务注解
+ * 二阶段分布式事务注解.
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TxTransaction {
 
-
+    /**
+     * 事务传播.
+     * @return {@linkplain PropagationEnum}
+     */
     PropagationEnum propagation() default PropagationEnum.PROPAGATION_REQUIRES_NEW;
 
     /**
-     * 事务等待的最大时间 单位 秒
+     * 事务等待的最大时间 单位秒.
      *
      * @return 多少秒
      */

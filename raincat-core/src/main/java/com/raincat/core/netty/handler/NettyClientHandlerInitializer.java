@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.netty.handler;
 
 import com.raincat.common.enums.SerializeProtocolEnum;
@@ -31,11 +32,11 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * NettyClientHandlerInitializer.
  * @author xiaoyu
  */
 @Component
 public class NettyClientHandlerInitializer extends ChannelInitializer<SocketChannel> {
-
 
     private final NettyClientMessageHandler nettyClientMessageHandler;
 
@@ -45,30 +46,30 @@ public class NettyClientHandlerInitializer extends ChannelInitializer<SocketChan
 
     private DefaultEventExecutorGroup servletExecutor;
 
-    public void setServletExecutor(DefaultEventExecutorGroup servletExecutor) {
+    @Autowired
+    public NettyClientHandlerInitializer(final NettyClientMessageHandler nettyClientMessageHandler) {
+        this.nettyClientMessageHandler = nettyClientMessageHandler;
+    }
+
+    public void setServletExecutor(final DefaultEventExecutorGroup servletExecutor) {
         this.servletExecutor = servletExecutor;
     }
 
-    public void setTxConfig(TxConfig txConfig) {
+    public void setTxConfig(final TxConfig txConfig) {
         this.txConfig = txConfig;
         nettyClientMessageHandler.setTxConfig(txConfig);
     }
 
-    @Autowired
-    public NettyClientHandlerInitializer(NettyClientMessageHandler nettyClientMessageHandler) {
-        this.nettyClientMessageHandler = nettyClientMessageHandler;
-    }
-
-    public void setSerializeProtocolEnum(SerializeProtocolEnum serializeProtocolEnum) {
+    public void setSerializeProtocolEnum(final SerializeProtocolEnum serializeProtocolEnum) {
         this.serializeProtocolEnum = serializeProtocolEnum;
     }
 
     @Override
-    protected void initChannel(SocketChannel socketChannel) throws Exception {
+    protected void initChannel(final SocketChannel socketChannel) {
         final ChannelPipeline pipeline = socketChannel.pipeline();
         NettyPipelineInit.serializePipeline(serializeProtocolEnum, pipeline);
         pipeline.addLast("timeout", new IdleStateHandler(txConfig.getHeartTime(), txConfig.getHeartTime(), txConfig.getHeartTime(), TimeUnit.SECONDS));
         pipeline.addLast(nettyClientMessageHandler);
-
     }
+
 }

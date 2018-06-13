@@ -21,15 +21,16 @@ package com.raincat.core.helper;
 import com.raincat.common.holder.DbTypeUtils;
 
 /**
+ * SqlHelper.
  * @author xiaoyu
  */
 public class SqlHelper {
 
-    public static String buildCreateTableSql(String tableName, String driverClassName) {
+    public static String buildCreateTableSql(final String tableName, final String driverClassName) {
         String createTableSql;
         String dbType = DbTypeUtils.buildByDriverClassName(driverClassName);
         switch (dbType) {
-            case "mysql": {
+            case "mysql":
                 createTableSql = "CREATE TABLE `" + tableName + "` (\n" +
                         "  `id` varchar(64) NOT NULL,\n" +
                         "  `target_class` varchar(256) ,\n" +
@@ -44,8 +45,7 @@ public class SqlHelper {
                         "  PRIMARY KEY (`id`)\n" +
                         ")";
                 break;
-            }
-            case "oracle": {
+            case "oracle":
                 createTableSql = "CREATE TABLE `" + tableName + "` (\n" +
                         "  `id` varchar(64) NOT NULL,\n" +
                         "  `target_class` varchar(256) ,\n" +
@@ -60,8 +60,7 @@ public class SqlHelper {
                         "  PRIMARY KEY (`id`)\n" +
                         ")";
                 break;
-            }
-            case "sqlserver": {
+            case "sqlserver":
                 createTableSql = "CREATE TABLE `" + tableName + "` (\n" +
                         "  `id` varchar(64) NOT NULL,\n" +
                         "  `target_class` varchar(256) ,\n" +
@@ -76,7 +75,6 @@ public class SqlHelper {
                         "  PRIMARY KEY (`id`)\n" +
                         ")";
                 break;
-            }
             default: {
                 throw new RuntimeException("dbType类型不支持,目前仅支持mysql oracle sqlserver.");
             }

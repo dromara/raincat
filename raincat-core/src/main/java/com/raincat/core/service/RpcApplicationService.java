@@ -15,21 +15,20 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.core.helper;
 
-import redis.clients.jedis.Jedis;
+package com.raincat.core.service;
 
 /**
+ * RpcApplicationService.
  * @author xiaoyu
  */
 @FunctionalInterface
-public interface JedisCallback<T> {
+public interface RpcApplicationService {
 
     /**
-     * redis 操作
+     * get applicationName.
      *
-     * @param jedis jedis客户端
-     * @return T
+     * @return applicationName
      */
-    T doInJedis(Jedis jedis);
+    String findModelName();
 }

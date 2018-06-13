@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.bootstrap;
 
 import com.raincat.common.exception.TransactionRuntimeException;
@@ -29,40 +30,33 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 /**
+ * TxTransactionBootstrap.
  * @author xiaoyu
  */
 @Component
 public class TxTransactionBootstrap extends TxConfig implements ApplicationContextAware {
 
-
-    private ConfigurableApplicationContext cfgContext;
-
-    /**
-     * 初始化实体
-     */
     private final TxTransactionInitialize txTransactionInitialize;
 
     @Autowired
-    public TxTransactionBootstrap(TxTransactionInitialize txTransactionInitialize) {
+    public TxTransactionBootstrap(final TxTransactionInitialize txTransactionInitialize) {
         this.txTransactionInitialize = txTransactionInitialize;
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        cfgContext = (ConfigurableApplicationContext) applicationContext;
-        SpringBeanUtils.getInstance().setCfgContext(cfgContext);
+    public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
+        SpringBeanUtils.getInstance().setCfgContext((ConfigurableApplicationContext) applicationContext);
         start(this);
     }
 
-
-    private void start(TxConfig txConfig) {
+    private void start(final TxConfig txConfig) {
         if (!checkDataConfig(txConfig)) {
             throw new TransactionRuntimeException("分布式事务配置信息不完整！");
         }
         txTransactionInitialize.init(txConfig);
     }
 
-    private boolean checkDataConfig(TxConfig txConfig) {
+    private boolean checkDataConfig(final TxConfig txConfig) {
         return !StringUtils.isBlank(txConfig.getTxManagerUrl());
     }
 }

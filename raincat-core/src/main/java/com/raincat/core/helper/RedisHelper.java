@@ -33,11 +33,4 @@ public class RedisHelper {
     public static String buildRecoverKey(String keyPrefix, String id) {
         return String.join(":", keyPrefix, id);
     }
-
-
-    public static <T> T execute(JedisPool jedisPool, JedisCallback<T> callback) {
-        try(Jedis jedis=jedisPool.getResource()) {
-            return callback.doInJedis(jedis);
-        }
-    }
 }

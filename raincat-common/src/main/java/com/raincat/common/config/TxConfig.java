@@ -111,6 +111,8 @@ public class TxConfig {
      */
     private int recoverDelayTime = 60;
 
+    private int buffSize = 1024;
+
     /**
      * txManagerUrl服务地址.
      */

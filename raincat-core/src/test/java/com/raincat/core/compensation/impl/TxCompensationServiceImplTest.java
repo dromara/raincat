@@ -1,6 +1,6 @@
 package com.raincat.core.compensation.impl;
 
-import com.raincat.core.compensation.command.TxCompensationAction;
+import com.raincat.core.compensation.manager.TxCompensationAction;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

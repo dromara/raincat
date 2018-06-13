@@ -15,45 +15,41 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.core.compensation.command;
 
-import com.raincat.common.enums.CompensationActionEnum;
-import com.raincat.common.enums.TransactionStatusEnum;
+package com.raincat.core.compensation.manager;
+
 import com.raincat.common.bean.TransactionInvocation;
 import com.raincat.common.bean.TransactionRecover;
-import com.raincat.core.compensation.TxCompensationService;
+import com.raincat.common.enums.CompensationActionEnum;
+import com.raincat.common.enums.TransactionStatusEnum;
+import com.raincat.core.disruptor.publisher.TxTransactionEventPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
 /**
+ * TxCompensationManager.
  * @author xiaoyu
  */
 @Service
-public class TxCompensationCommand implements Command {
+public class TxCompensationManager {
 
-    private final TxCompensationService txCompensationService;
+    private final TxTransactionEventPublisher txTransactionEventPublisher;
 
     @Autowired
-    public TxCompensationCommand(TxCompensationService txCompensationService) {
-        this.txCompensationService = txCompensationService;
+    public TxCompensationManager(final TxTransactionEventPublisher txTransactionEventPublisher) {
+        this.txTransactionEventPublisher = txTransactionEventPublisher;
     }
 
     /**
-     * 执行命令接口
-     *
-     * @param txCompensationAction 封装命令信息
+     * save TransactionRecover data.
+     * @param invocation {@linkplain TransactionInvocation}
+     * @param groupId this is transaction groupId
+     * @param taskId taskId
+     * @return groupId.
      */
-    @Override
-    public void execute(TxCompensationAction txCompensationAction) {
-        txCompensationService.submit(txCompensationAction);
-    }
-
-
-    public String saveTxCompensation(TransactionInvocation invocation, String groupId, String taskId) {
-        TxCompensationAction action = new TxCompensationAction();
-        action.setCompensationActionEnum(CompensationActionEnum.SAVE);
+    public String saveTxCompensation(final TransactionInvocation invocation, final String groupId, final String taskId) {
         TransactionRecover recover = new TransactionRecover();
         recover.setRetriedCount(1);
         recover.setStatus(TransactionStatusEnum.BEGIN.getCode());
@@ -62,18 +58,18 @@ public class TxCompensationCommand implements Command {
         recover.setGroupId(groupId);
         recover.setTaskId(taskId);
         recover.setCreateTime(new Date());
-        action.setTransactionRecover(recover);
-        execute(action);
+        txTransactionEventPublisher.publishEvent(recover, CompensationActionEnum.SAVE.getCode());
         return recover.getId();
     }
 
-    public void removeTxCompensation(String compensateId) {
-        TxCompensationAction action = new TxCompensationAction();
-        action.setCompensationActionEnum(CompensationActionEnum.DELETE);
+    /**
+     * delete TransactionRecover.
+     * @param id transaction groupId.
+     */
+    public void removeTxCompensation(final String id) {
         TransactionRecover recover = new TransactionRecover();
-        recover.setId(compensateId);
-        action.setTransactionRecover(recover);
-        execute(action);
+        recover.setId(id);
+        txTransactionEventPublisher.publishEvent(recover, CompensationActionEnum.DELETE.getCode());
     }
 
 }

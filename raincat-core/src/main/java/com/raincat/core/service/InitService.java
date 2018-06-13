@@ -15,20 +15,22 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.service;
 
 import com.raincat.common.config.TxConfig;
 
 /**
+ * InitService.
  * @author xiaoyu
  */
 @FunctionalInterface
 public interface InitService {
 
     /**
-     * 框架的初始化
+     * tx transaction init.
      *
-     * @param txConfig 配置信息{@linkplain TxConfig}
+     * @param txConfig {@linkplain TxConfig}
      */
     void initialization(TxConfig txConfig);
 }

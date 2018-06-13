@@ -15,8 +15,8 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.core.bootstrap;
 
+package com.raincat.core.bootstrap;
 
 import com.raincat.common.holder.LogUtil;
 import com.raincat.common.config.TxConfig;
@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * TxTransactionInitialize.
  * @author xiaoyu
  */
 @Component

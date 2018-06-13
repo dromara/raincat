@@ -15,19 +15,20 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.spi.repository;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.google.common.collect.Maps;
+import com.raincat.common.bean.TransactionInvocation;
+import com.raincat.common.bean.TransactionRecover;
+import com.raincat.common.config.TxConfig;
+import com.raincat.common.config.TxDbConfig;
 import com.raincat.common.enums.CompensationCacheTypeEnum;
 import com.raincat.common.exception.TransactionException;
 import com.raincat.common.exception.TransactionRuntimeException;
 import com.raincat.common.holder.RepositoryPathUtils;
 import com.raincat.common.serializer.ObjectSerializer;
-import com.raincat.common.bean.TransactionInvocation;
-import com.raincat.common.bean.TransactionRecover;
-import com.raincat.common.config.TxConfig;
-import com.raincat.common.config.TxDbConfig;
 import com.raincat.core.helper.SqlHelper;
 import com.raincat.core.spi.TransactionRecoverRepository;
 import org.apache.commons.collections.CollectionUtils;
@@ -47,93 +48,74 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
+ * jdbc impl.
  * @author xiaoyu
  */
 public class JdbcTransactionRecoverRepository implements TransactionRecoverRepository {
 
-
-    private static final  Logger LOGGER = LoggerFactory.getLogger(JdbcTransactionRecoverRepository.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcTransactionRecoverRepository.class);
 
     private DruidDataSource dataSource;
-
 
     private String tableName;
 
     private ObjectSerializer serializer;
 
     @Override
-    public void setSerializer(ObjectSerializer serializer) {
+    public void setSerializer(final ObjectSerializer serializer) {
         this.serializer = serializer;
     }
 
     @Override
-    public int create(TransactionRecover recover) {
-        String sql = "insert into " + tableName + "(id,target_class,target_method,retried_count,create_time,last_time,version,group_id,task_id,invocation)" +
-                " values(?,?,?,?,?,?,?,?,?,?)";
+    public int create(final TransactionRecover recover) {
+        String sql = "insert into " + tableName
+                + "(id,target_class,target_method,retried_count,create_time,last_time,version,group_id,task_id,invocation)"
+                + " values(?,?,?,?,?,?,?,?,?,?)";
         try {
             final TransactionInvocation transactionInvocation = recover.getTransactionInvocation();
             final String className = transactionInvocation.getTargetClazz().getName();
             final String method = transactionInvocation.getMethod();
             final byte[] serialize = serializer.serialize(transactionInvocation);
-            return executeUpdate(sql, recover.getId(),className, method,recover.getRetriedCount(), recover.getCreateTime(), recover.getLastTime(),
-                    recover.getVersion(), recover.getGroupId(), recover.getTaskId(), serialize);
-
+            return executeUpdate(sql, recover.getId(), className,
+                    method, recover.getRetriedCount(),
+                    recover.getCreateTime(), recover.getLastTime(),
+                    recover.getVersion(), recover.getGroupId(),
+                    recover.getTaskId(), serialize);
         } catch (TransactionException e) {
             e.printStackTrace();
-            return -1;
+            return FAIL_ROWS;
         }
     }
 
     @Override
-    public int remove(String id) {
+    public int remove(final String id) {
         String sql = "delete from " + tableName + " where id = ? ";
         return executeUpdate(sql, id);
     }
 
-    /**
-     * 更新数据
-     *
-     * @param transactionRecover 事务对象
-     * @return rows 1 成功 0 失败 失败需要抛异常
-     */
     @Override
-    public int update(TransactionRecover transactionRecover) throws TransactionRuntimeException {
+    public int update(final TransactionRecover transactionRecover) throws TransactionRuntimeException {
 
-        String sql = "update " + tableName +
-                " set last_time = ?,version =version+ 1,retried_count =retried_count+1 where id = ? and version=? ";
+        String sql = "update " + tableName
+                + " set last_time = ?,version =version+ 1,retried_count =retried_count+1 where id = ? and version=? ";
         int success = executeUpdate(sql, new Date(), transactionRecover.getId(), transactionRecover.getVersion());
         if (success <= 0) {
-            throw new TransactionRuntimeException("更新异常，数据已经被更新！");
+            throw new TransactionRuntimeException(UPDATE_EX);
         }
         return success;
     }
 
-
-    /**
-     * 根据id获取对象
-     *
-     * @param id 主键id
-     * @return TransactionRecover
-     */
     @Override
-    public TransactionRecover findById(String id) {
-
+    public TransactionRecover findById(final String id) {
         String selectSql = "select * from " + tableName + " where id=?";
-
         List<Map<String, Object>> list = executeQuery(selectSql);
         if (CollectionUtils.isNotEmpty(list)) {
             return list.stream().filter(Objects::nonNull)
                     .map(this::buildByMap).collect(Collectors.toList()).get(0);
         }
-
         return null;
     }
 
-    /**
-     * 获取需要提交的事务
-     *
-     * @return List<TransactionRecover>
-     */
     @Override
     public List<TransactionRecover> listAll() {
         String selectSql = "select * from " + tableName;
@@ -142,25 +124,13 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
             return list.stream().filter(Objects::nonNull)
                     .map(this::buildByMap).collect(Collectors.toList());
         }
-
         return null;
     }
 
-    /**
-     * 获取延迟多长时间后的事务信息,只要为了防止并发的时候，刚新增的数据被执行
-     *
-     * @param date 延迟后的时间
-     * @return List<TransactionRecover>
-     */
     @Override
-    public List<TransactionRecover> listAllByDelay(Date date) {
-
-        String sb = "select * from " +
-                tableName +
-                " where last_time <?";
-
+    public List<TransactionRecover> listAllByDelay(final Date date) {
+        String sb = "select * from " + tableName + " where last_time <?";
         List<Map<String, Object>> list = executeQuery(sb, date);
-
         if (CollectionUtils.isNotEmpty(list)) {
             return list.stream().filter(Objects::nonNull)
                     .map(this::buildByMap).collect(Collectors.toList());
@@ -168,8 +138,7 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
         return null;
     }
 
-
-    private TransactionRecover buildByMap(Map<String, Object> map) {
+    private TransactionRecover buildByMap(final Map<String, Object> map) {
         TransactionRecover recover = new TransactionRecover();
         recover.setId((String) map.get("id"));
         recover.setRetriedCount((Integer) map.get("retried_count"));
@@ -188,22 +157,14 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
         return recover;
     }
 
-    /**
-     * 初始化操作
-     *
-     * @param modelName 模块名称
-     * @param txConfig  配置信息
-     */
     @Override
-    public void init(String modelName, TxConfig txConfig) {
+    public void init(final String appName, final TxConfig txConfig) {
         dataSource = new DruidDataSource();
         final TxDbConfig txDbConfig = txConfig.getTxDbConfig();
         dataSource.setUrl(txDbConfig.getUrl());
         dataSource.setDriverClassName(txDbConfig.getDriverClassName());
         dataSource.setUsername(txDbConfig.getUsername());
         dataSource.setPassword(txDbConfig.getPassword());
-
-
         dataSource.setInitialSize(txDbConfig.getInitialSize());
         dataSource.setMaxActive(txDbConfig.getMaxActive());
         dataSource.setMinIdle(txDbConfig.getMinIdle());
@@ -214,30 +175,22 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
         dataSource.setTestWhileIdle(txDbConfig.getTestWhileIdle());
         dataSource.setPoolPreparedStatements(txDbConfig.getPoolPreparedStatements());
         dataSource.setMaxPoolPreparedStatementPerConnectionSize(txDbConfig.getMaxPoolPreparedStatementPerConnectionSize());
-
-
-        this.tableName = RepositoryPathUtils.buildDbTableName(modelName);
+        this.tableName = RepositoryPathUtils.buildDbTableName(appName);
         executeUpdate(SqlHelper.buildCreateTableSql(tableName, txDbConfig.getDriverClassName()));
     }
 
-
-    /**
-     * 设置scheme
-     *
-     * @return scheme 命名
-     */
     @Override
     public String getScheme() {
         return CompensationCacheTypeEnum.DB.getCompensationCacheType();
     }
 
-    private int executeUpdate(String sql, Object... params) {
+    private int executeUpdate(final String sql, final Object... params) {
         try {
-            try(Connection connection = dataSource.getConnection();
-                PreparedStatement ps=  connection.prepareStatement(sql);){
+            try (Connection connection = dataSource.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)) {
                 if (params != null) {
                     for (int i = 0; i < params.length; i++) {
-                        ps.setObject((i + 1), params[i]);
+                        ps.setObject(i + 1, params[i]);
                     }
                 }
                 return ps.executeUpdate();
@@ -246,17 +199,17 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
             e.printStackTrace();
             LOGGER.error("executeUpdate->" + e.getMessage());
         }
-        return 0;
+        return ROWS;
     }
 
-    private List<Map<String, Object>> executeQuery(String sql, Object... params) {
+    private List<Map<String, Object>> executeQuery(final String sql, final Object... params) {
         List<Map<String, Object>> list = null;
         try {
-            try(Connection connection = dataSource.getConnection();
-                PreparedStatement ps=  connection.prepareStatement(sql)){
+            try (Connection connection = dataSource.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)) {
                 if (params != null) {
                     for (int i = 0; i < params.length; i++) {
-                        ps.setObject((i + 1), params[i]);
+                        ps.setObject(i + 1, params[i]);
                     }
                 }
                 ResultSet rs = ps.executeQuery();

@@ -15,22 +15,24 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.service;
 
 import com.raincat.common.bean.TxTransactionInfo;
 
 /**
+ * TxTransactionFactoryService.
  * @author xiaoyu
  */
 @FunctionalInterface
 public interface TxTransactionFactoryService<T> {
 
     /**
-     * 返回 实现TxTransactionHandler类的名称
+     * 返回 实现TxTransactionHandler类的名称.
      *
-     * @param info
-     * @return Class<T>
-     * @throws Throwable 抛出异常
+     * @param info {@linkplain TxTransactionInfo}
+     * @return  {@linkplain TxTransactionHandler }
+     * @throws Throwable ex
      */
     Class<T> factoryOf(TxTransactionInfo info) throws Throwable;
 }
