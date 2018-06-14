@@ -18,9 +18,11 @@
 
 package com.raincat.manager;
 
+import com.raincat.manager.netty.NettyService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
@@ -32,7 +34,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class TxManagerApplication {
     public static void main(String[] args) {
-        SpringApplication.run(TxManagerApplication.class, args);
+        final ConfigurableApplicationContext applicationContext =
+                SpringApplication.run(TxManagerApplication.class, args);
+        final NettyService nettyService = applicationContext.getBean(NettyService.class);
+        try {
+            nettyService.start();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
