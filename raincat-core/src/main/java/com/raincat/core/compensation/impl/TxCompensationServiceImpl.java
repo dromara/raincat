@@ -22,6 +22,7 @@ import com.raincat.common.bean.TransactionInvocation;
 import com.raincat.common.bean.TransactionRecover;
 import com.raincat.common.config.TxConfig;
 import com.raincat.common.constant.CommonConstant;
+import com.raincat.common.enums.CompensationOperationTypeEnum;
 import com.raincat.common.enums.TransactionStatusEnum;
 import com.raincat.common.holder.LogUtil;
 import com.raincat.common.netty.bean.TxTransactionGroup;
@@ -53,6 +54,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * TxCompensationServiceImpl.
+ *
  * @author xiaoyu
  */
 @Service
@@ -69,6 +71,7 @@ public class TxCompensationServiceImpl implements TxCompensationService {
     private final TxManagerMessageService txManagerMessageService;
 
     private ScheduledExecutorService scheduledExecutorService;
+
 
     @Autowired(required = false)
     public TxCompensationServiceImpl(final RpcApplicationService rpcApplicationService,
@@ -157,11 +160,16 @@ public class TxCompensationServiceImpl implements TxCompensationService {
                         for (TransactionRecover transactionRecover : transactionRecovers) {
                             if (transactionRecover.getRetriedCount() > txConfig.getRetryMax()) {
                                 LogUtil.error(LOGGER, "此事务超过了最大重试次数，不再进行重试：{}", () -> transactionRecover.getTransactionInvocation().getTargetClazz().getName()
-                                                + ":" + transactionRecover.getTransactionInvocation().getMethod()
-                                                + "事务组id：" + transactionRecover.getGroupId());
+                                        + ":" + transactionRecover.getTransactionInvocation().getMethod()
+                                        + "事务组id：" + transactionRecover.getGroupId());
                                 continue;
                             }
                             try {
+                                //判断任务是否执行完成
+                                if (!CommonConstant.TX_TRANSACTION_COMPLETE_FLAG_OK.equals(transactionRecover.getCompleteFlag())) {
+                                    continue;
+                                }
+                                transactionRecover.setOperation(CompensationOperationTypeEnum.COMPENSATION.getCode());
                                 final int update = transactionRecoverRepository.update(transactionRecover);
                                 if (update > 0) {
                                     final TxTransactionGroup byTxGroupId = txManagerMessageService

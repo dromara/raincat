@@ -19,6 +19,7 @@
 package com.raincat.core.service.handler;
 
 import com.raincat.common.bean.TxTransactionInfo;
+import com.raincat.common.constant.CommonConstant;
 import com.raincat.common.enums.NettyResultEnum;
 import com.raincat.common.enums.TransactionRoleEnum;
 import com.raincat.common.enums.TransactionStatusEnum;
@@ -48,6 +49,7 @@ import java.util.concurrent.ScheduledFuture;
 
 /**
  * this is tx transaction actor.
+ *
  * @author xiaoyu
  */
 @Component
@@ -85,6 +87,9 @@ public class ActorTxTransactionHandler implements TxTransactionHandler {
                 .execute(() -> {
                     TxTransactionLocal.getInstance().setTxGroupId(info.getTxGroupId());
                     final String waitKey = IdWorkerUtils.getInstance().createTaskKey();
+
+                    String commitStatus = CommonConstant.TX_TRANSACTION_COMMIT_STATUS_BAD;
+
                     final BlockTask waitTask = BlockTaskHelper.getInstance().getTask(waitKey);
                     DefaultTransactionDefinition def = new DefaultTransactionDefinition();
                     def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
@@ -154,8 +159,12 @@ public class ActorTxTransactionHandler implements TxTransactionHandler {
                                 if (TransactionStatusEnum.COMMIT.getCode() == status) {
                                     //提交事务
                                     platformTransactionManager.commit(transactionStatus);
+                                    commitStatus = CommonConstant.TX_TRANSACTION_COMMIT_STATUS_OK;
+
                                     //通知tm 自身事务提交
                                     asyncComplete(info.getTxGroupId(), waitKey, TransactionStatusEnum.COMMIT.getCode(), res);
+                                    //删除补偿信息
+                                    txCompensationManager.removeTxCompensation(compensateId);
                                 } else {
                                     //回滚当前事务
                                     platformTransactionManager.rollback(transactionStatus);
@@ -167,8 +176,10 @@ public class ActorTxTransactionHandler implements TxTransactionHandler {
                                 throwable.printStackTrace();
                             } finally {
                                 BlockTaskHelper.getInstance().removeByKey(waitKey);
-                                //删除本地补偿信息
-                                txCompensationManager.removeTxCompensation(compensateId);
+                                // 更新补偿信息
+                                if (CommonConstant.TX_TRANSACTION_COMMIT_STATUS_BAD.equals(commitStatus)) {
+                                    txCompensationManager.updateTxCompensation(compensateId);
+                                }
                             }
                         } else {
                             platformTransactionManager.rollback(transactionStatus);
@@ -186,9 +197,7 @@ public class ActorTxTransactionHandler implements TxTransactionHandler {
                             throw throwable;
                         });
                         task.signal();
-
                     }
-
                 });
 
         task.await();

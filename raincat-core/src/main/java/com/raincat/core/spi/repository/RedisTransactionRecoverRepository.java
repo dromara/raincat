@@ -23,7 +23,9 @@ import com.google.common.collect.Lists;
 import com.raincat.common.bean.TransactionRecover;
 import com.raincat.common.config.TxConfig;
 import com.raincat.common.config.TxRedisConfig;
+import com.raincat.common.constant.CommonConstant;
 import com.raincat.common.enums.CompensationCacheTypeEnum;
+import com.raincat.common.enums.CompensationOperationTypeEnum;
 import com.raincat.common.exception.TransactionIoException;
 import com.raincat.common.exception.TransactionRuntimeException;
 import com.raincat.common.holder.LogUtil;
@@ -50,6 +52,7 @@ import java.util.stream.Collectors;
 
 /**
  * redis impl.
+ *
  * @author xiaoyu
  */
 public class RedisTransactionRecoverRepository implements TransactionRecoverRepository {
@@ -87,6 +90,11 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
     public int update(final TransactionRecover transactionRecover) throws TransactionRuntimeException {
         try {
             final String redisKey = RedisHelper.buildRecoverKey(keyName, transactionRecover.getId());
+            if (CompensationOperationTypeEnum.TASK_EXECUTE.getCode() == transactionRecover.getOperation()) {//任务完成时更新操作
+                TransactionRecover recover = findById(transactionRecover.getId());
+                recover.setCompleteFlag(CommonConstant.TX_TRANSACTION_COMPLETE_FLAG_OK);
+                return ROWS;
+            }
             transactionRecover.setVersion(transactionRecover.getVersion() + 1);
             transactionRecover.setLastTime(new Date());
             transactionRecover.setRetriedCount(transactionRecover.getRetriedCount() + 1);

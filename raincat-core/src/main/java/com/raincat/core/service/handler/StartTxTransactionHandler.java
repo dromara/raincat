@@ -19,6 +19,7 @@
 package com.raincat.core.service.handler;
 
 import com.raincat.common.bean.TxTransactionInfo;
+import com.raincat.common.constant.CommonConstant;
 import com.raincat.common.enums.PropagationEnum;
 import com.raincat.common.enums.TransactionRoleEnum;
 import com.raincat.common.enums.TransactionStatusEnum;
@@ -48,6 +49,7 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * this is tx transaction starter .
+ *
  * @author xiaoyu
  */
 @Component
@@ -80,6 +82,8 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
         TxTransactionLocal.getInstance().setTxGroupId(groupId);
 
         final String waitKey = IdWorkerUtils.getInstance().createTaskKey();
+
+        String commitStatus = CommonConstant.TX_TRANSACTION_COMMIT_STATUS_BAD;
 
         //创建事务组信息
         final Boolean success = txManagerMessageService.saveTxTransactionGroup(newTxTransactionGroup(groupId, waitKey, info));
@@ -117,6 +121,10 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
                     //我觉得到这一步了，应该是切面走完，然后需要提交了，此时应该都是进行提交的
                     //提交事务
                     platformTransactionManager.commit(transactionStatus);
+                    commitStatus = CommonConstant.TX_TRANSACTION_COMMIT_STATUS_OK;
+
+                    LOGGER.info("发起者提交本地事务,补偿Id:[{}]", compensateId);
+
                     //删除补偿信息
                     txCompensationManager.removeTxCompensation(compensateId);
                     //通知tm完成事务
@@ -127,8 +135,8 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
 
                 } else {
                     LogUtil.error(LOGGER, () -> "预提交失败!");
-                    //删除补偿信息
-                    txCompensationManager.removeTxCompensation(compensateId);
+                    //这里建议不直接删除补偿信息，交由补偿任务控制，当前任务无法判定提交超时还是返回失败
+                    //txCompensationManager.removeTxCompensation(compensateId);
                     platformTransactionManager.rollback(transactionStatus);
                 }
                 LogUtil.info(LOGGER, "tx-transaction end, class：{}", () -> point.getTarget().getClass());
@@ -144,6 +152,13 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
                 throw throwable;
             } finally {
                 TxTransactionLocal.getInstance().removeTxGroupId();
+                /**
+                 *  1. 若事务提交成功这里不进行处理，此时completeFlag="0" ,则异常情况下进入补偿的任务认为当前任务还在处理中，不对其进行补偿处理;
+                 *  2. 若事务未提交,当前任务更新completeFlag="1" ，补偿任务可以继续向下执行补偿
+                 */
+                if (CommonConstant.TX_TRANSACTION_COMMIT_STATUS_BAD.equals(commitStatus)) {
+                    txCompensationManager.updateTxCompensation(groupId);
+                }
             }
         } else {
             throw new TransactionRuntimeException("TxManager connection ex！");
