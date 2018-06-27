@@ -15,8 +15,10 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.netty.handler;
 
+import com.raincat.common.config.TxConfig;
 import com.raincat.common.enums.NettyMessageActionEnum;
 import com.raincat.common.enums.NettyResultEnum;
 import com.raincat.common.holder.IdWorkerUtils;
@@ -26,7 +28,6 @@ import com.raincat.common.netty.bean.TxTransactionGroup;
 import com.raincat.common.netty.bean.TxTransactionItem;
 import com.raincat.core.concurrent.task.BlockTask;
 import com.raincat.core.concurrent.task.BlockTaskHelper;
-import com.raincat.common.config.TxConfig;
 import com.raincat.core.helper.SpringBeanUtils;
 import com.raincat.core.netty.NettyClientService;
 import io.netty.channel.ChannelHandler;
@@ -46,44 +47,30 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * NettyClientMessageHandler.
  * @author xiaoyu
  */
 @Component
 @ChannelHandler.Sharable
 public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
 
-    /**
-     * logger
-     */
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyClientMessageHandler.class);
-
-    /**
-     * false 未链接
-     * true 连接中
-     */
-    public volatile static boolean net_state = false;
-
-    private Logger logger = LoggerFactory.getLogger(NettyClientMessageHandler.class);
-
-    private static volatile ChannelHandlerContext ctx;
-
 
     private static final HeartBeat HEART_BEAT = new HeartBeat();
 
+    private static volatile ChannelHandlerContext ctx;
 
     private TxConfig txConfig;
 
-    public void setTxConfig(TxConfig txConfig) {
+    public void setTxConfig(final TxConfig txConfig) {
         this.txConfig = txConfig;
     }
 
-
     @Override
-    public void channelRead(ChannelHandlerContext ctx, final Object msg) throws Exception {
-        net_state = true;
+    public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
         HeartBeat heartBeat = (HeartBeat) msg;
         final NettyMessageActionEnum actionEnum = NettyMessageActionEnum.acquireByCode(heartBeat.getAction());
-        LogUtil.debug(LOGGER, "接收服务端据命令为,执行的动作为:{}", actionEnum::getDesc);
+        LogUtil.debug(LOGGER, "receive tx manage info :{}", actionEnum::getDesc);
        /* executorService.execute(() -> {*/
         try {
             switch (actionEnum) {
@@ -120,9 +107,9 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
 
     }
 
-    private void notify(HeartBeat heartBeat) {
-        final List<TxTransactionItem> txTransactionItems = heartBeat.getTxTransactionGroup()
-                .getItemList();
+    private void notify(final HeartBeat heartBeat) {
+        final List<TxTransactionItem> txTransactionItems =
+                heartBeat.getTxTransactionGroup().getItemList();
         if (CollectionUtils.isNotEmpty(txTransactionItems)) {
             final TxTransactionItem item = txTransactionItems.get(0);
             final BlockTask task = BlockTaskHelper.getInstance().getTask(item.getTaskKey());
@@ -131,7 +118,7 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private void receivedCommand(String key, int result) {
+    private void receivedCommand(final String key, final int result) {
         final BlockTask blockTask = BlockTaskHelper.getInstance().getTask(key);
         if (Objects.nonNull(blockTask)) {
             blockTask.setAsyncCall(objects -> result == NettyResultEnum.SUCCESS.getCode());
@@ -140,42 +127,33 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
         cause.printStackTrace();
         ctx.close();
     }
 
     @Override
-    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+    public void channelUnregistered(final ChannelHandlerContext ctx) throws Exception {
         super.channelUnregistered(ctx);
-        // net_state = false;
-        //链接断开,重新连接
-        // nettyClientService.restart();
-        // SpringBeanUtils.getInstance().getBean(NettyClientService.class).restart();
-       /* ctx.channel().eventLoop().schedule(() -> SpringBeanUtils.getInstance().getBean(NettyClientService.class).restart()
-                , 10, TimeUnit.SECONDS);*/
-        //ctx.close();
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        logger.info("与服务器断开连接服务器");
+    public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
+        LOGGER.info("close to tx manager");
         super.channelInactive(ctx);
         SpringBeanUtils.getInstance().getBean(NettyClientService.class).doConnect();
 
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(final ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         NettyClientMessageHandler.ctx = ctx;
-        logger.info("建立链接-->" + ctx);
-        net_state = true;
+        LOGGER.info("connected tx manager-->" + ctx);
     }
 
-
     @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+    public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
         //心跳配置
         if (IdleStateEvent.class.isAssignableFrom(evt.getClass())) {
             IdleStateEvent event = (IdleStateEvent) evt;
@@ -185,7 +163,7 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
                 //表示已经多久没有发送数据了
                 HEART_BEAT.setAction(NettyMessageActionEnum.HEART.getCode());
                 ctx.writeAndFlush(HEART_BEAT);
-                LogUtil.debug(LOGGER, () -> "向服务端发送的心跳");
+                LogUtil.debug(LOGGER, () -> "send tx manager heart beat!");
             } else if (event.state() == IdleState.ALL_IDLE) {
                 //表示已经多久既没有收到也没有发送数据了
                 SpringBeanUtils.getInstance().getBean(NettyClientService.class).doConnect();
@@ -195,19 +173,19 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
 
 
     /**
-     * 向TxManager 发生消息
+     * send message to tx manager .
      *
-     * @param heartBeat 定义的数据传输对象
+     * @param heartBeat {@linkplain HeartBeat }
      * @return Object
      */
-    public Object sendTxManagerMessage(HeartBeat heartBeat) {
+    public Object sendTxManagerMessage(final HeartBeat heartBeat) {
         if (ctx != null && ctx.channel() != null && ctx.channel().isActive()) {
             final String sendKey = IdWorkerUtils.getInstance().createTaskKey();
             BlockTask sendTask = BlockTaskHelper.getInstance().getTask(sendKey);
             heartBeat.setKey(sendKey);
             ctx.writeAndFlush(heartBeat);
-            final ScheduledFuture<?> schedule = ctx.executor()
-                    .schedule(() -> {
+            final ScheduledFuture<?> schedule =
+                    ctx.executor().schedule(() -> {
                         if (!sendTask.isNotify()) {
                             if (NettyMessageActionEnum.GET_TRANSACTION_GROUP_STATUS.getCode()
                                     == heartBeat.getAction()) {
@@ -223,7 +201,6 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
                     }, txConfig.getDelayTime(), TimeUnit.SECONDS);
             //发送线程在此等待，等tm是否 正确返回（正确返回唤醒） 返回错误或者无返回通过上面的调度线程唤醒
             sendTask.await();
-
             //如果已经被唤醒，就不需要去执行调度线程了 ，关闭上面的调度线程池中的任务
             if (!schedule.isDone()) {
                 schedule.cancel(false);
@@ -236,7 +213,6 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
             } finally {
                 BlockTaskHelper.getInstance().removeByKey(sendKey);
             }
-
         } else {
             return null;
         }
@@ -245,16 +221,14 @@ public class NettyClientMessageHandler extends ChannelInboundHandlerAdapter {
 
 
     /**
-     * 向TxManager 异步 发送消息
+     * async Send message to tx Manager.
      *
-     * @param heartBeat 定义的数据传输对象
+     * @param heartBeat {@linkplain HeartBeat }
      */
-    public void asyncSendTxManagerMessage(HeartBeat heartBeat) {
+    public void asyncSendTxManagerMessage(final HeartBeat heartBeat) {
         if (ctx != null && ctx.channel() != null && ctx.channel().isActive()) {
             ctx.writeAndFlush(heartBeat);
         }
-
     }
-
 
 }

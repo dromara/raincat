@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.netty.handler;
 
 import com.raincat.common.enums.SerializeProtocolEnum;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * NettyServerHandlerInitializer.
  * @author xiaoyu
  */
 @Component
@@ -38,30 +40,29 @@ public class NettyServerHandlerInitializer extends ChannelInitializer<SocketChan
 
     private final NettyConfig nettyConfig;
 
-
     private final NettyServerMessageHandler nettyServerMessageHandler;
 
     private SerializeProtocolEnum serializeProtocolEnum;
 
-
     private DefaultEventExecutorGroup servletExecutor;
 
-    public void setServletExecutor(DefaultEventExecutorGroup servletExecutor) {
-        this.servletExecutor = servletExecutor;
-    }
-
     @Autowired
-    public NettyServerHandlerInitializer(NettyConfig nettyConfig, NettyServerMessageHandler nettyServerMessageHandler) {
+    public NettyServerHandlerInitializer(final NettyConfig nettyConfig,
+                                         final NettyServerMessageHandler nettyServerMessageHandler) {
         this.nettyConfig = nettyConfig;
         this.nettyServerMessageHandler = nettyServerMessageHandler;
     }
 
-    public void setSerializeProtocolEnum(SerializeProtocolEnum serializeProtocolEnum) {
+    public void setServletExecutor(final DefaultEventExecutorGroup servletExecutor) {
+        this.servletExecutor = servletExecutor;
+    }
+
+    public void setSerializeProtocolEnum(final SerializeProtocolEnum serializeProtocolEnum) {
         this.serializeProtocolEnum = serializeProtocolEnum;
     }
 
     @Override
-    protected void initChannel(SocketChannel ch) throws Exception {
+    protected void initChannel(final SocketChannel ch) {
         final ChannelPipeline pipeline = ch.pipeline();
         NettyPipelineInit.serializePipeline(serializeProtocolEnum, pipeline);
         pipeline.addLast("timeout",

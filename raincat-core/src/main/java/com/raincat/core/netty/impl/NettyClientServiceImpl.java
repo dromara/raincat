@@ -15,16 +15,16 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.netty.impl;
 
 import com.google.common.base.StandardSystemProperty;
+import com.raincat.common.config.TxConfig;
 import com.raincat.common.entity.TxManagerServer;
 import com.raincat.common.enums.SerializeProtocolEnum;
 import com.raincat.common.holder.LogUtil;
-import com.raincat.common.config.TxConfig;
 import com.raincat.core.netty.NettyClientService;
 import com.raincat.core.netty.handler.NettyClientHandlerInitializer;
-import com.raincat.core.netty.handler.NettyClientMessageHandler;
 import com.raincat.core.service.impl.TxManagerLocator;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -44,6 +44,7 @@ import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,16 +52,15 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * NettyClientServiceImpl.
  * @author xiaoyu
  */
 @Service
-public class NettyClientServiceImpl implements NettyClientService {
-    /**
-     * logger
-     */
+public class NettyClientServiceImpl implements NettyClientService, DisposableBean {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyClientServiceImpl.class);
 
-    private TxConfig txConfig;
+    private static final String OS_NAME = "Linux";
 
     private EventLoopGroup workerGroup;
 
@@ -74,24 +74,15 @@ public class NettyClientServiceImpl implements NettyClientService {
 
     private Bootstrap bootstrap;
 
-    private static final String OS_NAME = "Linux";
-
     private final NettyClientHandlerInitializer nettyClientHandlerInitializer;
 
-
     @Autowired
-    public NettyClientServiceImpl(NettyClientHandlerInitializer nettyClientHandlerInitializer) {
-
+    public NettyClientServiceImpl(final NettyClientHandlerInitializer nettyClientHandlerInitializer) {
         this.nettyClientHandlerInitializer = nettyClientHandlerInitializer;
     }
 
-
-    /**
-     * 启动netty客户端
-     */
     @Override
-    public void start(TxConfig txConfig) {
-        this.txConfig = txConfig;
+    public void start(final TxConfig txConfig) {
         SerializeProtocolEnum serializeProtocol =
                 SerializeProtocolEnum.acquireSerializeProtocol(txConfig.getNettySerializer());
         nettyClientHandlerInitializer.setSerializeProtocolEnum(serializeProtocol);
@@ -109,7 +100,7 @@ public class NettyClientServiceImpl implements NettyClientService {
         }
     }
 
-    private void groups(Bootstrap bootstrap, int workThreads) {
+    private void groups(final Bootstrap bootstrap, final int workThreads) {
         if (Objects.equals(StandardSystemProperty.OS_NAME.value(), OS_NAME)) {
             workerGroup = new EpollEventLoopGroup(workThreads);
             bootstrap.group(workerGroup);
@@ -135,23 +126,20 @@ public class NettyClientServiceImpl implements NettyClientService {
         }
     }
 
-
     @Override
     public void doConnect() {
         if (channel != null && channel.isActive()) {
             return;
         }
         final TxManagerServer txManagerServer = TxManagerLocator.getInstance().locator();
-        if (Objects.nonNull(txManagerServer) &&
-                StringUtils.isNoneBlank(txManagerServer.getHost())
+        if (Objects.nonNull(txManagerServer)
+                && StringUtils.isNoneBlank(txManagerServer.getHost())
                 && Objects.nonNull(txManagerServer.getPort())) {
             host = txManagerServer.getHost();
             port = txManagerServer.getPort();
         }
-
         ChannelFuture future = bootstrap.connect(host, port);
-        LogUtil.info(LOGGER, "连接txManager-socket服务-> host:port:{}", () -> host + ":" + port);
-
+        LogUtil.info(LOGGER, ".....connect txManager-socket -> host:port:{}", () -> host + ":" + port);
         future.addListener((ChannelFutureListener) futureListener -> {
             if (futureListener.isSuccess()) {
                 channel = futureListener.channel();
@@ -164,11 +152,7 @@ public class NettyClientServiceImpl implements NettyClientService {
 
     }
 
-    /**
-     * 停止服务
-     */
-    @Override
-    public void stop() {
+    private void stop() {
         if (Objects.nonNull(servletExecutor)) {
             workerGroup.shutdownGracefully();
         }
@@ -178,36 +162,8 @@ public class NettyClientServiceImpl implements NettyClientService {
 
     }
 
-    /**
-     * 重启
-     */
     @Override
-    public void restart() {
+    public void destroy() {
         stop();
-        start(txConfig);
-    }
-
-
-    /**
-     * 检查状态
-     *
-     * @return TRUE 正常
-     */
-    @Override
-    public boolean checkState() {
-        if (!NettyClientMessageHandler.net_state) {
-            LogUtil.error(LOGGER, () -> "socket服务尚未建立连接成功,将在此等待2秒.");
-            try {
-                Thread.sleep(1000 * 2);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (!NettyClientMessageHandler.net_state) {
-                LogUtil.error(LOGGER, () -> "TxManager还未连接成功,请检查TxManager服务后再试");
-                return false;
-            }
-        }
-
-        return true;
     }
 }

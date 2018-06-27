@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.service.impl;
 
 import com.raincat.common.bean.TxTransactionInfo;
@@ -30,13 +31,14 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 /**
+ * TxTransactionFactoryServiceImpl.
  * @author xiaoyu
  */
 @Service
 public class TxTransactionFactoryServiceImpl implements TxTransactionFactoryService {
 
     @Override
-    public Class factoryOf(TxTransactionInfo info) throws Throwable {
+    public Class factoryOf(final TxTransactionInfo info) {
         if (StringUtils.isNoneBlank(info.getCompensationId())) {
             return StartCompensationHandler.class;
         }

@@ -15,8 +15,8 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.core.interceptor;
 
+package com.raincat.core.interceptor;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -24,6 +24,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
 /**
+ * AbstractTxTransactionAspect.
  * @author xiaoyu
  */
 @Aspect
@@ -31,7 +32,7 @@ public abstract class AbstractTxTransactionAspect {
 
     private TxTransactionInterceptor txTransactionInterceptor;
 
-    public void setTxTransactionInterceptor(TxTransactionInterceptor txTransactionInterceptor) {
+    public void setTxTransactionInterceptor(final TxTransactionInterceptor txTransactionInterceptor) {
         this.txTransactionInterceptor = txTransactionInterceptor;
     }
 
@@ -41,14 +42,13 @@ public abstract class AbstractTxTransactionAspect {
     }
 
     @Around("txTransactionInterceptor()")
-    public Object interceptCompensableMethod(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+    public Object interceptTxTransaction(final ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         return txTransactionInterceptor.interceptor(proceedingJoinPoint);
     }
 
     /**
-     * 该方法返回的值为springBean的优先级别
-     *
-     * @return 优先级
+     * spring bean order.
+     * @return order
      */
     public abstract int getOrder();
 }

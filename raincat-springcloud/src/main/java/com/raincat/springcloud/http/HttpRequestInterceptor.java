@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.springcloud.http;
 
 import com.raincat.common.constant.CommonConstant;
@@ -27,12 +28,13 @@ import org.springframework.http.client.ClientHttpResponse;
 import java.io.IOException;
 
 /**
+ * HttpRequestInterceptor.
  * @author xiaoyu
  */
 public class HttpRequestInterceptor implements ClientHttpRequestInterceptor {
 
     @Override
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+    public ClientHttpResponse intercept(final HttpRequest request, final byte[] body, final ClientHttpRequestExecution execution) throws IOException {
         request.getHeaders().add(CommonConstant.TX_TRANSACTION_GROUP, TxTransactionLocal.getInstance().getTxGroupId());
         return execution.execute(request, body);
     }

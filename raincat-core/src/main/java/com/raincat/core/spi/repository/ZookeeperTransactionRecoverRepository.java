@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.spi.repository;
 
 import com.google.common.collect.Lists;
@@ -46,74 +47,51 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
-
 /**
+ * zookeeper impl.
  * @author xiaoyu
  */
 public class ZookeeperTransactionRecoverRepository implements TransactionRecoverRepository {
 
-    /**
-     * logger
-     */
     private static final Logger LOGGER = LoggerFactory.getLogger(ZookeeperTransactionRecoverRepository.class);
+
+    private static final CountDownLatch COUNT_DOWN_LATCH = new CountDownLatch(1);
+
+    private static volatile ZooKeeper zooKeeper;
 
     private ObjectSerializer objectSerializer;
 
     private String rootPath = "/tx";
 
-    private static volatile ZooKeeper zooKeeper;
-
-    private static final CountDownLatch COUNT_DOWN_LATCH = new CountDownLatch(1);
-
-
-    private void setRootPath(String rootPath) {
+    private void setRootPath(final String rootPath) {
         this.rootPath = rootPath;
     }
 
-    /**
-     * 创建本地事务对象
-     *
-     * @param transactionRecover 事务对象
-     * @return rows
-     */
-
     @Override
-    public int create(TransactionRecover transactionRecover) {
+    public int create(final TransactionRecover transactionRecover) {
         try {
             zooKeeper.create(getRootPath(transactionRecover.getId()),
                     TransactionRecoverUtils.convert(transactionRecover, objectSerializer),
                     ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-            return 1;
+            return ROWS;
         } catch (Exception e) {
             throw new TransactionIoException(e);
         }
     }
 
-    /**
-     * 删除对象
-     *
-     * @param id 事务对象id
-     * @return rows
-     */
     @Override
-    public int remove(String id) {
+    public int remove(final String id) {
         try {
             final TransactionRecover byId = findById(id);
             zooKeeper.delete(getRootPath(id), byId.getVersion() - 1);
-            return 1;
+            return ROWS;
         } catch (Exception e) {
             throw new TransactionIoException(e);
         }
     }
 
-    /**
-     * 更新数据
-     *
-     * @param transactionRecover 事务对象
-     * @return rows 1 成功 0 失败 失败需要抛异常
-     */
     @Override
-    public int update(TransactionRecover transactionRecover) throws TransactionRuntimeException {
+    public int update(final TransactionRecover transactionRecover) throws TransactionRuntimeException {
         try {
             transactionRecover.setLastTime(new Date());
             transactionRecover.setVersion(transactionRecover.getVersion() + 1);
@@ -121,20 +99,14 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
             zooKeeper.setData(getRootPath(transactionRecover.getId()),
                     TransactionRecoverUtils.convert(transactionRecover, objectSerializer),
                     transactionRecover.getVersion() - 2);
-            return 1;
+            return ROWS;
         } catch (Exception e) {
             throw new TransactionIoException(e);
         }
     }
 
-    /**
-     * 根据id获取对象
-     *
-     * @param id 主键id
-     * @return TransactionRecover
-     */
     @Override
-    public TransactionRecover findById(String id) {
+    public TransactionRecover findById(final String id) {
         try {
             Stat stat = new Stat();
             byte[] contents = zooKeeper.getData(getRootPath(id), false, stat);
@@ -144,15 +116,9 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
         }
     }
 
-    /**
-     * 获取需要提交的事务
-     *
-     * @return List<TransactionRecover>
-     */
     @Override
     public List<TransactionRecover> listAll() {
         List<TransactionRecover> transactionRecovers = Lists.newArrayList();
-
         List<String> zNodePaths;
         try {
             zNodePaths = zooKeeper.getChildren(rootPath, false);
@@ -165,52 +131,39 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
                     .map(zNodePath -> {
                         try {
                             byte[] contents = zooKeeper.getData(getRootPath(zNodePath), false, new Stat());
-                            return  TransactionRecoverUtils.transformBean(contents, objectSerializer);
+                            return TransactionRecoverUtils.transformBean(contents, objectSerializer);
                         } catch (KeeperException | InterruptedException | TransactionException e) {
                             e.printStackTrace();
                         }
                         return null;
                     }).collect(Collectors.toList());
         }
-
         return transactionRecovers;
     }
 
-    /**
-     * 获取延迟多长时间后的事务信息,只要为了防止并发的时候，刚新增的数据被执行
-     *
-     * @param date 延迟后的时间
-     * @return List<TransactionRecover>
-     */
     @Override
-    public List<TransactionRecover> listAllByDelay(Date date) {
+    public List<TransactionRecover> listAllByDelay(final Date date) {
         final List<TransactionRecover> tccTransactions = listAll();
-        return tccTransactions.stream().filter(transactionRecover -> transactionRecover.getLastTime().compareTo(date) > 0).collect(Collectors.toList());
+        return tccTransactions.stream()
+                .filter(transactionRecover -> transactionRecover.getLastTime().compareTo(date) > 0)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * 初始化操作
-     *
-     * @param modelName 模块名称
-     * @param txConfig  配置信息
-     */
     @Override
-    public void init(String modelName, TxConfig txConfig) {
-        setRootPath(RepositoryPathUtils.buildZookeeperPath(modelName));
+    public void init(final String appName, final TxConfig txConfig) {
+        setRootPath(RepositoryPathUtils.buildZookeeperPath(appName));
         try {
             connect(txConfig.getTxZookeeperConfig());
         } catch (Exception e) {
-            LogUtil.error(LOGGER, "zookeeper连接异常请检查配置信息是否正确:{}", e::getMessage);
+            LogUtil.error(LOGGER, "zookeeper init exception please check you config:{}", e::getMessage);
             throw new TransactionRuntimeException(e.getMessage());
         }
-
     }
 
-    private void connect(TxZookeeperConfig config) {
+    private void connect(final TxZookeeperConfig config) {
         try {
             zooKeeper = new ZooKeeper(config.getHost(), config.getSessionTimeOut(), watchedEvent -> {
                 if (watchedEvent.getState() == Watcher.Event.KeeperState.SyncConnected) {
-                    // 放开闸门, wait在connect方法上的线程将被唤醒
                     COUNT_DOWN_LATCH.countDown();
                 }
             });
@@ -222,33 +175,20 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
         } catch (Exception e) {
             throw new TransactionIoException(e);
         }
-
-
     }
 
-    /**
-     * 设置scheme
-     *
-     * @return scheme 命名
-     */
     @Override
     public String getScheme() {
         return CompensationCacheTypeEnum.ZOOKEEPER.getCompensationCacheType();
     }
 
-    /**
-     * 设置序列化信息
-     *
-     * @param objectSerializer 序列化实现
-     */
     @Override
-    public void setSerializer(ObjectSerializer objectSerializer) {
+    public void setSerializer(final ObjectSerializer objectSerializer) {
         this.objectSerializer = objectSerializer;
     }
 
-    private String getRootPath(String id) {
+    private String getRootPath(final String id) {
         return String.join("/", rootPath, id);
     }
-
 
 }

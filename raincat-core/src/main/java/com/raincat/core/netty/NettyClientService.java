@@ -15,44 +15,30 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.netty;
 
 import com.raincat.common.config.TxConfig;
 
 /**
+ * NettyClientService.
  * @author xiaoyu
  */
 public interface NettyClientService {
 
 
     /**
-     * 启动netty客户端
+     * start netty client.
      *
-     * @param txConfig 配置信息
+     * @param txConfig {@linkplain TxConfig }
      */
     void start(TxConfig txConfig);
 
-    /**
-     * 停止服务
-     */
-    void stop();
-
 
     /**
-     * 连接netty服务
+     * connect netty server.
      */
     void doConnect();
-
-    /**
-     * 重启
-     */
-    void restart();
-
-
-    /**
-     * 检查状态
-     *
-     * @return TRUE 正常
-     */
-    boolean checkState();
 }
+
+

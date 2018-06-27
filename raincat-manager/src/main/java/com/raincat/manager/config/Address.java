@@ -15,53 +15,45 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.config;
 
 /**
+ * Address.
  * @author xiaoyu
  */
-public class Address {
+public final class Address {
+
     private static final Address OUR_INSTANCE = new Address();
 
     /**
-     * 自身的ip
+     * 自身的ip.
      */
     private String host;
 
     /**
-     * 端口
+     * 端口.
      */
     private Integer port;
 
-
     /**
-     * 域名  ip：port
+     * 域名  ip：port.
      */
     private String domain;
 
+    private Address() {
+    }
 
     public static Address getInstance() {
         return OUR_INSTANCE;
     }
 
-    private Address() {
-    }
-
-
-    public String getHost() {
-        return host;
-    }
-
-    public Address setHost(String host) {
+    public Address setHost(final String host) {
         this.host = host;
         return this;
     }
 
-    public Integer getPort() {
-        return port;
-    }
-
-    public Address setPort(Integer port) {
+    public Address setPort(final Integer port) {
         this.port = port;
         return this;
     }
@@ -70,7 +62,7 @@ public class Address {
         return domain;
     }
 
-    public Address setDomain(String domain) {
+    public Address setDomain(final String domain) {
         this.domain = domain;
         return this;
     }

@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.service.message;
 
 import com.raincat.common.enums.NettyMessageActionEnum;
@@ -31,6 +32,7 @@ import java.util.Collections;
 import java.util.Objects;
 
 /**
+ * NettyMessageServiceImpl.
  * @author xiaoyu
  */
 @Service
@@ -39,18 +41,12 @@ public class NettyMessageServiceImpl implements TxManagerMessageService {
     private final NettyClientMessageHandler nettyClientMessageHandler;
 
     @Autowired
-    public NettyMessageServiceImpl(NettyClientMessageHandler nettyClientMessageHandler) {
+    public NettyMessageServiceImpl(final NettyClientMessageHandler nettyClientMessageHandler) {
         this.nettyClientMessageHandler = nettyClientMessageHandler;
     }
 
-    /**
-     * 保存事务组 在事务发起方的时候进行调用
-     *
-     * @param txTransactionGroup 事务组
-     * @return true 成功 false 失败
-     */
     @Override
-    public Boolean saveTxTransactionGroup(TxTransactionGroup txTransactionGroup) {
+    public Boolean saveTxTransactionGroup(final TxTransactionGroup txTransactionGroup) {
         HeartBeat heartBeat = new HeartBeat();
         heartBeat.setAction(NettyMessageActionEnum.CREATE_GROUP.getCode());
         heartBeat.setTxTransactionGroup(txTransactionGroup);
@@ -62,15 +58,8 @@ public class NettyMessageServiceImpl implements TxManagerMessageService {
 
     }
 
-    /**
-     * 往事务组添加事务
-     *
-     * @param txGroupId         事务组id
-     * @param txTransactionItem 子事务项
-     * @return true 成功 false 失败
-     */
     @Override
-    public Boolean addTxTransaction(String txGroupId, TxTransactionItem txTransactionItem) {
+    public Boolean addTxTransaction(final String txGroupId, final TxTransactionItem txTransactionItem) {
         HeartBeat heartBeat = new HeartBeat();
         heartBeat.setAction(NettyMessageActionEnum.ADD_TRANSACTION.getCode());
         TxTransactionGroup txTransactionGroup = new TxTransactionGroup();
@@ -84,35 +73,21 @@ public class NettyMessageServiceImpl implements TxManagerMessageService {
         return false;
     }
 
-    /**
-     * 获取事务组状态
-     *
-     * @param txGroupId 事务组id
-     * @return 事务组状态
-     */
     @Override
-    public int findTransactionGroupStatus(String txGroupId) {
+    public int findTransactionGroupStatus(final String txGroupId) {
         HeartBeat heartBeat = new HeartBeat();
         heartBeat.setAction(NettyMessageActionEnum.GET_TRANSACTION_GROUP_STATUS.getCode());
         TxTransactionGroup txTransactionGroup = new TxTransactionGroup();
         txTransactionGroup.setId(txGroupId);
-
         final Object object = nettyClientMessageHandler.sendTxManagerMessage(heartBeat);
         if (Objects.nonNull(object)) {
             return (Integer) object;
         }
         return TransactionStatusEnum.ROLLBACK.getCode();
-
     }
 
-    /**
-     * 获取事务组信息
-     *
-     * @param txGroupId 事务组id
-     * @return TxTransactionGroup
-     */
     @Override
-    public TxTransactionGroup findByTxGroupId(String txGroupId) {
+    public TxTransactionGroup findByTxGroupId(final String txGroupId) {
         HeartBeat heartBeat = new HeartBeat();
         heartBeat.setAction(NettyMessageActionEnum.FIND_TRANSACTION_GROUP_INFO.getCode());
         TxTransactionGroup txTransactionGroup = new TxTransactionGroup();
@@ -125,42 +100,24 @@ public class NettyMessageServiceImpl implements TxManagerMessageService {
         return null;
     }
 
-    /**
-     * 通知tm 回滚整个事务组
-     *
-     * @param txGroupId 事务组id
-     * @return true 成功 false 失败
-     */
     @Override
-    public Boolean rollBackTxTransaction(String txGroupId) {
+    public void rollBackTxTransaction(final String txGroupId) {
         HeartBeat heartBeat = new HeartBeat();
         heartBeat.setAction(NettyMessageActionEnum.ROLLBACK.getCode());
         TxTransactionGroup txTransactionGroup = new TxTransactionGroup();
         txTransactionGroup.setStatus(TransactionStatusEnum.ROLLBACK.getCode());
         txTransactionGroup.setId(txGroupId);
         heartBeat.setTxTransactionGroup(txTransactionGroup);
-        final Object object = nettyClientMessageHandler.sendTxManagerMessage(heartBeat);
-        if (Objects.nonNull(object)) {
-            return (Boolean) object;
-        }
-        return false;
+        nettyClientMessageHandler.sendTxManagerMessage(heartBeat);
     }
 
-    /**
-     * 通知tm自身业务已经执行完成，等待提交事务
-     * tm 收到后，进行pre_commit  再进行doCommit
-     *
-     * @param txGroupId 事务组id
-     * @return true 成功 false 失败
-     */
     @Override
-    public Boolean preCommitTxTransaction(String txGroupId) {
+    public Boolean preCommitTxTransaction(final String txGroupId) {
         HeartBeat heartBeat = new HeartBeat();
         heartBeat.setAction(NettyMessageActionEnum.PRE_COMMIT.getCode());
         TxTransactionGroup txTransactionGroup = new TxTransactionGroup();
         txTransactionGroup.setStatus(TransactionStatusEnum.PRE_COMMIT.getCode());
         txTransactionGroup.setId(txGroupId);
-
         heartBeat.setTxTransactionGroup(txTransactionGroup);
         final Object object = nettyClientMessageHandler.sendTxManagerMessage(heartBeat);
         if (Objects.nonNull(object)) {
@@ -169,16 +126,8 @@ public class NettyMessageServiceImpl implements TxManagerMessageService {
         return false;
     }
 
-    /**
-     * 完成提交自身的事务
-     *
-     * @param txGroupId 事务组id
-     * @param taskKey   子事务的taskKey
-     * @param status    状态  {@linkplain TransactionStatusEnum}
-     * @return true 成功 false 失败
-     */
     @Override
-    public Boolean completeCommitTxTransaction(String txGroupId, String taskKey, int status) {
+    public Boolean completeCommitTxTransaction(final String txGroupId, final String taskKey, final int status) {
         HeartBeat heartBeat = new HeartBeat();
         heartBeat.setAction(NettyMessageActionEnum.COMPLETE_COMMIT.getCode());
         TxTransactionGroup txTransactionGroup = new TxTransactionGroup();
@@ -195,45 +144,19 @@ public class NettyMessageServiceImpl implements TxManagerMessageService {
         return false;
     }
 
-    /**
-     * 异步完成自身事务的提交
-     *
-     * @param txGroupId 事务组id
-     * @param taskKey   子事务的taskKey
-     * @param status    状态  {@linkplain TransactionStatusEnum}
-     * @param message   完成信息 返回结果，或者是异常信息
-     */
     @Override
-    public void asyncCompleteCommit(String txGroupId, String taskKey, int status,Object message) {
+    public void asyncCompleteCommit(final String txGroupId, final String taskKey, final int status, final Object message) {
         HeartBeat heartBeat = new HeartBeat();
         heartBeat.setAction(NettyMessageActionEnum.COMPLETE_COMMIT.getCode());
         TxTransactionGroup txTransactionGroup = new TxTransactionGroup();
         txTransactionGroup.setId(txGroupId);
-
         TxTransactionItem item = new TxTransactionItem();
         item.setTaskKey(taskKey);
         item.setStatus(status);
         item.setMessage(message);
-
         txTransactionGroup.setItemList(Collections.singletonList(item));
-
         heartBeat.setTxTransactionGroup(txTransactionGroup);
         nettyClientMessageHandler.asyncSendTxManagerMessage(heartBeat);
     }
-
-    /**
-     * 提交参与者事务状态
-     *
-     * @param txGroupId         事务组id
-     * @param txTransactionItem 参与者
-     * @param status            状态
-     * @return true 成功 false 失败
-     */
-    @Override
-    public Boolean commitActorTxTransaction(String txGroupId, TxTransactionItem txTransactionItem, int status) {
-
-        return null;
-    }
-
 
 }

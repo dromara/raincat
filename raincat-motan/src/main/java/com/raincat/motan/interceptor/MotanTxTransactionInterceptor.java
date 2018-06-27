@@ -15,8 +15,8 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.motan.interceptor;
 
+package com.raincat.motan.interceptor;
 
 import com.raincat.common.constant.CommonConstant;
 import com.raincat.core.interceptor.TxTransactionInterceptor;
@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * MotanTxTransactionInterceptor.
  * @author xiaoyu
  */
 @Component
@@ -39,14 +40,12 @@ public class MotanTxTransactionInterceptor implements TxTransactionInterceptor {
     private final AspectTransactionService aspectTransactionService;
 
     @Autowired
-    public MotanTxTransactionInterceptor(AspectTransactionService aspectTransactionService) {
+    public MotanTxTransactionInterceptor(final AspectTransactionService aspectTransactionService) {
         this.aspectTransactionService = aspectTransactionService;
     }
 
-
     @Override
-    public Object interceptor(ProceedingJoinPoint pjp) throws Throwable {
-
+    public Object interceptor(final ProceedingJoinPoint pjp) throws Throwable {
         String groupId = "";
         final Request request = RpcContext.getContext().getRequest();
         if (Objects.nonNull(request)) {

@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.spi.repository;
 
 import com.google.common.base.Splitter;
@@ -50,13 +51,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
+ * mongo db impl.
  * @author xiaoyu
  */
 public class MongoTransactionRecoverRepository implements TransactionRecoverRepository {
 
-    /**
-     * logger
-     */
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoTransactionRecoverRepository.class);
 
     private ObjectSerializer objectSerializer;
@@ -65,15 +64,8 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
 
     private String collectionName;
 
-
-    /**
-     * 创建本地事务对象
-     *
-     * @param transactionRecover 事务对象
-     * @return rows
-     */
     @Override
-    public int create(TransactionRecover transactionRecover) {
+    public int create(final TransactionRecover transactionRecover) {
         try {
             MongoAdapter mongoAdapter = new MongoAdapter();
             mongoAdapter.setTransId(transactionRecover.getId());
@@ -92,32 +84,20 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
         } catch (TransactionException e) {
             e.printStackTrace();
         }
-        return 1;
+        return ROWS;
     }
 
-    /**
-     * 删除对象
-     *
-     * @param id 事务对象id
-     * @return rows
-     */
     @Override
-    public int remove(String id) {
+    public int remove(final String id) {
         Assert.notNull(id);
         Query query = new Query();
         query.addCriteria(new Criteria("transId").is(id));
         template.remove(query, collectionName);
-        return 1;
+        return ROWS;
     }
 
-    /**
-     * 更新数据
-     *
-     * @param transactionRecover 事务对象
-     * @return rows 1 成功 0 失败 失败需要抛异常
-     */
     @Override
-    public int update(TransactionRecover transactionRecover) throws TransactionRuntimeException {
+    public int update(final TransactionRecover transactionRecover) throws TransactionRuntimeException {
         Query query = new Query();
         query.addCriteria(new Criteria("transId").is(transactionRecover.getId()));
         Update update = new Update();
@@ -126,28 +106,20 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
         update.set("version", transactionRecover.getVersion() + 1);
         final WriteResult writeResult = template.updateFirst(query, update, MongoAdapter.class, collectionName);
         if (writeResult.getN() <= 0) {
-            throw new TransactionRuntimeException("更新数据异常!");
+            throw new TransactionRuntimeException(UPDATE_EX);
         }
-        return 1;
+        return ROWS;
     }
 
-
-    /**
-     * 根据id获取对象
-     *
-     * @param id 主键id
-     * @return TransactionRecover
-     */
     @Override
-    public TransactionRecover findById(String id) {
+    public TransactionRecover findById(final String id) {
         Query query = new Query();
         query.addCriteria(new Criteria("transId").is(id));
         MongoAdapter cache = template.findOne(query, MongoAdapter.class, collectionName);
         return buildByCache(cache);
-
     }
 
-    private TransactionRecover buildByCache(MongoAdapter cache) {
+    private TransactionRecover buildByCache(final MongoAdapter cache) {
         TransactionRecover recover = new TransactionRecover();
         recover.setId(cache.getTransId());
         recover.setCreateTime(cache.getCreateTime());
@@ -162,16 +134,11 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
             transactionInvocation = objectSerializer.deSerialize(cache.getContents(), TransactionInvocation.class);
             recover.setTransactionInvocation(transactionInvocation);
         } catch (TransactionException e) {
-            LogUtil.error(LOGGER, "mongodb 反序列化异常:{}", e::getLocalizedMessage);
+            LogUtil.error(LOGGER, "mongodb serialize exception:{}", e::getLocalizedMessage);
         }
         return recover;
     }
 
-    /**
-     * 获取需要提交的事务
-     *
-     * @return List<TransactionRecover>
-     */
     @Override
     public List<TransactionRecover> listAll() {
         Query query = new Query();
@@ -184,24 +151,17 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
         if (CollectionUtils.isNotEmpty(mongoAdapterList)) {
             return mongoAdapterList.stream().map(this::buildByCache).collect(Collectors.toList());
         }
-
         return null;
     }
 
-    /**
-     * 获取延迟多长时间后的事务信息,只要为了防止并发的时候，刚新增的数据被执行
-     *
-     * @param date 延迟后的时间
-     * @return List<TransactionRecover>
-     */
     @Override
-    public List<TransactionRecover> listAllByDelay(Date date) {
+    public List<TransactionRecover> listAllByDelay(final Date date) {
         Query query = new Query();
         query.addCriteria(new Criteria("status")
                 .in(TransactionStatusEnum.BEGIN.getCode(),
                         TransactionStatusEnum.FAILURE.getCode(),
                         TransactionStatusEnum.ROLLBACK.getCode()))
-        .addCriteria(Criteria.where("lastTime").lt(date));
+                .addCriteria(Criteria.where("lastTime").lt(date));
         final List<MongoAdapter> mongoBeans =
                 template.find(query, MongoAdapter.class, collectionName);
         if (CollectionUtils.isNotEmpty(mongoBeans)) {
@@ -210,15 +170,9 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
         return null;
     }
 
-    /**
-     * 初始化操作
-     *
-     * @param modelName 模块名称
-     * @param txConfig  配置信息
-     */
     @Override
-    public void init(String modelName, TxConfig txConfig) {
-        collectionName = RepositoryPathUtils.buildMongoTableName(modelName);
+    public void init(final String appName, final TxConfig txConfig) {
+        collectionName = RepositoryPathUtils.buildMongoTableName(appName);
         final TxMongoConfig txMongoConfig = txConfig.getTxMongoConfig();
         MongoClientFactoryBean clientFactoryBean = buildMongoClientFactoryBean(txMongoConfig);
         try {
@@ -229,20 +183,12 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
         }
     }
 
-    /**
-     * 生成mongoClientFacotryBean
-     *
-     * @param config 配置信息
-     * @return bean
-     */
-    private MongoClientFactoryBean buildMongoClientFactoryBean(TxMongoConfig config) {
+    private MongoClientFactoryBean buildMongoClientFactoryBean(final TxMongoConfig config) {
         MongoClientFactoryBean clientFactoryBean = new MongoClientFactoryBean();
         MongoCredential credential = MongoCredential.createScramSha1Credential(config.getMongoUserName(),
                 config.getMongoDbName(),
                 config.getMongoUserPwd().toCharArray());
-        clientFactoryBean.setCredentials(new MongoCredential[]{
-                credential
-        });
+        clientFactoryBean.setCredentials(new MongoCredential[]{credential});
         List<String> urls = Splitter.on(",").trimResults().splitToList(config.getMongoDbUrl());
         final ServerAddress[] serverAddresses = urls.stream().filter(Objects::nonNull)
                 .map(url -> {
@@ -254,23 +200,13 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
         return clientFactoryBean;
     }
 
-    /**
-     * 设置scheme
-     *
-     * @return scheme 命名
-     */
     @Override
     public String getScheme() {
         return CompensationCacheTypeEnum.MONGODB.getCompensationCacheType();
     }
 
-    /**
-     * 设置序列化信息
-     *
-     * @param objectSerializer 序列化实现
-     */
     @Override
-    public void setSerializer(ObjectSerializer objectSerializer) {
+    public void setSerializer(final ObjectSerializer objectSerializer) {
         this.objectSerializer = objectSerializer;
     }
 }

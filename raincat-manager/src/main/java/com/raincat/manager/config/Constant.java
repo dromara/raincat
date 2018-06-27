@@ -15,9 +15,11 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.config;
 
 /**
+ * Constant.
  * @author xiaoyu
  */
 public interface Constant {

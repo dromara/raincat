@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.controller;
 
 import com.raincat.common.entity.TxManagerServer;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
+ * TxManagerController.
  * @author xiaoyu
  */
 @RestController
@@ -44,7 +46,8 @@ public class TxManagerController {
     private final HttpTransactionExecutor httpTransactionExecutor;
 
     @Autowired
-    public TxManagerController(TxManagerInfoService txManagerInfoService, HttpTransactionExecutor transactionExecutor) {
+    public TxManagerController(final TxManagerInfoService txManagerInfoService,
+                               final HttpTransactionExecutor transactionExecutor) {
         this.txManagerInfoService = txManagerInfoService;
         this.httpTransactionExecutor = transactionExecutor;
     }
@@ -67,15 +70,13 @@ public class TxManagerController {
     }
 
     @PostMapping("/httpCommit")
-    public void httpCommit(@RequestBody List<TxTransactionItem> items) {
+    public void httpCommit(@RequestBody final List<TxTransactionItem> items) {
         httpTransactionExecutor.commit(items);
     }
 
-
     @PostMapping("/httpRollBack")
-    public void httpRollBack(@RequestBody List<TxTransactionItem> items) {
+    public void httpRollBack(@RequestBody final List<TxTransactionItem> items) {
         httpTransactionExecutor.rollBack(items);
     }
-
 
 }

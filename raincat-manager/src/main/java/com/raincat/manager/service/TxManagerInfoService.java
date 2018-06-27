@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.service;
 
 import com.raincat.common.entity.TxManagerServer;
@@ -24,12 +25,13 @@ import com.raincat.manager.entity.TxManagerInfo;
 import java.util.List;
 
 /**
+ * TxManagerInfoService.
  * @author xiaoyu
  */
 public interface TxManagerInfoService {
 
     /**
-     * 业务端获取TxManager信息
+     * 业务端获取TxManager信息.
      *
      * @return TxManagerServer
      */
@@ -37,18 +39,17 @@ public interface TxManagerInfoService {
 
 
     /**
-     * 服务端信息
+     * 服务端信息.
      *
      * @return TxManagerInfo
      */
     TxManagerInfo findTxManagerInfo();
 
     /**
-     * 获取eureka上的注册服务
+     * 获取eureka上的注册服务.
      *
-     * @return List<TxManagerServiceDTO>
+     * @return List TxManagerServiceDTO
      */
     List<TxManagerServiceDTO> loadTxManagerService();
-
 
 }

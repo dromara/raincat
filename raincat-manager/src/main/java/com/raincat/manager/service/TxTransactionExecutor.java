@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.service;
 
 /**
@@ -22,22 +23,19 @@ package com.raincat.manager.service;
  */
 public interface TxTransactionExecutor {
 
-
     /**
-     * 回滚整个事务组
+     * 回滚整个事务组.
      *
      * @param txGroupId 事务组id
      */
     void rollBack(String txGroupId);
 
-
     /**
-     * 事务预提交
+     * 事务预提交.
      *
      * @param txGroupId 事务组id
-     * @return true 成功 false 失败
      */
-    Boolean preCommit(String txGroupId);
+    void preCommit(String txGroupId);
 
 
 }

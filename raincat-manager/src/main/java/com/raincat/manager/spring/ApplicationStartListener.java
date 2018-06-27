@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.spring;
 
 import com.raincat.manager.config.Address;
@@ -27,23 +28,21 @@ import java.net.UnknownHostException;
 
 
 /**
+ * ApplicationStartListener.
  * @author xiaoyu
  */
 @Component
 public class ApplicationStartListener implements ApplicationListener<EmbeddedServletContainerInitializedEvent> {
 
-
     @Override
-    public void onApplicationEvent(EmbeddedServletContainerInitializedEvent event) {
+    public void onApplicationEvent(final EmbeddedServletContainerInitializedEvent event) {
         int port = event.getEmbeddedServletContainer().getPort();
         final String host = getHost();
         Address.getInstance()
                 .setHost(host)
                 .setPort(port)
                 .setDomain(String.join(":", host, String.valueOf(port)));
-
     }
-
 
     private String getHost() {
         try {

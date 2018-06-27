@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.springcloud.feign;
 
 import com.raincat.common.constant.CommonConstant;
@@ -23,13 +24,13 @@ import feign.RequestInterceptor;
 import feign.RequestTemplate;
 
 /**
+ * RestTemplateInterceptor.
  * @author xiaoyu
  */
 public class RestTemplateInterceptor implements RequestInterceptor {
 
-
     @Override
-    public void apply(RequestTemplate requestTemplate) {
+    public void apply(final RequestTemplate requestTemplate) {
         requestTemplate.header(CommonConstant.TX_TRANSACTION_GROUP, TxTransactionLocal.getInstance().getTxGroupId());
     }
 

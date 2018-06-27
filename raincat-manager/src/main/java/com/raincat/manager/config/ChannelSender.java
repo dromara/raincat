@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.config;
 
 import com.raincat.common.netty.bean.TxTransactionItem;
@@ -24,24 +25,24 @@ import lombok.Data;
 import java.util.List;
 
 /**
+ * ChannelSender.
  * @author xiaoyu
  */
 @Data
 public class ChannelSender {
 
     /**
-     * 模块netty 长连接渠道
+     * 模块netty 长连接渠道.
      */
     private Channel channel;
 
-
     /**
-     * txManger的域名信息
+     * txManger的域名信息.
      */
     private String tmDomain;
 
     /**
-     * 事务item
+     * 事务item.
      */
     private List<TxTransactionItem> itemList;
 

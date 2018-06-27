@@ -15,8 +15,8 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.dubbo.interceptor;
 
+package com.raincat.dubbo.interceptor;
 
 import com.alibaba.dubbo.rpc.RpcContext;
 import com.raincat.common.constant.CommonConstant;
@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * DubboTxTransactionInterceptor.
  * @author xiaoyu
  */
 @Component
@@ -35,15 +36,14 @@ public class DubboTxTransactionInterceptor implements TxTransactionInterceptor {
     private final AspectTransactionService aspectTransactionService;
 
     @Autowired
-    public DubboTxTransactionInterceptor(AspectTransactionService aspectTransactionService) {
+    public DubboTxTransactionInterceptor(final AspectTransactionService aspectTransactionService) {
         this.aspectTransactionService = aspectTransactionService;
     }
 
-
     @Override
-    public Object interceptor(ProceedingJoinPoint pjp) throws Throwable {
+    public Object interceptor(final ProceedingJoinPoint pjp) throws Throwable {
         String groupId = RpcContext.getContext().getAttachment(CommonConstant.TX_TRANSACTION_GROUP);
-        return aspectTransactionService.invoke(groupId,pjp);
+        return aspectTransactionService.invoke(groupId, pjp);
     }
 
 }

@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.entity;
 
 import lombok.Data;
@@ -23,44 +24,46 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
+ * TxManagerInfo.
  * @author xiaoyu
  */
 @Data
-public class TxManagerInfo {
-
+public class TxManagerInfo implements Serializable {
 
     private static final long serialVersionUID = 1975118058422053078L;
+
     /**
-     * socket ip
+     * socket ip.
      */
     private String ip;
+
     /**
-     * socket port
+     * socket port.
      */
     private int port;
 
     /**
-     * max connection
+     * max connection.
      */
     private int maxConnection;
 
     /**
-     * now connection
+     * now connection.
      */
     private int nowConnection;
 
     /**
-     * transaction_wait_max_time
+     * transaction_wait_max_time.
      */
     private int transactionWaitMaxTime;
 
     /**
-     * redis_save_max_time
+     * redis_save_max_time.
      */
     private int redisSaveMaxTime;
 
     /**
-     * clusterInfoList
+     * clusterInfoList.
      */
     private List<String> clusterInfoList;
 

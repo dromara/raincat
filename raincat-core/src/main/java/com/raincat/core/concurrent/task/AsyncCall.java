@@ -15,16 +15,18 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.concurrent.task;
 
 /**
+ * AsyncCall.
  * @author xiaoyu
  */
 @FunctionalInterface
 public interface AsyncCall {
 
     /**
-     * 回调处理
+     * 回调处理.
      *
      * @param objects 参数
      * @return Object

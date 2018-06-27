@@ -15,8 +15,11 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.service.impl;
 
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.eureka.EurekaServerContextHolder;
 import com.raincat.common.entity.TxManagerServer;
 import com.raincat.common.entity.TxManagerServiceDTO;
 import com.raincat.manager.config.NettyConfig;
@@ -24,8 +27,6 @@ import com.raincat.manager.entity.TxManagerInfo;
 import com.raincat.manager.eureka.DiscoveryService;
 import com.raincat.manager.service.TxManagerInfoService;
 import com.raincat.manager.socket.SocketManager;
-import com.netflix.appinfo.InstanceInfo;
-import com.netflix.eureka.EurekaServerContextHolder;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,11 +40,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
+ * TxManagerInfoServiceImpl.
  * @author xiaoyu
  */
 @Service("txManagerInfoService")
 public class TxManagerInfoServiceImpl implements TxManagerInfoService {
-
 
     @Autowired(required = false)
     private DiscoveryService discoveryService;
@@ -60,27 +61,19 @@ public class TxManagerInfoServiceImpl implements TxManagerInfoService {
     @Value("${transactionWaitMaxTime}")
     private int transactionWaitMaxTime;
 
-
-    /**
-     * 业务端获取TxManager信息
-     *
-     * @return TxManagerServer
-     */
     @Override
     public TxManagerServer findTxManagerServer() {
         final List<String> eurekaService = findEurekaService();
         if (CollectionUtils.isNotEmpty(eurekaService)) {
-            final List<TxManagerInfo> txManagerInfos = eurekaService.stream().map(url ->
+            final List<TxManagerInfo> txManagerList = eurekaService.stream().map(url ->
                     restTemplate.getForObject(url + "/tx/manager/findTxManagerInfo", TxManagerInfo.class))
                     .collect(Collectors.toList());
-
-            if (CollectionUtils.isNotEmpty(txManagerInfos)) {
+            if (CollectionUtils.isNotEmpty(txManagerList)) {
                 //获取连接数最多的服务  想要把所有的业务长连接，连接到同一个tm，但是又不能超过最大的连接
                 final Optional<TxManagerInfo> txManagerInfoOptional =
-                        txManagerInfos.stream().filter(Objects::nonNull)
+                        txManagerList.stream().filter(Objects::nonNull)
                                 .filter(info -> info.getNowConnection() < info.getMaxConnection())
-                                .sorted(Comparator.comparingInt(TxManagerInfo::getNowConnection).reversed())
-                                .findFirst();
+                                .max(Comparator.comparingInt(TxManagerInfo::getNowConnection));
                 if (txManagerInfoOptional.isPresent()) {
                     final TxManagerInfo txManagerInfo = txManagerInfoOptional.get();
                     TxManagerServer txManagerServer = new TxManagerServer();
@@ -88,22 +81,18 @@ public class TxManagerInfoServiceImpl implements TxManagerInfoService {
                     txManagerServer.setPort(txManagerInfo.getPort());
                     return txManagerServer;
                 }
-
             }
         }
         return null;
     }
 
-    /**
-     * 服务端信息
-     *
-     * @return TxManagerInfo
-     */
     @Override
     public TxManagerInfo findTxManagerInfo() {
         TxManagerInfo txManagerInfo = new TxManagerInfo();
         //设置ip为eureka 上注册的TxManager ip
-        String ip = EurekaServerContextHolder.getInstance().getServerContext().getApplicationInfoManager().getEurekaInstanceConfig().getIpAddress();
+        String ip = EurekaServerContextHolder.getInstance()
+                .getServerContext().getApplicationInfoManager()
+                .getEurekaInstanceConfig().getIpAddress();
         txManagerInfo.setIp(ip);
         txManagerInfo.setPort(nettyConfig.getPort());
         txManagerInfo.setMaxConnection(SocketManager.getInstance().getMaxConnection());
@@ -114,11 +103,6 @@ public class TxManagerInfoServiceImpl implements TxManagerInfoService {
         return txManagerInfo;
     }
 
-    /**
-     * 获取eureka上的注册服务
-     *
-     * @return List<TxManagerServiceDTO>
-     */
     @Override
     public List<TxManagerServiceDTO> loadTxManagerService() {
         final List<InstanceInfo> instanceInfoList = discoveryService.getConfigServiceInstances();
@@ -131,16 +115,11 @@ public class TxManagerInfoServiceImpl implements TxManagerInfoService {
         }).collect(Collectors.toList());
     }
 
-
-    /**
-     * 返回在eureka上注册的服务Url
-     *
-     * @return List<String>
-     */
     private List<String> findEurekaService() {
-        final List<InstanceInfo> configServiceInstances = discoveryService.getConfigServiceInstances();
-        return configServiceInstances.stream().map(InstanceInfo::getHomePageUrl).collect(Collectors.toList());
-
-
+        final List<InstanceInfo> configServiceInstances =
+                discoveryService.getConfigServiceInstances();
+        return configServiceInstances.stream()
+                .map(InstanceInfo::getHomePageUrl)
+                .collect(Collectors.toList());
     }
 }

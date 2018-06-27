@@ -15,8 +15,8 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.raincat.manager.netty.handler;
 
+package com.raincat.manager.netty.handler;
 
 import com.raincat.common.enums.NettyMessageActionEnum;
 import com.raincat.common.enums.NettyResultEnum;
@@ -43,15 +43,13 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
+ * NettyServerMessageHandler.
  * @author xiaoyu
  */
 @ChannelHandler.Sharable
 @Component
 public class NettyServerMessageHandler extends ChannelInboundHandlerAdapter {
 
-    /**
-     * logger
-     */
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyServerMessageHandler.class);
 
     private final TxManagerService txManagerService;
@@ -59,19 +57,19 @@ public class NettyServerMessageHandler extends ChannelInboundHandlerAdapter {
     private final TxTransactionExecutor txTransactionExecutor;
 
     @Autowired
-    public NettyServerMessageHandler(TxManagerService txManagerService, TxTransactionExecutor txTransactionExecutor) {
+    public NettyServerMessageHandler(final TxManagerService txManagerService,
+                                     final TxTransactionExecutor txTransactionExecutor) {
         this.txManagerService = txManagerService;
         this.txTransactionExecutor = txTransactionExecutor;
     }
 
-
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
         HeartBeat hb = (HeartBeat) msg;
         TxTransactionGroup txTransactionGroup = hb.getTxTransactionGroup();
         try {
             final NettyMessageActionEnum actionEnum = NettyMessageActionEnum.acquireByCode(hb.getAction());
-            LogUtil.debug(LOGGER, "接收的客户端数据,执行的动作为:{}", actionEnum::getDesc);
+            LogUtil.debug(LOGGER, "receive client date this action:{}", actionEnum::getDesc);
             Boolean success;
             switch (actionEnum) {
                 case HEART:
@@ -126,11 +124,11 @@ public class NettyServerMessageHandler extends ChannelInboundHandlerAdapter {
                     break;
                 case COMPLETE_COMMIT:
                     final List<TxTransactionItem> its = txTransactionGroup.getItemList();
-                    if(CollectionUtils.isNotEmpty(its)){
+                    if (CollectionUtils.isNotEmpty(its)) {
                         final TxTransactionItem item = its.get(0);
                         txManagerService.updateTxTransactionItemStatus(txTransactionGroup.getId(),
                                 item.getTaskKey(),
-                                item.getStatus(),item.getMessage());
+                                item.getStatus(), item.getMessage());
                     }
                     break;
                 default:
@@ -141,12 +139,10 @@ public class NettyServerMessageHandler extends ChannelInboundHandlerAdapter {
         } finally {
             ReferenceCountUtil.release(msg);
         }
-
-
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(final ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         //是否到达最大上线连接数
         if (SocketManager.getInstance().isAllowConnection()) {
@@ -157,30 +153,29 @@ public class NettyServerMessageHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-
+    public void channelRegistered(final ChannelHandlerContext ctx) throws Exception {
         super.channelRegistered(ctx);
     }
 
     @Override
-    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+    public void channelUnregistered(final ChannelHandlerContext ctx) throws Exception {
         SocketManager.getInstance().removeClient(ctx.channel());
         super.channelUnregistered(ctx);
     }
 
     @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+    public void channelReadComplete(final ChannelHandlerContext ctx) {
         ctx.flush();
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
         cause.printStackTrace();
         ctx.close();
     }
 
     @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+    public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
         //心跳配置
         if (IdleStateEvent.class.isAssignableFrom(evt.getClass())) {
             IdleStateEvent event = (IdleStateEvent) evt;
@@ -190,7 +185,7 @@ public class NettyServerMessageHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private HeartBeat buildSendMessage(String key, Boolean success) {
+    private HeartBeat buildSendMessage(final String key, final Boolean success) {
         HeartBeat heartBeat = new HeartBeat();
         heartBeat.setKey(key);
         heartBeat.setAction(NettyMessageActionEnum.RECEIVE.getCode());
@@ -200,7 +195,6 @@ public class NettyServerMessageHandler extends ChannelInboundHandlerAdapter {
             heartBeat.setResult(NettyResultEnum.FAIL.getCode());
         }
         return heartBeat;
-
     }
 
 }

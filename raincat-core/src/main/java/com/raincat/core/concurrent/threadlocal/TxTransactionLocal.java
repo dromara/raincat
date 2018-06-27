@@ -15,13 +15,16 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.concurrent.threadlocal;
 
-
 /**
+ * TxTransactionLocal.
  * @author xiaoyu
  */
-public class TxTransactionLocal {
+public final class TxTransactionLocal {
+
+    private static final ThreadLocal<String> CURRENT_LOCAL = new ThreadLocal<>();
 
     private static final TxTransactionLocal TX_TRANSACTION_LOCAL = new TxTransactionLocal();
 
@@ -33,11 +36,7 @@ public class TxTransactionLocal {
         return TX_TRANSACTION_LOCAL;
     }
 
-
-    private static final ThreadLocal<String> CURRENT_LOCAL = new ThreadLocal<>();
-
-
-    public void setTxGroupId(String txGroupId) {
+    public void setTxGroupId(final String txGroupId) {
         CURRENT_LOCAL.set(txGroupId);
     }
 
@@ -48,6 +47,5 @@ public class TxTransactionLocal {
     public void removeTxGroupId() {
         CURRENT_LOCAL.remove();
     }
-
 
 }

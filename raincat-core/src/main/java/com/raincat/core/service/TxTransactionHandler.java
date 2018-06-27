@@ -15,19 +15,21 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.core.service;
 
 import com.raincat.common.bean.TxTransactionInfo;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 /**
+ * TxTransactionHandler.
  * @author xiaoyu
  */
 @FunctionalInterface
 public interface TxTransactionHandler {
 
     /**
-     * 分布式事务处理接口
+     * 分布式事务处理接口.
      *
      * @param point point 切点
      * @param info  信息

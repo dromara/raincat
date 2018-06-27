@@ -25,7 +25,7 @@
 
         <dependency>
             <groupId>com.raincat</groupId>
-            <artifactId>raincat-dubbo</artifactId>
+            <artifactId>raincat-spring-boot-starter-dubbo</artifactId>
         </dependency>
 
         <!--spring boot的核心启动器-->

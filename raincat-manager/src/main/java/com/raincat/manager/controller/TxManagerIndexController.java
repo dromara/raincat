@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.controller;
 
 import com.raincat.manager.entity.TxManagerInfo;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ * TxManagerIndexController.
  * @author xiaoyu
  */
 @Controller
@@ -34,17 +36,15 @@ public class TxManagerIndexController {
     private final TxManagerInfoService txManagerInfoService;
 
     @Autowired
-    public TxManagerIndexController(TxManagerInfoService txManagerInfoService) {
+    public TxManagerIndexController(final TxManagerInfoService txManagerInfoService) {
         this.txManagerInfoService = txManagerInfoService;
     }
 
-
     @RequestMapping("/index")
-    public String index(HttpServletRequest request) {
+    public String index(final HttpServletRequest request) {
         final TxManagerInfo txManagerInfo = txManagerInfoService.findTxManagerInfo();
         request.setAttribute("info", txManagerInfo);
         return "index";
     }
-
 
 }

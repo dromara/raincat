@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.dubbo.interceptor;
 
 import com.raincat.core.interceptor.AbstractTxTransactionAspect;
@@ -24,6 +25,7 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
 /**
+ * DubboTxTransactionAspect.
  * @author xiaoyu
  */
 @Aspect
@@ -31,11 +33,8 @@ import org.springframework.stereotype.Component;
 public class DubboTxTransactionAspect extends AbstractTxTransactionAspect implements Ordered {
 
     @Autowired
-    public DubboTxTransactionAspect(DubboTxTransactionInterceptor dubboTxTransactionInterceptor) {
+    public DubboTxTransactionAspect(final DubboTxTransactionInterceptor dubboTxTransactionInterceptor) {
         this.setTxTransactionInterceptor(dubboTxTransactionInterceptor);
-    }
-    public void init() {
-
     }
 
     @Override

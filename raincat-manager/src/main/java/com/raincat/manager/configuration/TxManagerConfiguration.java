@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.manager.configuration;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -42,14 +43,15 @@ import redis.clients.jedis.JedisPoolConfig;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * TxManagerConfiguration.
  * @author xiaoyu
  */
 @Configuration
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 public class TxManagerConfiguration {
-
 
     @Configuration
     static class NettyConfiguration {
@@ -60,9 +62,7 @@ public class TxManagerConfiguration {
             return new NettyConfig();
         }
 
-
     }
-
 
     @Configuration
     static class RestConfiguration {
@@ -75,46 +75,41 @@ public class TxManagerConfiguration {
     @Configuration
     static class RedisConfiguration {
 
-
         private final Environment env;
 
         @Autowired
-        public RedisConfiguration(Environment env) {
+        RedisConfiguration(final Environment env) {
             this.env = env;
         }
-
 
         @Bean
         public KeyGenerator keyGenerator() {
             return (target, method, params) -> {
-                StringBuilder sb = new StringBuilder();
-                sb.append(target.getClass().getName());
-                sb.append(method.getName());
+                AtomicReference<StringBuilder> sb = new AtomicReference<>(new StringBuilder());
+                sb.get().append(target.getClass().getName());
+                sb.get().append(method.getName());
                 return Arrays.stream(params)
-                        .map(obj -> sb.append(obj.toString())).toString();
+                        .map(obj -> sb.get().append(obj.toString())).toString();
 
             };
         }
 
         @Bean
-        @ConfigurationProperties(prefix = "tx.redis")
+        @ConfigurationProperties(prefix = "tx.manager.redis")
         public JedisPoolConfig getRedisPoolConfig() {
             return new JedisPoolConfig();
         }
 
         @Bean
-        @ConfigurationProperties(prefix = "tx.redis")
+        @ConfigurationProperties(prefix = "tx.manager.redis")
         public JedisConnectionFactory getConnectionFactory() {
-
-            final Boolean cluster = env.getProperty("tx.redis.cluster", Boolean.class);
+            final Boolean cluster = env.getProperty("tx.manager.redis.cluster", Boolean.class);
             if (cluster) {
-                return new JedisConnectionFactory(getClusterConfiguration(),
-                        getRedisPoolConfig());
+                return new JedisConnectionFactory(getClusterConfiguration(), getRedisPoolConfig());
             } else {
                 return new JedisConnectionFactory(getRedisPoolConfig());
             }
         }
-
 
         @Bean
         @SuppressWarnings("unchecked")
@@ -127,8 +122,6 @@ public class TxManagerConfiguration {
             om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
             om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
             jackson2JsonRedisSerializer.setObjectMapper(om);
-
-
             redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
             redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
             redisTemplate.afterPropertiesSet();
@@ -137,8 +130,8 @@ public class TxManagerConfiguration {
 
         private RedisClusterConfiguration getClusterConfiguration() {
             Map<String, Object> source = Maps.newHashMap();
-            source.put("spring.redis.cluster.nodes", env.getProperty("tx.redis.cluster.nodes"));
-            source.put("spring.redis.cluster.max-redirects", env.getProperty("tx.redis.cluster.redirects"));
+            source.put("spring.redis.cluster.nodes", env.getProperty("tx.manager.redis.cluster.nodes"));
+            source.put("spring.redis.cluster.max-redirects", env.getProperty("tx.manager.redis.cluster.redirects"));
             return new RedisClusterConfiguration(new MapPropertySource("RedisClusterConfiguration", source));
         }
     }

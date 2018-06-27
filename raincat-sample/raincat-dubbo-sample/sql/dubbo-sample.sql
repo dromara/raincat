@@ -4,6 +4,8 @@ MySQL - 5.7.19-0ubuntu0.16.04.1 : Database - test_1
 *********************************************************************
 */
 
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`tx` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`test_1` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
 
 USE `test_1`;

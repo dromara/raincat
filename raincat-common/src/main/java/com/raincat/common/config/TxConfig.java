@@ -18,9 +18,7 @@
 
 package com.raincat.common.config;
 
-import com.raincat.common.enums.BlockingQueueTypeEnum;
 import com.raincat.common.enums.CompensationCacheTypeEnum;
-import com.raincat.common.enums.RejectedPolicyTypeEnum;
 import com.raincat.common.enums.SerializeProtocolEnum;
 import lombok.Data;
 
@@ -30,6 +28,8 @@ import lombok.Data;
  */
 @Data
 public class TxConfig {
+
+    private String repositorySuffix;
 
     /**
      * 提供不同的序列化对象. {@linkplain SerializeProtocolEnum}
@@ -47,11 +47,6 @@ public class TxConfig {
     private int delayTime = 30;
 
     /**
-     * 执行事务的线程数大小.
-     */
-    private int transactionThreadMax = Runtime.getRuntime().availableProcessors() << 1;
-
-    /**
      * netty 工作线程大小.
      */
     private int nettyThreadMax = Runtime.getRuntime().availableProcessors() << 1;
@@ -61,15 +56,11 @@ public class TxConfig {
      */
     private int heartTime = 10;
 
-    /**
-     * 线程池的拒绝策略. {@linkplain RejectedPolicyTypeEnum}
-     */
-    private String rejectPolicy = "Abort";
 
     /**
-     * 线程池的队列类型. {@linkplain BlockingQueueTypeEnum}
+     * txManagerUrl服务地址.
      */
-    private String blockingQueueType = "Linked";
+    private String txManagerUrl;
 
     /**
      * 是否需要补偿.
@@ -80,16 +71,6 @@ public class TxConfig {
      * 补偿存储类型. {@linkplain CompensationCacheTypeEnum}
      */
     private String compensationCacheType;
-
-    /**
-     * 回滚队列大小.
-     */
-    private int compensationQueueMax = 5000;
-
-    /**
-     * 监听回滚队列线程数.
-     */
-    private int compensationThreadMax = Runtime.getRuntime().availableProcessors() << 1;
 
     /**
      * 补偿恢复时间 单位秒.
@@ -111,10 +92,12 @@ public class TxConfig {
      */
     private int recoverDelayTime = 60;
 
+
     /**
-     * txManagerUrl服务地址.
+     * disroptor bufferSize.
      */
-    private String txManagerUrl;
+    private int bufferSize = 1024;
+
 
     /**
      * db存储方式时候 数据库配置信息.
@@ -140,5 +123,183 @@ public class TxConfig {
      * zookeeper 存储的配置.
      */
     private TxZookeeperConfig txZookeeperConfig;
+
+
+    public TxConfig(final Builder builder) {
+        builder(builder);
+    }
+
+    public TxConfig() {
+    }
+
+    public static Builder create() {
+        return new Builder();
+    }
+
+    public void builder(final Builder builder) {
+        this.serializer = builder.serializer;
+        this.nettySerializer = builder.nettySerializer;
+        this.delayTime=builder.delayTime;
+        this.nettyThreadMax=builder.nettyThreadMax;
+        this.heartTime=builder.heartTime;
+        this.txManagerUrl=builder.txManagerUrl;
+        this.repositorySuffix = builder.repositorySuffix;
+        this.compensationCacheType = builder.compensationCacheType;
+        this.compensation = builder.compensation;
+        this.retryMax = builder.retryMax;
+        this.recoverDelayTime = builder.recoverDelayTime;
+        this.refreshInterval=builder.refreshInterval;
+        this.bufferSize = builder.bufferSize;
+        this.txDbConfig = builder.txDbConfig;
+        this.txMongoConfig = builder.txMongoConfig;
+        this.txRedisConfig = builder.txRedisConfig;
+        this.txZookeeperConfig = builder.txZookeeperConfig;
+        this.txFileConfig = builder.txFileConfig;
+    }
+
+    public static class Builder {
+
+        private String repositorySuffix;
+
+        private String serializer = "kryo";
+
+        private String nettySerializer;
+
+        /**
+         * 延迟时间.
+         */
+        private int delayTime = 30;
+
+        /**
+         * netty 工作线程大小.
+         */
+        private int nettyThreadMax = Runtime.getRuntime().availableProcessors() << 1;
+
+        /**
+         * 心跳时间 默认10秒.
+         */
+        private int heartTime = 10;
+
+        private String txManagerUrl;
+
+        private String compensationCacheType = "db";
+
+        private Boolean compensation = false;
+
+        private int refreshInterval;
+
+        private int retryMax = 3;
+
+        private int recoverDelayTime = 60;
+
+        private int bufferSize = 1024;
+
+        private TxDbConfig txDbConfig;
+
+        private TxMongoConfig txMongoConfig;
+
+        private TxRedisConfig txRedisConfig;
+
+        private TxZookeeperConfig txZookeeperConfig;
+
+        private TxFileConfig txFileConfig;
+
+        public Builder setRepositorySuffix(String repositorySuffix) {
+            this.repositorySuffix = repositorySuffix;
+            return this;
+        }
+
+        public Builder setSerializer(String serializer) {
+            this.serializer = serializer;
+            return this;
+        }
+
+        public Builder setNettySerializer(String nettySerializer) {
+            this.nettySerializer = nettySerializer;
+            return this;
+        }
+
+        public Builder setDelayTime(int delayTime) {
+            this.delayTime = delayTime;
+            return this;
+        }
+
+        public Builder setNettyThreadMax(int nettyThreadMax) {
+            this.nettyThreadMax = nettyThreadMax;
+            return this;
+        }
+
+        public Builder setHeartTime(int heartTime) {
+            this.heartTime = heartTime;
+            return this;
+        }
+
+        public Builder setRefreshInterval(int refreshInterval) {
+            this.refreshInterval = refreshInterval;
+            return this;
+        }
+
+        public Builder setTxManagerUrl(String txManagerUrl) {
+            this.txManagerUrl = txManagerUrl;
+            return this;
+        }
+
+
+
+        public Builder setCompensationCacheType(String compensationCacheType) {
+            this.compensationCacheType = compensationCacheType;
+            return this;
+        }
+
+        public Builder setCompensation(Boolean compensation) {
+            this.compensation = compensation;
+            return this;
+        }
+
+        public Builder setRetryMax(int retryMax) {
+            this.retryMax = retryMax;
+            return this;
+        }
+
+        public Builder setRecoverDelayTime(int recoverDelayTime) {
+            this.recoverDelayTime = recoverDelayTime;
+            return this;
+        }
+
+        public Builder setBufferSize(int bufferSize) {
+            this.bufferSize = bufferSize;
+            return this;
+        }
+
+        public Builder setTxDbConfig(TxDbConfig txDbConfig) {
+            this.txDbConfig = txDbConfig;
+            return this;
+        }
+
+        public Builder setTxMongoConfig(TxMongoConfig txMongoConfig) {
+            this.txMongoConfig = txMongoConfig;
+            return this;
+        }
+
+        public Builder setTxRedisConfig(TxRedisConfig txRedisConfig) {
+            this.txRedisConfig = txRedisConfig;
+            return this;
+        }
+
+        public Builder setTxZookeeperConfig(TxZookeeperConfig txZookeeperConfig) {
+            this.txZookeeperConfig = txZookeeperConfig;
+            return this;
+        }
+
+        public Builder setTxFileConfig(TxFileConfig txFileConfig) {
+            this.txFileConfig = txFileConfig;
+            return this;
+        }
+
+        public TxConfig build() {
+            return new TxConfig(this);
+        }
+    }
+
 
 }

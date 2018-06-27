@@ -11,6 +11,8 @@ Raincat
 
   * **框架特性**
 
+      * 无缝集成spring 或 spring boot。
+
       * 支持dubbo,motan,springcloud,等rpc框架进行分布式事务。
 
       * 事务发起者，参与者与协调者底层基于netty长连接通信,稳定高效。
@@ -55,6 +57,9 @@ Raincat
 
   ###  [配置详解](https://github.com/yu199195/Raincat/wiki/configuration%EF%BC%88%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3%EF%BC%89)
 
+# Spring-Boot-Starter-Support
+
+   * ### [Spring-Boot-Starter](https://github.com/yu199195/Raincat/wiki/Spring-Boot-Starter)
 
 # Prerequisite
 
