@@ -18,6 +18,7 @@
 
 package com.raincat.common.bean;
 
+import com.raincat.common.enums.CompensationOperationTypeEnum;
 import com.raincat.common.enums.TransactionStatusEnum;
 import lombok.Data;
 
@@ -26,6 +27,7 @@ import java.util.Date;
 
 /**
  * TransactionRecover.
+ *
  * @author xiaoyu
  */
 @Data
@@ -78,5 +80,13 @@ public class TransactionRecover implements Serializable {
      */
     private int status;
 
+    /***
+     * 任务完成标志
+     */
+    private String completeFlag;
 
+    /**
+     * 日志更新操作 {@link CompensationOperationTypeEnum }
+     */
+    private int operation;
 }
