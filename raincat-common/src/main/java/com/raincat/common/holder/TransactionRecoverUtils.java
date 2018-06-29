@@ -26,6 +26,7 @@ import com.raincat.common.serializer.ObjectSerializer;
 
 /**
  * TransactionRecoverUtils.
+ *
  * @author xiaoyu(Myth)
  */
 public class TransactionRecoverUtils {
@@ -44,6 +45,8 @@ public class TransactionRecoverUtils {
         adapter.setCreateTime(transactionRecover.getCreateTime());
         adapter.setContents(objectSerializer.serialize(transactionInvocation));
         adapter.setVersion(transactionRecover.getVersion());
+        adapter.setCompleteFlag(transactionRecover.getCompleteFlag());
+        adapter.setOperation(transactionRecover.getOperation());
         return objectSerializer.serialize(adapter);
     }
 
@@ -58,6 +61,8 @@ public class TransactionRecoverUtils {
         transactionRecover.setTaskId(adapter.getTaskId());
         transactionRecover.setStatus(adapter.getStatus());
         transactionRecover.setVersion(adapter.getVersion());
+        transactionRecover.setCompleteFlag(adapter.getCompleteFlag());
+        transactionRecover.setOperation(adapter.getOperation());
         return transactionRecover;
     }
 
@@ -74,6 +79,8 @@ public class TransactionRecoverUtils {
         transactionRecover.setStatus(adapter.getStatus());
         transactionRecover.setTransactionInvocation(transactionInvocation);
         transactionRecover.setVersion(adapter.getVersion());
+        transactionRecover.setCompleteFlag(adapter.getCompleteFlag());
+        transactionRecover.setOperation(adapter.getOperation());
         return transactionRecover;
     }
 }

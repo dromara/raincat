@@ -18,6 +18,7 @@
 
 package com.raincat.common.bean.adapter;
 
+import com.raincat.common.enums.CompensationOperationTypeEnum;
 import com.raincat.common.enums.TransactionStatusEnum;
 import lombok.Data;
 
@@ -85,5 +86,14 @@ public class TransactionRecoverAdapter {
      */
     private String targetMethod;
 
+    /***
+     * 任务完成标志
+     */
+    private String completeFlag;
+
+    /**
+     * 日志更新操作 {@link CompensationOperationTypeEnum }
+     */
+    private int operation;
 
 }
