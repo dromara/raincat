@@ -19,23 +19,26 @@
 package com.raincat.core.spi.repository;
 
 import com.google.common.base.Splitter;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteResult;
+import com.raincat.common.bean.TransactionInvocation;
+import com.raincat.common.bean.TransactionRecover;
+import com.raincat.common.bean.adapter.MongoAdapter;
+import com.raincat.common.config.TxConfig;
+import com.raincat.common.config.TxMongoConfig;
+import com.raincat.common.constant.CommonConstant;
 import com.raincat.common.enums.CompensationCacheTypeEnum;
+import com.raincat.common.enums.CompensationOperationTypeEnum;
 import com.raincat.common.enums.TransactionStatusEnum;
 import com.raincat.common.exception.TransactionException;
 import com.raincat.common.exception.TransactionRuntimeException;
 import com.raincat.common.holder.Assert;
 import com.raincat.common.holder.LogUtil;
 import com.raincat.common.holder.RepositoryPathUtils;
+import com.raincat.common.holder.TransactionRecoverUtils;
 import com.raincat.common.serializer.ObjectSerializer;
-import com.raincat.common.bean.adapter.MongoAdapter;
-import com.raincat.common.bean.TransactionInvocation;
-import com.raincat.common.bean.TransactionRecover;
-import com.raincat.common.config.TxConfig;
-import com.raincat.common.config.TxMongoConfig;
 import com.raincat.core.spi.TransactionRecoverRepository;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,6 +83,8 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
             mongoAdapter.setTargetClass(invocation.getTargetClazz().getName());
             mongoAdapter.setTargetMethod(invocation.getMethod());
             mongoAdapter.setContents(objectSerializer.serialize(invocation));
+            mongoAdapter.setCompleteFlag(transactionRecover.getCompleteFlag());
+            mongoAdapter.setOperation(transactionRecover.getOperation());
             template.save(mongoAdapter, collectionName);
         } catch (TransactionException e) {
             e.printStackTrace();
@@ -101,9 +106,13 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
         Query query = new Query();
         query.addCriteria(new Criteria("transId").is(transactionRecover.getId()));
         Update update = new Update();
-        update.set("lastTime", new Date());
-        update.set("retriedCount", transactionRecover.getRetriedCount() + 1);
-        update.set("version", transactionRecover.getVersion() + 1);
+        if (CompensationOperationTypeEnum.TASK_EXECUTE.getCode() == transactionRecover.getOperation()) {//任务完成时更新操作
+            update.set("completeFlag",CommonConstant.TX_TRANSACTION_COMPLETE_FLAG_OK);
+        } else if (CompensationOperationTypeEnum.COMPENSATION.getCode() == transactionRecover.getOperation()) {
+            update.set("lastTime", new Date());
+            update.set("retriedCount", transactionRecover.getRetriedCount() + 1);
+            update.set("version", transactionRecover.getVersion() + 1);
+        }
         final WriteResult writeResult = template.updateFirst(query, update, MongoAdapter.class, collectionName);
         if (writeResult.getN() <= 0) {
             throw new TransactionRuntimeException(UPDATE_EX);
@@ -129,6 +138,8 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
         recover.setRetriedCount(cache.getRetriedCount());
         recover.setVersion(cache.getVersion());
         recover.setStatus(cache.getStatus());
+        recover.setCompleteFlag(cache.getCompleteFlag());
+        recover.setOperation(cache.getOperation());
         final TransactionInvocation transactionInvocation;
         try {
             transactionInvocation = objectSerializer.deSerialize(cache.getContents(), TransactionInvocation.class);

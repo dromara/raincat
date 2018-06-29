@@ -19,7 +19,12 @@
 package com.raincat.core.spi.repository;
 
 import com.google.common.collect.Lists;
+import com.raincat.common.bean.TransactionRecover;
+import com.raincat.common.config.TxConfig;
+import com.raincat.common.config.TxZookeeperConfig;
+import com.raincat.common.constant.CommonConstant;
 import com.raincat.common.enums.CompensationCacheTypeEnum;
+import com.raincat.common.enums.CompensationOperationTypeEnum;
 import com.raincat.common.exception.TransactionException;
 import com.raincat.common.exception.TransactionIoException;
 import com.raincat.common.exception.TransactionRuntimeException;
@@ -27,17 +32,10 @@ import com.raincat.common.holder.LogUtil;
 import com.raincat.common.holder.RepositoryPathUtils;
 import com.raincat.common.holder.TransactionRecoverUtils;
 import com.raincat.common.serializer.ObjectSerializer;
-import com.raincat.common.bean.TransactionRecover;
-import com.raincat.common.config.TxConfig;
-import com.raincat.common.config.TxZookeeperConfig;
 import com.raincat.core.spi.TransactionRecoverRepository;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +47,7 @@ import java.util.stream.Collectors;
 
 /**
  * zookeeper impl.
+ *
  * @author xiaoyu
  */
 public class ZookeeperTransactionRecoverRepository implements TransactionRecoverRepository {
@@ -93,6 +92,14 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
     @Override
     public int update(final TransactionRecover transactionRecover) throws TransactionRuntimeException {
         try {
+            if (CompensationOperationTypeEnum.TASK_EXECUTE.getCode() == transactionRecover.getOperation()) {//任务完成时更新操作
+                TransactionRecover recover = findById(transactionRecover.getId());
+                recover.setCompleteFlag(CommonConstant.TX_TRANSACTION_COMPLETE_FLAG_OK);
+                zooKeeper.setData(getRootPath(recover.getId()),
+                        TransactionRecoverUtils.convert(recover, objectSerializer),
+                        recover.getVersion() - 2);
+                return ROWS;
+            }
             transactionRecover.setLastTime(new Date());
             transactionRecover.setVersion(transactionRecover.getVersion() + 1);
             transactionRecover.setRetriedCount(transactionRecover.getRetriedCount() + 1);

@@ -29,12 +29,11 @@ import java.io.IOException;
 
 /**
  * KryoCodecServiceImpl.
+ *
  * @author xiaoyu
  */
 public class KryoCodecServiceImpl implements MessageCodecService {
-
-    private static Closer closer = Closer.create();
-
+    
     private KryoPool pool;
 
     public KryoCodecServiceImpl(final KryoPool pool) {
@@ -43,6 +42,7 @@ public class KryoCodecServiceImpl implements MessageCodecService {
 
     @Override
     public void encode(final ByteBuf out, final Object message) throws IOException {
+        Closer closer = Closer.create();
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             closer.register(byteArrayOutputStream);
@@ -59,6 +59,7 @@ public class KryoCodecServiceImpl implements MessageCodecService {
 
     @Override
     public Object decode(final byte[] body) throws IOException {
+        Closer closer = Closer.create();
         try {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(body);
             closer.register(byteArrayInputStream);

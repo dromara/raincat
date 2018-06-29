@@ -20,7 +20,9 @@ package com.raincat.core.compensation.manager;
 
 import com.raincat.common.bean.TransactionInvocation;
 import com.raincat.common.bean.TransactionRecover;
+import com.raincat.common.constant.CommonConstant;
 import com.raincat.common.enums.CompensationActionEnum;
+import com.raincat.common.enums.CompensationOperationTypeEnum;
 import com.raincat.common.enums.TransactionStatusEnum;
 import com.raincat.core.disruptor.publisher.TxTransactionEventPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ import java.util.Date;
 
 /**
  * TxCompensationManager.
+ *
  * @author xiaoyu
  */
 @Service
@@ -44,9 +47,10 @@ public class TxCompensationManager {
 
     /**
      * save TransactionRecover data.
+     *
      * @param invocation {@linkplain TransactionInvocation}
-     * @param groupId this is transaction groupId
-     * @param taskId taskId
+     * @param groupId    this is transaction groupId
+     * @param taskId     taskId
      * @return groupId.
      */
     public String saveTxCompensation(final TransactionInvocation invocation, final String groupId, final String taskId) {
@@ -58,12 +62,14 @@ public class TxCompensationManager {
         recover.setGroupId(groupId);
         recover.setTaskId(taskId);
         recover.setCreateTime(new Date());
+        recover.setCompleteFlag(CommonConstant.TX_TRANSACTION_COMPLETE_FLAG_BAD);
         txTransactionEventPublisher.publishEvent(recover, CompensationActionEnum.SAVE.getCode());
         return recover.getId();
     }
 
     /**
      * delete TransactionRecover.
+     *
      * @param id transaction groupId.
      */
     public void removeTxCompensation(final String id) {
@@ -72,4 +78,16 @@ public class TxCompensationManager {
         txTransactionEventPublisher.publishEvent(recover, CompensationActionEnum.DELETE.getCode());
     }
 
+    /**
+     * update TransactionRecover.
+     *
+     * @param id
+     */
+    public void updateTxCompensation(final String id) {
+        TransactionRecover recover = new TransactionRecover();
+        recover.setId(id);
+        recover.setCompleteFlag(CommonConstant.TX_TRANSACTION_COMPLETE_FLAG_OK);
+        recover.setOperation(CompensationOperationTypeEnum.TASK_EXECUTE.getCode());
+        txTransactionEventPublisher.publishEvent(recover, CompensationActionEnum.UPDATE.getCode());
+    }
 }

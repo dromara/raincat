@@ -20,6 +20,7 @@ package com.raincat.common.constant;
 
 /**
  * CommonConstant.
+ *
  * @author xiaoyu(Myth)
  */
 public interface CommonConstant {
@@ -55,4 +56,16 @@ public interface CommonConstant {
     String LOAD_TX_MANAGER_SERVICE_URL = "/loadTxManagerService";
 
     String FIND_SERVER = "/findTxManagerServer";
+
+    //事务提交状态
+    String TX_TRANSACTION_COMMIT_STATUS_BAD = "0";
+
+    String TX_TRANSACTION_COMMIT_STATUS_OK = "1";
+
+    //当前任务执行状态
+    String TX_TRANSACTION_COMPLETE_FLAG_BAD = "0";
+
+    String TX_TRANSACTION_COMPLETE_FLAG_OK = "1";
+
+
 }

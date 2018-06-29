@@ -19,13 +19,15 @@
 package com.raincat.core.spi.repository;
 
 import com.google.common.collect.Lists;
+import com.raincat.common.bean.TransactionRecover;
+import com.raincat.common.config.TxConfig;
+import com.raincat.common.constant.CommonConstant;
 import com.raincat.common.enums.CompensationCacheTypeEnum;
+import com.raincat.common.enums.CompensationOperationTypeEnum;
 import com.raincat.common.exception.TransactionRuntimeException;
 import com.raincat.common.holder.RepositoryPathUtils;
 import com.raincat.common.holder.TransactionRecoverUtils;
 import com.raincat.common.serializer.ObjectSerializer;
-import com.raincat.common.bean.TransactionRecover;
-import com.raincat.common.config.TxConfig;
 import com.raincat.core.spi.TransactionRecoverRepository;
 
 import java.io.File;
@@ -39,6 +41,7 @@ import java.util.stream.Collectors;
 
 /**
  * file impl.
+ *
  * @author xiaoyu
  */
 @SuppressWarnings("unchecked")
@@ -73,6 +76,12 @@ public class FileTransactionRecoverRepository implements TransactionRecoverRepos
 
     @Override
     public int update(final TransactionRecover transactionRecover) throws TransactionRuntimeException {
+        if (CompensationOperationTypeEnum.TASK_EXECUTE.getCode() == transactionRecover.getOperation()) {//任务完成时更新操作
+            TransactionRecover recover = findById(transactionRecover.getId());
+            recover.setCompleteFlag(CommonConstant.TX_TRANSACTION_COMPLETE_FLAG_OK);
+            writeFile(recover);
+            return ROWS;
+        }
         transactionRecover.setLastTime(new Date());
         transactionRecover.setVersion(transactionRecover.getVersion() + 1);
         transactionRecover.setRetriedCount(transactionRecover.getRetriedCount() + 1);
