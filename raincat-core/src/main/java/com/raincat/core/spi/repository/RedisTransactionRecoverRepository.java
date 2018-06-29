@@ -130,7 +130,7 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
         final List<TransactionRecover> tccTransactions = listAll();
         return tccTransactions
                 .stream()
-                .filter(transactionRecover -> transactionRecover.getLastTime().compareTo(date) > 0)
+                .filter(transactionRecover -> transactionRecover.getLastTime().compareTo(date) < 0)
                 .collect(Collectors.toList());
     }
 

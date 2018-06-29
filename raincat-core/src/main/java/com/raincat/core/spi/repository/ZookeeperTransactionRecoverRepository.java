@@ -145,7 +145,7 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
     public List<TransactionRecover> listAllByDelay(final Date date) {
         final List<TransactionRecover> tccTransactions = listAll();
         return tccTransactions.stream()
-                .filter(transactionRecover -> transactionRecover.getLastTime().compareTo(date) > 0)
+                .filter(transactionRecover -> transactionRecover.getLastTime().compareTo(date) < 0)
                 .collect(Collectors.toList());
     }
 
