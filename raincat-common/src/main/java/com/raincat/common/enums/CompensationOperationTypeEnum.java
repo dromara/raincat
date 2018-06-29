@@ -1,14 +1,20 @@
 package com.raincat.common.enums;
 
 /**
- * @author chaocoffee
- * @date 2018/6/27
- * @description 事务日志更新动作
+ * The enum Compensation operation type enum.
+ *
+ * @author chaocoffee.
  */
 public enum CompensationOperationTypeEnum {
 
+    /**
+     * Task execute compensation operation type enum.
+     */
     TASK_EXECUTE(1, "任务更新"),
 
+    /**
+     * Compensation compensation operation type enum.
+     */
     COMPENSATION(2,"补偿操作");
 
     private int code;

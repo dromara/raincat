@@ -27,12 +27,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * <p>Description: .</p>
- *
+ * LoginController.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/20 10:11
- * @since JDK 1.8
  */
 @RestController
 public class LoginController {

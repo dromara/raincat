@@ -90,7 +90,7 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
     public int update(final TransactionRecover transactionRecover) throws TransactionRuntimeException {
         try {
             final String redisKey = RedisHelper.buildRecoverKey(keyName, transactionRecover.getId());
-            if (CompensationOperationTypeEnum.TASK_EXECUTE.getCode() == transactionRecover.getOperation()) {//任务完成时更新操作
+            if (CompensationOperationTypeEnum.TASK_EXECUTE.getCode() == transactionRecover.getOperation()) {
                 TransactionRecover recover = findById(transactionRecover.getId());
                 recover.setCompleteFlag(CommonConstant.TX_TRANSACTION_COMPLETE_FLAG_OK);
                 jedisClient.set(redisKey, TransactionRecoverUtils.convert(recover, objectSerializer));

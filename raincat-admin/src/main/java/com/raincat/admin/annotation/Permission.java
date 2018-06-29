@@ -25,12 +25,8 @@ import java.lang.annotation.Target;
 
 
 /**
- * <p>Description: .</p>
- *
+ * Permission.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/23 20:10
- * @since JDK 1.8
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
