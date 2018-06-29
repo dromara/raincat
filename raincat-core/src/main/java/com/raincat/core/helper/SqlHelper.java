@@ -42,6 +42,8 @@ public class SqlHelper {
                         "  `group_id` varchar(64) NOT NULL,\n" +
                         "  `task_id` varchar(64) NOT NULL,\n" +
                         "  `invocation` longblob NOT NULL,\n" +
+                        "  `complete_flag` varchar(2) NOT NULL,\n" +
+                        "  `operation` int(3),\n" +
                         "  PRIMARY KEY (`id`)\n" +
                         ")";
                 break;
@@ -57,6 +59,8 @@ public class SqlHelper {
                         "  `group_id` varchar2(64) NOT NULL,\n" +
                         "  `task_id` varchar2(64) NOT NULL,\n" +
                         "  `invocation` BLOB NOT NULL,\n" +
+                        "  `complete_flag` varchar(2) NOT NULL,\n" +
+                        "  `operation` int(3),\n" +
                         "  PRIMARY KEY (`id`)\n" +
                         ")";
                 break;
@@ -72,6 +76,8 @@ public class SqlHelper {
                         "  `group_id` nchar(64) NOT NULL,\n" +
                         "  `task_id` nchar(64) NOT NULL,\n" +
                         "  `invocation` varbinary NOT NULL,\n" +
+                        "  `complete_flag` varchar(2) NOT NULL,\n" +
+                        "  `operation` int(3),\n" +
                         "  PRIMARY KEY (`id`)\n" +
                         ")";
                 break;

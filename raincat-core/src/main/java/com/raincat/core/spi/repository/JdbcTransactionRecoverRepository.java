@@ -24,7 +24,9 @@ import com.raincat.common.bean.TransactionInvocation;
 import com.raincat.common.bean.TransactionRecover;
 import com.raincat.common.config.TxConfig;
 import com.raincat.common.config.TxDbConfig;
+import com.raincat.common.constant.CommonConstant;
 import com.raincat.common.enums.CompensationCacheTypeEnum;
+import com.raincat.common.enums.CompensationOperationTypeEnum;
 import com.raincat.common.exception.TransactionException;
 import com.raincat.common.exception.TransactionRuntimeException;
 import com.raincat.common.holder.RepositoryPathUtils;
@@ -35,20 +37,14 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.*;
+import java.util.*;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
  * jdbc impl.
+ *
  * @author xiaoyu
  */
 public class JdbcTransactionRecoverRepository implements TransactionRecoverRepository {
@@ -69,8 +65,8 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
     @Override
     public int create(final TransactionRecover recover) {
         String sql = "insert into " + tableName
-                + "(id,target_class,target_method,retried_count,create_time,last_time,version,group_id,task_id,invocation)"
-                + " values(?,?,?,?,?,?,?,?,?,?)";
+                + "(id,target_class,target_method,retried_count,create_time,last_time,version,group_id,task_id,invocation,complete_flag,operation)"
+                + " values(?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
             final TransactionInvocation transactionInvocation = recover.getTransactionInvocation();
             final String className = transactionInvocation.getTargetClazz().getName();
@@ -80,7 +76,7 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
                     method, recover.getRetriedCount(),
                     recover.getCreateTime(), recover.getLastTime(),
                     recover.getVersion(), recover.getGroupId(),
-                    recover.getTaskId(), serialize);
+                    recover.getTaskId(), serialize, recover.getCompleteFlag(), recover.getOperation());
         } catch (TransactionException e) {
             e.printStackTrace();
             return FAIL_ROWS;
@@ -95,9 +91,14 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
 
     @Override
     public int update(final TransactionRecover transactionRecover) throws TransactionRuntimeException {
-
         String sql = "update " + tableName
                 + " set last_time = ?,version =version+ 1,retried_count =retried_count+1 where id = ? and version=? ";
+        if (CompensationOperationTypeEnum.TASK_EXECUTE.getCode() == transactionRecover.getOperation()) {//任务完成时更新操作
+            sql = "update " + tableName
+                    + " set last_time = ?,complete_flag = ? where id = ?";
+            executeUpdate(sql, new Date(), CommonConstant.TX_TRANSACTION_COMPLETE_FLAG_OK, transactionRecover.getId());
+            return ROWS;
+        }
         int success = executeUpdate(sql, new Date(), transactionRecover.getId(), transactionRecover.getVersion());
         if (success <= 0) {
             throw new TransactionRuntimeException(UPDATE_EX);
@@ -187,7 +188,7 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
     private int executeUpdate(final String sql, final Object... params) {
         try {
             try (Connection connection = dataSource.getConnection();
-                PreparedStatement ps = connection.prepareStatement(sql)) {
+                 PreparedStatement ps = connection.prepareStatement(sql)) {
                 if (params != null) {
                     for (int i = 0; i < params.length; i++) {
                         ps.setObject(i + 1, params[i]);
@@ -206,7 +207,7 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
         List<Map<String, Object>> list = null;
         try {
             try (Connection connection = dataSource.getConnection();
-                PreparedStatement ps = connection.prepareStatement(sql)) {
+                 PreparedStatement ps = connection.prepareStatement(sql)) {
                 if (params != null) {
                     for (int i = 0; i < params.length; i++) {
                         ps.setObject(i + 1, params[i]);

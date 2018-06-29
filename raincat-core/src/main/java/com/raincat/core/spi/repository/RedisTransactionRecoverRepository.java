@@ -93,6 +93,7 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
             if (CompensationOperationTypeEnum.TASK_EXECUTE.getCode() == transactionRecover.getOperation()) {//任务完成时更新操作
                 TransactionRecover recover = findById(transactionRecover.getId());
                 recover.setCompleteFlag(CommonConstant.TX_TRANSACTION_COMPLETE_FLAG_OK);
+                jedisClient.set(redisKey, TransactionRecoverUtils.convert(recover, objectSerializer));
                 return ROWS;
             }
             transactionRecover.setVersion(transactionRecover.getVersion() + 1);
