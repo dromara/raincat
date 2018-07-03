@@ -24,17 +24,14 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * <p>Description: .</p>
- *
+ * TxTransactionQuery.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/19 16:46
- * @since JDK 1.8
  */
 @Data
 public class TxTransactionQuery implements Serializable {
 
     private static final long serialVersionUID = 1897647164293554953L;
+
     private String txGroupId;
 
     private String taskKey;

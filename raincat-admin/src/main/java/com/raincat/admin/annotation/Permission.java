@@ -33,9 +33,9 @@ import java.lang.annotation.Target;
 public @interface Permission {
 
     /**
-     * 是否登录
+     * is login ？
      *
-     * @return  true 需要  false 不需要
+     * @return  true
      */
     boolean isLogin() default true;
 

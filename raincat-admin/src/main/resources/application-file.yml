@@ -1,0 +1,8 @@
+recover:
+   application:
+      list : alipay-service,wechat-service,pay-service
+   serializer :
+      support: kryo
+   retry :
+      max: 10
+

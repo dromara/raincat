@@ -33,30 +33,23 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * <p>Description: .</p>
- * 查询TxManager存储的事务item信息
- *
+ * TxTransactionGroupController.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/18 10:31
- * @since JDK 1.8
  */
 @RestController
 @RequestMapping("/tx")
 public class TxTransactionGroupController {
 
-
     private final TxTransactionGroupService txTransactionGroupService;
 
     @Autowired
-    public TxTransactionGroupController(TxTransactionGroupService txTransactionGroupService) {
+    public TxTransactionGroupController(final TxTransactionGroupService txTransactionGroupService) {
         this.txTransactionGroupService = txTransactionGroupService;
     }
 
-
     @Permission
     @PostMapping(value = "/listPage")
-    public AjaxResponse listPage(@RequestBody TxTransactionQuery txTransactionQuery) {
+    public AjaxResponse listPage(final @RequestBody TxTransactionQuery txTransactionQuery) {
         final CommonPager<TxTransactionGroupVO> commonPager =
                 txTransactionGroupService.listByPage(txTransactionQuery);
         return AjaxResponse.success(commonPager);
@@ -64,11 +57,8 @@ public class TxTransactionGroupController {
 
     @Permission
     @PostMapping(value = "/batchRemove")
-    public AjaxResponse batchRemove(@RequestBody List<String> txGroupIds) {
+    public AjaxResponse batchRemove(final @RequestBody List<String> txGroupIds) {
         return AjaxResponse.success(txTransactionGroupService.batchRemove(txGroupIds));
     }
-
-
-
 
 }

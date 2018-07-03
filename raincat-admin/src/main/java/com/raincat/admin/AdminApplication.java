@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.admin;
 
 import org.springframework.boot.SpringApplication;
@@ -23,14 +24,18 @@ import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfigurat
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 
 /**
+ * AdminApplication.
  * @author xiaoyu
  */
 @SpringBootApplication(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 public class AdminApplication {
-    public static void main(String[] args) {
+
+    /**
+     * bootstrap main.
+     * @param args args.
+     */
+    public static void main(final String[] args) {
         SpringApplication.run(AdminApplication.class, args);
     }
-
-
 
 }

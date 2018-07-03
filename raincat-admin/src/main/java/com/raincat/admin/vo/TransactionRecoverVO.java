@@ -23,59 +23,53 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * <p>Description: .</p>
- *
+ * TransactionRecoverVO.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/19 16:37
- * @since JDK 1.8
  */
 @Data
 public class TransactionRecoverVO implements Serializable {
 
-
     private static final long serialVersionUID = 564418979137349581L;
+
     private String id;
 
-
     /**
-     * 重试次数，
+     * 重试次数.
      */
     private Integer retriedCount;
 
     /**
-     * 创建时间
+     * 创建时间.
      */
     private String createTime;
 
-
     /**
-     * 创建时间
+     * 创建时间.
      */
     private String lastTime;
 
     /**
-     * 版本控制 防止并发问题
+     * 版本控制 防止并发问题.
      */
     private Integer version;
 
     /**
-     * 事务组id
+     * 事务组id.
      */
     private String groupId;
 
     /**
-     * 任务id
+     * 任务id.
      */
     private String taskId;
 
-
     /**
-     * 执行类名称
+     * 执行类名称.
      */
     private String targetClass;
+
     /**
-     * 执行方法
+     * 执行方法.
      */
     private String targetMethod;
 

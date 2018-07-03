@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.admin.configuration;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -49,45 +50,31 @@ import java.util.ServiceLoader;
 import java.util.stream.StreamSupport;
 
 /**
- * <p>Description: .</p>
- *
+ * AdminConfiguration.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/23 21:08
- * @since JDK 1.8
  */
 @Configuration
 public class AdminConfiguration {
 
-
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurerAdapter() {
-         /*   @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/login*//*").allowedOrigins("*");
-                registry.addMapping("/recover*//*").allowedOrigins("*");
-                registry.addMapping("/tx*//*").allowedOrigins("*");
-
-            }
-*/
             @Override
-            public void addInterceptors(InterceptorRegistry registry) {
+            public void addInterceptors(final InterceptorRegistry registry) {
                 registry.addInterceptor(new AuthInterceptor()).addPathPatterns("/**");
             }
         };
     }
 
-
+    @Configuration
     static class SerializerConfiguration {
 
         private final Environment env;
 
         @Autowired
-        public SerializerConfiguration(Environment env) {
+        SerializerConfiguration(final Environment env) {
             this.env = env;
         }
-
 
         @Bean
         public ObjectSerializer objectSerializer() {
@@ -96,28 +83,23 @@ public class AdminConfiguration {
                     SerializeProtocolEnum.acquireSerializeProtocol(env.getProperty("recover.serializer.support"));
             final ServiceLoader<ObjectSerializer> objectSerializers =
                     ServiceBootstrap.loadAll(ObjectSerializer.class);
-
             return StreamSupport.stream(objectSerializers.spliterator(), false)
                     .filter(objectSerializer ->
                             Objects.equals(objectSerializer.getScheme(),
                                     serializeProtocolEnum.getSerializeProtocol())).findFirst().orElse(new KryoSerializer());
-
         }
 
     }
 
-
     @Configuration
     static class RedisConfiguration {
-
 
         private final Environment env;
 
         @Autowired
-        public RedisConfiguration(Environment env) {
+        RedisConfiguration(final Environment env) {
             this.env = env;
         }
-
 
         @Bean
         public KeyGenerator keyGenerator() {
@@ -132,7 +114,6 @@ public class AdminConfiguration {
             };
         }
 
-
         @Bean
         @ConfigurationProperties(prefix = "tx.redis")
         public JedisPoolConfig getRedisPoolConfig() {
@@ -142,23 +123,19 @@ public class AdminConfiguration {
         @Bean
         @ConfigurationProperties(prefix = "tx.redis")
         public JedisConnectionFactory getConnectionFactory() {
-
             final Boolean cluster = env.getProperty("tx.redis.cluster", Boolean.class);
             if (cluster) {
-                return new JedisConnectionFactory(getClusterConfiguration(),
-                        getRedisPoolConfig());
+                return new JedisConnectionFactory(getClusterConfiguration(), getRedisPoolConfig());
             } else {
                 return new JedisConnectionFactory(getRedisPoolConfig());
             }
         }
-
 
         @Bean
         @SuppressWarnings("unchecked")
         public RedisTemplate redisTemplate() {
             RedisTemplate redisTemplate = new StringRedisTemplate();
             redisTemplate.setConnectionFactory(getConnectionFactory());
-
             Jackson2JsonRedisSerializer jackson2JsonRedisSerializer =
                     new Jackson2JsonRedisSerializer(Object.class);
             ObjectMapper om = new ObjectMapper();

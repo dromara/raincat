@@ -26,25 +26,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * <p>Description: .</p>
- *
+ * RecoverApplicationNameServiceImpl.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/20 16:39
- * @since JDK 1.8
  */
 @Service("recoverApplicationNameService")
 public class RecoverApplicationNameServiceImpl implements RecoverApplicationNameService {
 
-
     @Value("${recover.application.list}")
     private String appNameList;
 
-    /**
-     * 获取之前参与分布式事务项目的应用名称
-     *
-     * @return List<String>
-     */
     @Override
     public List<String> list() {
         return Splitter.on(",").splitToList(appNameList);

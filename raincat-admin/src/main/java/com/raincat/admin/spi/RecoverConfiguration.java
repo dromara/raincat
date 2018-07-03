@@ -20,6 +20,8 @@ package com.raincat.admin.spi;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.google.common.base.Splitter;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import com.raincat.admin.service.RecoverTransactionService;
 import com.raincat.admin.service.recover.FileRecoverTransactionServiceImpl;
 import com.raincat.admin.service.recover.JdbcRecoverTransactionServiceImpl;
@@ -29,8 +31,7 @@ import com.raincat.admin.service.recover.ZookeeperRecoverTransactionServiceImpl;
 import com.raincat.common.jedis.JedisClient;
 import com.raincat.common.jedis.JedisClientCluster;
 import com.raincat.common.jedis.JedisClientSingle;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
+import com.raincat.common.serializer.ObjectSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -56,13 +57,14 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
+ * RecoverConfiguration.
  * @author xiaoyu
  */
 @Configuration
 public class RecoverConfiguration {
 
     /**
-     * spring.profiles.active = {}
+     * spring.profiles.active = {}.
      */
     @Configuration
     @Profile("db")
@@ -71,7 +73,7 @@ public class RecoverConfiguration {
         private final Environment env;
 
         @Autowired
-        public JdbcRecoverConfiguration(Environment env) {
+        JdbcRecoverConfiguration(final Environment env) {
             this.env = env;
         }
 
@@ -103,9 +105,7 @@ public class RecoverConfiguration {
             return jdbcTransactionRecoverService;
         }
 
-
     }
-
 
     @Configuration
     @Profile("redis")
@@ -113,9 +113,12 @@ public class RecoverConfiguration {
 
         private final Environment env;
 
+        private final ObjectSerializer objectSerializer;
+
         @Autowired
-        public RedisRecoverConfiguration(Environment env) {
+        RedisRecoverConfiguration(final Environment env, final ObjectSerializer objectSerializer) {
             this.env = env;
+            this.objectSerializer = objectSerializer;
         }
 
         @Bean
@@ -147,10 +150,8 @@ public class RecoverConfiguration {
                 jedisClient = new JedisClientSingle(jedisPool);
 
             }
-
-            return new RedisRecoverTransactionServiceImpl(jedisClient);
+            return new RedisRecoverTransactionServiceImpl(jedisClient, objectSerializer);
         }
-
 
     }
 
@@ -158,10 +159,17 @@ public class RecoverConfiguration {
     @Profile("file")
     static class FileRecoverConfiguration {
 
+        private final ObjectSerializer objectSerializer;
+
+        @Autowired
+        FileRecoverConfiguration(final ObjectSerializer objectSerializer) {
+            this.objectSerializer = objectSerializer;
+        }
+
         @Bean
         @Qualifier("fileTransactionRecoverService")
         public RecoverTransactionService fileTransactionRecoverService() {
-            return new FileRecoverTransactionServiceImpl();
+            return new FileRecoverTransactionServiceImpl(objectSerializer);
         }
 
     }
@@ -170,15 +178,17 @@ public class RecoverConfiguration {
     @Profile("zookeeper")
     static class ZookeeperRecoverConfiguration {
 
-        private final Environment env;
-
-        @Autowired
-        public ZookeeperRecoverConfiguration(Environment env) {
-            this.env = env;
-        }
-
         private static final Lock LOCK = new ReentrantLock();
 
+        private final Environment env;
+
+        private final ObjectSerializer objectSerializer;
+
+        @Autowired
+        ZookeeperRecoverConfiguration(final Environment env, final ObjectSerializer objectSerializer) {
+            this.env = env;
+            this.objectSerializer = objectSerializer;
+        }
 
         @Bean
         @Qualifier("zookeeperTransactionRecoverService")
@@ -198,7 +208,7 @@ public class RecoverConfiguration {
                 e.printStackTrace();
             }
 
-            return new ZookeeperRecoverTransactionServiceImpl(zooKeeper);
+            return new ZookeeperRecoverTransactionServiceImpl(zooKeeper, objectSerializer);
         }
 
     }
@@ -210,22 +220,19 @@ public class RecoverConfiguration {
         private final Environment env;
 
         @Autowired
-        public MongoRecoverConfiguration(Environment env) {
+        MongoRecoverConfiguration(final Environment env) {
             this.env = env;
         }
 
         @Bean
         @Qualifier("mongoTransactionRecoverService")
         public RecoverTransactionService mongoTransactionRecoverService() {
-
             MongoClientFactoryBean clientFactoryBean = new MongoClientFactoryBean();
             MongoCredential credential = MongoCredential.createScramSha1Credential(
                     env.getProperty("recover.mongo.userName"),
                     env.getProperty("recover.mongo.dbName"),
                     env.getProperty("recover.mongo.password").toCharArray());
-            clientFactoryBean.setCredentials(new MongoCredential[]{
-                    credential
-            });
+            clientFactoryBean.setCredentials(new MongoCredential[]{credential});
             List<String> urls = Splitter.on(",").trimResults().splitToList(env.getProperty("recover.mongo.url"));
             ServerAddress[] sds = new ServerAddress[urls.size()];
             for (int i = 0; i < sds.length; i++) {
@@ -234,18 +241,17 @@ public class RecoverConfiguration {
                 sds[i] = new ServerAddress(address);
             }
             clientFactoryBean.setReplicaSetSeeds(sds);
-
             MongoTemplate mongoTemplate = null;
             try {
                 clientFactoryBean.afterPropertiesSet();
-                mongoTemplate = new MongoTemplate(clientFactoryBean.getObject(), env.getProperty("recover.mongo.dbName"));
+                mongoTemplate =
+                        new MongoTemplate(clientFactoryBean.getObject(),
+                                env.getProperty("recover.mongo.dbName"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             return new MongoRecoverTransactionServiceImpl(mongoTemplate);
         }
-
     }
 
 }

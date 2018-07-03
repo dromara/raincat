@@ -33,17 +33,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LoginController {
 
-
     private final LoginService loginService;
 
     @Autowired
-    public LoginController(LoginService loginService) {
+    public LoginController(final LoginService loginService) {
         this.loginService = loginService;
     }
 
-
     @PostMapping("/login")
-    public AjaxResponse login(@RequestBody UserDTO userDTO) {
+    public AjaxResponse login(final @RequestBody UserDTO userDTO) {
         final Boolean login = loginService.login(userDTO.getUserName(), userDTO.getPassword());
         return AjaxResponse.success(login);
     }

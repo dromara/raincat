@@ -19,26 +19,22 @@
 package com.raincat.admin.service;
 
 /**
- * <p>Description: .</p>
- *
+ * LoginService.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/20 10:17
- * @since JDK 1.8
  */
 public interface LoginService {
 
     /**
-     * 登录接口，验证用户名 密码
+     * 登录接口，验证用户名 密码.
      * @param userName 用户名
      * @param password 密码
      * @return  true 成功
      */
-    Boolean login(String userName,String password);
+    Boolean login(String userName, String password);
 
 
     /**
-     * 用户登出
+     * 用户登出.
      * @return true 成功
      */
     Boolean logout();

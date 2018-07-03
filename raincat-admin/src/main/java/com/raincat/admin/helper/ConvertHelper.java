@@ -27,16 +27,12 @@ import com.raincat.common.holder.DateUtils;
 import com.raincat.common.netty.bean.TxTransactionItem;
 
 /**
- * <p>Description: .</p>
- *
+ * ConvertHelper.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/23 11:53
- * @since JDK 1.8
  */
 public class ConvertHelper {
 
-    public static TransactionRecoverVO buildVO(TransactionRecoverAdapter adapter) {
+    public static TransactionRecoverVO buildVO(final TransactionRecoverAdapter adapter) {
         TransactionRecoverVO vo = new TransactionRecoverVO();
         vo.setId(adapter.getTransId());
         vo.setCreateTime(DateUtils.parseDate(adapter.getCreateTime()));
@@ -48,10 +44,9 @@ public class ConvertHelper {
         vo.setTargetClass(adapter.getTargetClass());
         vo.setTargetMethod(adapter.getTargetMethod());
         return vo;
-
     }
 
-    public static TxTransactionItemVO buildTxItemVO(TxTransactionItem item) {
+    public static TxTransactionItemVO buildTxItemVO(final TxTransactionItem item) {
         TxTransactionItemVO vo = new TxTransactionItemVO();
         vo.setCreateDate(item.getCreateDate());
         vo.setModelName(item.getModelName());
@@ -69,4 +64,5 @@ public class ConvertHelper {
         vo.setMessage(item.getMessage());
         return vo;
     }
+
 }

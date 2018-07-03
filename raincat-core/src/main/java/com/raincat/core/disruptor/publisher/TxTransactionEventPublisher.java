@@ -26,11 +26,13 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.raincat.common.bean.TransactionRecover;
 import com.raincat.common.enums.CompensationActionEnum;
+import com.raincat.common.holder.LogUtil;
 import com.raincat.core.disruptor.event.TxTransactionEvent;
 import com.raincat.core.disruptor.factory.TxTransactionEventFactory;
 import com.raincat.core.disruptor.handler.TxTransactionEventHandler;
 import com.raincat.core.disruptor.translator.TxTransactionEventTranslator;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,8 +45,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author xiaoyu(Myth)
  */
 @Component
-@Slf4j
 public class TxTransactionEventPublisher implements DisposableBean {
+
+    /** logger */
+    private static final Logger LOGGER = LoggerFactory.getLogger(TxTransactionEventPublisher.class);
 
     private Disruptor<TxTransactionEvent> disruptor;
 
@@ -65,22 +69,18 @@ public class TxTransactionEventPublisher implements DisposableBean {
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<TxTransactionEvent>() {
             @Override
             public void handleEventException(Throwable ex, long sequence, TxTransactionEvent event) {
-                log.error("DisruptorException 捕捉异常! -> ", ex);
-                log.error("Disruptor handleEventException 异常," +
-                        "执行动作 Type: [{}], " +
-                        "TransactionRecover 信息：[{}]", event.getType(), event.getTransactionRecover());
+                LogUtil.error(LOGGER,()-> "Disruptor handleEventException:"
+                        + event.getType() + event.getTransactionRecover().toString() );
             }
 
             @Override
             public void handleOnStartException(Throwable ex) {
-                log.error("DisruptorException 启动异常 ，[{}]", ex);
-
+                LogUtil.error(LOGGER,()-> "Disruptor start exception");
             }
 
             @Override
             public void handleOnShutdownException(Throwable ex) {
-                log.error("DisruptorException 关闭异常 ，[{}]", ex);
-
+                LogUtil.error(LOGGER,()-> "Disruptor close Exception ");
             }
         });
         disruptor.start();

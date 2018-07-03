@@ -1,0 +1,10 @@
+recover:
+   application:
+      list : alipay-service,wechat-service,pay-service
+   serializer :
+      support: kryo
+   retry :
+      max: 10
+   zookeeper:
+      host : 192.168.1.132:2181
+      sessionTimeOut : 3000

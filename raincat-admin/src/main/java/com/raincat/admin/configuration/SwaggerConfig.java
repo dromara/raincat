@@ -38,6 +38,7 @@ import java.time.LocalDate;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
+ * SwaggerConfig.
  * @author xiaoyu
  */
 @Configuration
@@ -58,11 +59,9 @@ public class SwaggerConfig {
                 .build();
     }
 
-    // swagger
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select().apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
-                // .paths(paths())
                 .build().pathMapping("/").directModelSubstitute(LocalDate.class, String.class)
                 .genericModelSubstitutes(ResponseEntity.class).useDefaultResponseMessages(false)
                 .globalResponseMessage(RequestMethod.GET, newArrayList(new ResponseMessageBuilder().code(500).message("500 message")

@@ -26,21 +26,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
- * <p>Description: .</p>
- *
- * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/20 10:19
- * @since JDK 1.8
+ * LoginServiceImpl.
+ * @author xiaoyu
  */
 @Service("loginService")
 public class LoginServiceImpl implements LoginService {
 
+    public static boolean LOGIN_SUCCESS = false;
+
     /**
-     * logger
+     * logger.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginServiceImpl.class);
-
 
     @Value("${tx.admin.userName}")
     private String userName;
@@ -48,18 +45,8 @@ public class LoginServiceImpl implements LoginService {
     @Value("${tx.admin.password}")
     private String password;
 
-    public static boolean LOGIN_SUCCESS = false;
-
-
-    /**
-     * 登录接口，验证用户名 密码
-     *
-     * @param userName 用户名
-     * @param password 密码
-     * @return true 成功
-     */
     @Override
-    public Boolean login(String userName, String password) {
+    public Boolean login(final String userName, final String password) {
         LogUtil.info(LOGGER, "输入的用户名密码为:{}", () -> userName + "," + password);
         if (userName.equals(this.userName) && password.equals(this.password)) {
             LOGIN_SUCCESS = true;
@@ -68,11 +55,6 @@ public class LoginServiceImpl implements LoginService {
         return Boolean.FALSE;
     }
 
-    /**
-     * 用户登出
-     *
-     * @return true 成功
-     */
     @Override
     public Boolean logout() {
         LOGIN_SUCCESS = false;
