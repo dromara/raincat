@@ -19,6 +19,7 @@
 
 package com.raincat.core.disruptor.publisher;
 
+import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
@@ -29,6 +30,7 @@ import com.raincat.core.disruptor.event.TxTransactionEvent;
 import com.raincat.core.disruptor.factory.TxTransactionEventFactory;
 import com.raincat.core.disruptor.handler.TxTransactionEventHandler;
 import com.raincat.core.disruptor.translator.TxTransactionEventTranslator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,6 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author xiaoyu(Myth)
  */
 @Component
+@Slf4j
 public class TxTransactionEventPublisher implements DisposableBean {
 
     private Disruptor<TxTransactionEvent> disruptor;
@@ -59,6 +62,27 @@ public class TxTransactionEventPublisher implements DisposableBean {
             return new Thread(null, r, "disruptor-thread-" + index.getAndIncrement());
         }, ProducerType.MULTI, new YieldingWaitStrategy());
         disruptor.handleEventsWith(txTransactionEventHandler);
+        disruptor.setDefaultExceptionHandler(new ExceptionHandler<TxTransactionEvent>() {
+            @Override
+            public void handleEventException(Throwable ex, long sequence, TxTransactionEvent event) {
+                log.error("DisruptorException 捕捉异常! -> ", ex);
+                log.error("Disruptor handleEventException 异常," +
+                        "执行动作 Type: [{}], " +
+                        "TransactionRecover 信息：[{}]", event.getType(), event.getTransactionRecover());
+            }
+
+            @Override
+            public void handleOnStartException(Throwable ex) {
+                log.error("DisruptorException 启动异常 ，[{}]", ex);
+
+            }
+
+            @Override
+            public void handleOnShutdownException(Throwable ex) {
+                log.error("DisruptorException 关闭异常 ，[{}]", ex);
+
+            }
+        });
         disruptor.start();
     }
 
