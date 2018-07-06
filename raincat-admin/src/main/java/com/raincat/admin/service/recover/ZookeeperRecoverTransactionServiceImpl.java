@@ -37,58 +37,36 @@ import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * <p>Description: .</p>
- * zookeeper实现
- *
+ * zookeeper impl.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/19 17:08
- * @since JDK 1.8
  */
 public class ZookeeperRecoverTransactionServiceImpl implements RecoverTransactionService {
 
+    private final ZooKeeper zooKeeper;
 
-    private ZooKeeper zooKeeper;
+    private final ObjectSerializer objectSerializer;
 
-    @Autowired
-    private ObjectSerializer objectSerializer;
-
-
-    public ZookeeperRecoverTransactionServiceImpl(ZooKeeper zooKeeper) {
+    public ZookeeperRecoverTransactionServiceImpl(final ZooKeeper zooKeeper, final ObjectSerializer objectSerializer) {
         this.zooKeeper = zooKeeper;
+        this.objectSerializer = objectSerializer;
     }
 
-
-    /**
-     * 分页获取补偿事务信息
-     *
-     * @param query 查询条件
-     * @return CommonPager<TransactionRecoverVO>
-     */
     @Override
-    public CommonPager<TransactionRecoverVO> listByPage(RecoverTransactionQuery query) {
-
+    public CommonPager<TransactionRecoverVO> listByPage(final RecoverTransactionQuery query) {
         CommonPager<TransactionRecoverVO> voCommonPager = new CommonPager<>();
         final int currentPage = query.getPageParameter().getCurrentPage();
         final int pageSize = query.getPageParameter().getPageSize();
-
         int start = (currentPage - 1) * pageSize;
-
         final String rootPath = RepositoryPathUtils.buildZookeeperPath(query.getApplicationName());
-
         List<String> zNodePaths;
-
         List<TransactionRecoverVO> voList;
-
         int totalCount;
-
         try {
             //如果只查 重试条件的
             if (StringUtils.isBlank(query.getTxGroupId()) && Objects.nonNull(query.getRetry())) {
@@ -126,51 +104,31 @@ public class ZookeeperRecoverTransactionServiceImpl implements RecoverTransactio
         return voCommonPager;
     }
 
-
-
-    /**
-     * 批量删除补偿事务信息
-     *
-     * @param ids             ids 事务id集合
-     * @param applicationName 应用名称
-     * @return true 成功
-     */
     @Override
-    public Boolean batchRemove(List<String> ids, String applicationName) {
+    public Boolean batchRemove(final List<String> ids, final String applicationName) {
         if (CollectionUtils.isEmpty(ids) || StringUtils.isBlank(applicationName)) {
             return Boolean.FALSE;
         }
-
         final String rootPath = RepositoryPathUtils.buildZookeeperPath(applicationName);
         ids.stream().map(id -> {
             try {
                 final String path = buildRootPath(rootPath, id);
                 byte[] content = zooKeeper.getData(path,
                         false, new Stat());
-                final TransactionRecoverAdapter adapter = objectSerializer.deSerialize(content, TransactionRecoverAdapter.class);
+                final TransactionRecoverAdapter adapter =
+                        objectSerializer.deSerialize(content, TransactionRecoverAdapter.class);
                 zooKeeper.delete(path, adapter.getVersion());
                 return 1;
             } catch (Exception e) {
                 e.printStackTrace();
                 return -1;
             }
-
         }).count();
-
         return Boolean.TRUE;
     }
 
-
-    /**
-     * 更改恢复次数
-     *
-     * @param id              事务id
-     * @param retry           恢复次数
-     * @param applicationName 应用名称
-     * @return true 成功
-     */
     @Override
-    public Boolean updateRetry(String id, Integer retry, String applicationName) {
+    public Boolean updateRetry(final String id, final Integer retry, final String applicationName) {
         if (StringUtils.isBlank(id) || StringUtils.isBlank(applicationName) || Objects.isNull(retry)) {
             return Boolean.FALSE;
         }
@@ -179,7 +137,8 @@ public class ZookeeperRecoverTransactionServiceImpl implements RecoverTransactio
         try {
             byte[] content = zooKeeper.getData(path,
                     false, new Stat());
-            final TransactionRecoverAdapter adapter = objectSerializer.deSerialize(content, TransactionRecoverAdapter.class);
+            final TransactionRecoverAdapter adapter =
+                    objectSerializer.deSerialize(content, TransactionRecoverAdapter.class);
             adapter.setLastTime(DateUtils.getDateYYYY());
             adapter.setRetriedCount(retry);
             zooKeeper.create(path,
@@ -189,38 +148,41 @@ public class ZookeeperRecoverTransactionServiceImpl implements RecoverTransactio
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return Boolean.FALSE;
     }
 
-    private String buildRootPath(String rootPath, String id) {
+    private String buildRootPath(final String rootPath, final String id) {
         return String.join("/", rootPath, id);
     }
 
-    private List<TransactionRecoverVO> findAll(List<String> zNodePaths, String rootPath) {
+    private List<TransactionRecoverVO> findAll(final List<String> zNodePaths, final String rootPath) {
         return zNodePaths.stream()
                 .filter(StringUtils::isNoneBlank)
-                .map(zNodePath -> buildByNodePath(rootPath, zNodePath)).collect(Collectors.toList());
+                .map(zNodePath -> buildByNodePath(rootPath, zNodePath))
+                .collect(Collectors.toList());
     }
 
-    private List<TransactionRecoverVO> findByPage(List<String> zNodePaths, String rootPath, int start, int pageSize) {
+    private List<TransactionRecoverVO> findByPage(final List<String> zNodePaths,
+                                                  final String rootPath,
+                                                  final int start,
+                                                  final int pageSize) {
         return zNodePaths.stream().skip(start).limit(pageSize)
                 .filter(StringUtils::isNoneBlank)
-                .map(zNodePath -> buildByNodePath(rootPath, zNodePath)).collect(Collectors.toList());
+                .map(zNodePath -> buildByNodePath(rootPath, zNodePath))
+                .collect(Collectors.toList());
     }
 
-
-    private TransactionRecoverVO buildByNodePath(String rootPath, String zNodePath) {
+    private TransactionRecoverVO buildByNodePath(final String rootPath, final String zNodePath) {
         try {
             byte[] content = zooKeeper.getData(buildRootPath(rootPath, zNodePath),
                     false, new Stat());
             final TransactionRecoverAdapter adapter =
                     objectSerializer.deSerialize(content, TransactionRecoverAdapter.class);
             return ConvertHelper.buildVO(adapter);
-
         } catch (KeeperException | InterruptedException | TransactionException e) {
             e.printStackTrace();
         }
         return null;
     }
+
 }

@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package com.raincat.admin.vo;
 
 import com.raincat.common.enums.TransactionRoleEnum;
@@ -23,79 +24,75 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-
 /**
+ * TxTransactionItemVO.
  * @author xiaoyu
  */
 @Data
 public class TxTransactionItemVO implements Serializable {
 
-
     private static final long serialVersionUID = 7873174484499376766L;
+
     /**
-     * taskKey
+     * taskKey.
      */
     private String taskKey;
 
     /**
-     * 参与事务id
+     * 参与事务id.
      */
     private String transId;
 
     /**
-     * 事务状态 {@linkplain TransactionStatusEnum}
+     * 事务状态. {@linkplain TransactionStatusEnum}
      */
     private String status;
 
     /**
-     * 事务角色 {@linkplain TransactionRoleEnum}
+     * 事务角色. {@linkplain TransactionRoleEnum}
      */
     private String role;
 
     /**
-     * 模块信息
+     * 模块信息.
      */
     private String modelName;
 
     /**
-     * tm 的域名信息
+     * tm 的域名信息.
      */
     private String tmDomain;
 
-
     /**
-     * 存放事务组id
+     * 存放事务组id.
      */
     private String txGroupId;
 
     /**
-     * 创建时间
+     * 创建时间.
      */
     private String createDate;
 
     /**
-     * 事务最大等待时间 单位秒
+     * 事务最大等待时间 单位秒.
      */
     private Integer waitMaxTime;
 
-
     /**
-     * 执行类名称
+     * 执行类名称.
      */
     private String targetClass;
+
     /**
-     * 执行方法
+     * 执行方法.
      */
     private String targetMethod;
 
     /**
-     * 耗时 秒
+     * 耗时 秒.
      */
     private Long consumeTime;
 
-
     private Object message;
-
-
 
 }

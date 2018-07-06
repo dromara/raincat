@@ -24,21 +24,21 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
+ * CommonPager.
  * @author xiaoyu
  */
 @Data
 public class CommonPager<T> implements Serializable {
 
-
     private static final long serialVersionUID = -1220101004792874251L;
+
     /**
-     * 分页信息
+     * page.
      */
     private PageParameter page;
 
-
     /**
-     * 返回数据
+     * dataList.
      */
     private List<T> dataList;
 

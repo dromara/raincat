@@ -21,20 +21,17 @@ package com.raincat.admin.service;
 import java.util.List;
 
 /**
- * <p>Description: .</p>
+ * RecoverApplicationNameService.
  *
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/20 16:34
- * @since JDK 1.8
  */
 public interface RecoverApplicationNameService {
 
 
     /**
-     * 获取之前参与分布式事务项目的应用名称
+     * 获取之前参与分布式事务项目的应用名称.
      *
-     * @return List<String>
+     * @return  appName list.
      */
     List<String> list();
 }

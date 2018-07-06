@@ -31,7 +31,6 @@ import com.raincat.common.holder.RepositoryPathUtils;
 import com.raincat.common.serializer.ObjectSerializer;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,43 +44,29 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * <p>Description: .</p>
- * 文件实现
- *
+ * file impl.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/19 17:08
- * @since JDK 1.8
  */
 public class FileRecoverTransactionServiceImpl implements RecoverTransactionService {
 
+    private final ObjectSerializer objectSerializer;
 
-    @Autowired
-    private ObjectSerializer objectSerializer;
+    public FileRecoverTransactionServiceImpl(final ObjectSerializer objectSerializer) {
+        this.objectSerializer=objectSerializer;
+    }
 
-
-    /**
-     * 分页获取补偿事务信息
-     *
-     * @param query 查询条件
-     * @return CommonPager<TransactionRecoverVO>
-     */
     @Override
-    public CommonPager<TransactionRecoverVO> listByPage(RecoverTransactionQuery query) {
+    public CommonPager<TransactionRecoverVO> listByPage(final RecoverTransactionQuery query) {
         final String filePath = RepositoryPathUtils.buildFilePath(query.getApplicationName());
         final PageParameter pageParameter = query.getPageParameter();
         final int currentPage = pageParameter.getCurrentPage();
         final int pageSize = pageParameter.getPageSize();
-
         int start = (currentPage - 1) * pageSize;
-
         CommonPager<TransactionRecoverVO> voCommonPager = new CommonPager<>();
         File path;
         File[] files;
         int totalCount;
         List<TransactionRecoverVO> voList;
-
-
         //如果只查 重试条件的
         if (StringUtils.isBlank(query.getTxGroupId()) && Objects.nonNull(query.getRetry())) {
             path = new File(filePath);
@@ -93,12 +78,15 @@ public class FileRecoverTransactionServiceImpl implements RecoverTransactionServ
                                 .filter(vo -> vo.getRetriedCount() < query.getRetry())
                                 .collect(Collectors.toList());
                 totalCount = collect.size();
-                voList = collect.stream().skip(start).limit(pageSize).collect(Collectors.toList());
+                voList = collect.stream()
+                        .skip(start)
+                        .limit(pageSize).collect(Collectors.toList());
             } else {
                 totalCount = 0;
                 voList = null;
             }
-        } else if (StringUtils.isNoneBlank(query.getTxGroupId()) && Objects.isNull(query.getRetry())) {
+        } else if (StringUtils.isNoneBlank(query.getTxGroupId())
+                && Objects.isNull(query.getRetry())) {
             final String fullFileName = getFullFileName(filePath, query.getTxGroupId());
             final File file = new File(fullFileName);
             files = new File[]{file};
@@ -116,7 +104,7 @@ public class FileRecoverTransactionServiceImpl implements RecoverTransactionServ
         } else {
             path = new File(filePath);
             files = path.listFiles();
-            totalCount = files.length;
+            totalCount = Objects.requireNonNull(files).length;
             voList = findByPage(files, start, pageSize);
         }
         voCommonPager.setPage(PageHelper.buildPage(query.getPageParameter(), totalCount));
@@ -124,38 +112,22 @@ public class FileRecoverTransactionServiceImpl implements RecoverTransactionServ
         return voCommonPager;
     }
 
-
-    /**
-     * 批量删除补偿事务信息
-     *
-     * @param ids             ids 事务id集合
-     * @param applicationName 应用名称
-     * @return true 成功
-     */
     @Override
-    public Boolean batchRemove(List<String> ids, String applicationName) {
+    public Boolean batchRemove(final List<String> ids, final String applicationName) {
         if (CollectionUtils.isEmpty(ids) || StringUtils.isBlank(applicationName)) {
             return Boolean.FALSE;
         }
         final String filePath = RepositoryPathUtils.buildFilePath(applicationName);
-        ids.stream().map(id -> new File(getFullFileName(filePath, id)))
-                .forEach(File::delete);
-
+        ids.stream().map(id ->
+                new File(getFullFileName(filePath, id))).forEach(File::delete);
         return Boolean.TRUE;
     }
 
-
-    /**
-     * 更改恢复次数
-     *
-     * @param id              事务id
-     * @param retry           恢复次数
-     * @param applicationName 应用名称
-     * @return true 成功
-     */
     @Override
-    public Boolean updateRetry(String id, Integer retry, String applicationName) {
-        if (StringUtils.isBlank(id) || StringUtils.isBlank(applicationName) || Objects.isNull(retry)) {
+    public Boolean updateRetry(final String id, final Integer retry, final String applicationName) {
+        if (StringUtils.isBlank(id)
+                || StringUtils.isBlank(applicationName)
+                || Objects.isNull(retry)) {
             return false;
         }
         final String filePath = RepositoryPathUtils.buildFilePath(applicationName);
@@ -172,14 +144,10 @@ public class FileRecoverTransactionServiceImpl implements RecoverTransactionServ
             writeFile(adapter, fullFileName);
             return true;
         }
-
-
         return false;
     }
 
-
-    private void writeFile(TransactionRecoverAdapter adapter, String fullFileName) {
-
+    private void writeFile(final TransactionRecoverAdapter adapter, final String fullFileName) {
         try {
             RandomAccessFile raf = new RandomAccessFile(fullFileName, "rw");
             try (FileChannel channel = raf.getChannel()) {
@@ -197,30 +165,24 @@ public class FileRecoverTransactionServiceImpl implements RecoverTransactionServ
         }
     }
 
-
-    private TransactionRecoverAdapter readRecover(File file) {
+    private TransactionRecoverAdapter readRecover(final File file) {
         try {
             try (FileInputStream fis = new FileInputStream(file)) {
                 byte[] content = new byte[(int) file.length()];
-
-                final int read = fis.read(content);
-
+                fis.read(content);
                 return objectSerializer.deSerialize(content, TransactionRecoverAdapter.class);
             }
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-
-
     }
 
-    private TransactionRecoverVO readTransaction(File file) {
+    private TransactionRecoverVO readTransaction(final File file) {
         try {
             try (FileInputStream fis = new FileInputStream(file)) {
                 byte[] content = new byte[(int) file.length()];
-
-                final int read = fis.read(content);
+                fis.read(content);
                 final TransactionRecoverAdapter adapter = objectSerializer.deSerialize(content, TransactionRecoverAdapter.class);
                 return ConvertHelper.buildVO(adapter);
             }
@@ -230,7 +192,7 @@ public class FileRecoverTransactionServiceImpl implements RecoverTransactionServ
         }
     }
 
-    private List<TransactionRecoverVO> findAll(File[] files) {
+    private List<TransactionRecoverVO> findAll(final File[] files) {
         if (files != null && files.length > 0) {
             return Arrays.stream(files)
                     .map(this::readTransaction)
@@ -239,7 +201,7 @@ public class FileRecoverTransactionServiceImpl implements RecoverTransactionServ
         return null;
     }
 
-    private List<TransactionRecoverVO> findByPage(File[] files, int start, int pageSize) {
+    private List<TransactionRecoverVO> findByPage(final File[] files, final int start, final int pageSize) {
         if (files != null && files.length > 0) {
             return Arrays.stream(files).skip(start).limit(pageSize)
                     .map(this::readTransaction)
@@ -248,9 +210,8 @@ public class FileRecoverTransactionServiceImpl implements RecoverTransactionServ
         return null;
     }
 
-    private String getFullFileName(String filePath, String id) {
+    private String getFullFileName(final String filePath, final String id) {
         return String.format("%s/%s", filePath, id);
     }
-
 
 }

@@ -41,57 +41,31 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * <p>Description: .</p>
- * redis实现
- *
+ * redis impl.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/19 17:08
- * @since JDK 1.8
  */
 @SuppressWarnings("unchecked")
 public class RedisRecoverTransactionServiceImpl implements RecoverTransactionService {
 
+    private ObjectSerializer objectSerializer;
 
     private JedisClient jedisClient;
 
-
-    public RedisRecoverTransactionServiceImpl(JedisClient jedisClient) {
+    public RedisRecoverTransactionServiceImpl(final JedisClient jedisClient, final ObjectSerializer objectSerializer) {
         this.jedisClient = jedisClient;
+        this.objectSerializer = objectSerializer;
     }
 
-
-    @Autowired
-    private ObjectSerializer objectSerializer;
-
-    /**
-     * 分页获取补偿事务信息
-     *
-     * @param query 查询条件
-     * @return CommonPager<TransactionRecoverVO>
-     */
     @Override
-    public CommonPager<TransactionRecoverVO> listByPage(RecoverTransactionQuery query) {
-
+    public CommonPager<TransactionRecoverVO> listByPage(final RecoverTransactionQuery query) {
         CommonPager<TransactionRecoverVO> commonPager = new CommonPager<>();
-
         final String redisKey = RepositoryPathUtils.buildRedisKey(query.getApplicationName());
-
         final int currentPage = query.getPageParameter().getCurrentPage();
         final int pageSize = query.getPageParameter().getPageSize();
-
         int start = (currentPage - 1) * pageSize;
-
-
-        //transaction:recover:alipay-service:
-        //获取所有的key
         Set<byte[]> keys;
-
         List<TransactionRecoverVO> voList;
-
         int totalCount;
-
-        //如果只查 重试条件的
         if (StringUtils.isBlank(query.getTxGroupId()) && Objects.nonNull(query.getRetry())) {
             keys = jedisClient.keys((redisKey + "*").getBytes());
             final List<TransactionRecoverVO> all = findAll(keys);
@@ -129,23 +103,25 @@ public class RedisRecoverTransactionServiceImpl implements RecoverTransactionSer
         return commonPager;
     }
 
-
-    private List<TransactionRecoverVO> findAll(Set<byte[]> keys) {
+    private List<TransactionRecoverVO> findAll(final Set<byte[]> keys) {
         return keys.parallelStream()
-                .map(this::buildVOByKey).filter(Objects::nonNull).collect(Collectors.toList());
+                .map(this::buildVOByKey)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
-
-    private List<TransactionRecoverVO> findByPage(Set<byte[]> keys, int start, int pageSize) {
-        return keys.parallelStream().skip(start).limit(pageSize)
-                .map(this::buildVOByKey).filter(Objects::nonNull).collect(Collectors.toList());
+    private List<TransactionRecoverVO> findByPage(final Set<byte[]> keys, final int start, final int pageSize) {
+        return keys.parallelStream()
+                .skip(start).limit(pageSize)
+                .map(this::buildVOByKey)
+                .filter(Objects::nonNull).collect(Collectors.toList());
     }
 
-
-    private TransactionRecoverVO buildVOByKey(byte[] key) {
+    private TransactionRecoverVO buildVOByKey(final byte[] key) {
         final byte[] bytes = jedisClient.get(key);
         try {
-            final TransactionRecoverAdapter adapter = objectSerializer.deSerialize(bytes, TransactionRecoverAdapter.class);
+            final TransactionRecoverAdapter adapter =
+                    objectSerializer.deSerialize(bytes, TransactionRecoverAdapter.class);
             return ConvertHelper.buildVO(adapter);
         } catch (TransactionException e) {
             e.printStackTrace();
@@ -153,36 +129,20 @@ public class RedisRecoverTransactionServiceImpl implements RecoverTransactionSer
         }
     }
 
-    /**
-     * 批量删除补偿事务信息
-     *
-     * @param ids             ids 事务id集合
-     * @param applicationName 应用名称
-     * @return true 成功
-     */
     @Override
-    public Boolean batchRemove(List<String> ids, String applicationName) {
+    public Boolean batchRemove(final List<String> ids, final String applicationName) {
         if (CollectionUtils.isEmpty(ids) || StringUtils.isBlank(applicationName)) {
             return Boolean.FALSE;
         }
         String keyPrefix = RepositoryPathUtils.buildRedisKey(applicationName);
         final String[] keys = ids.stream()
                 .map(id -> cacheKey(keyPrefix, id)).toArray(String[]::new);
-
         jedisClient.del(keys);
         return Boolean.TRUE;
     }
 
-    /**
-     * 更改恢复次数
-     *
-     * @param id              事务id
-     * @param retry           恢复次数
-     * @param applicationName 应用名称
-     * @return true 成功
-     */
     @Override
-    public Boolean updateRetry(String id, Integer retry, String applicationName) {
+    public Boolean updateRetry(final String id, final Integer retry, final String applicationName) {
         if (StringUtils.isBlank(id) || StringUtils.isBlank(applicationName) || Objects.isNull(retry)) {
             return Boolean.FALSE;
         }
@@ -203,7 +163,7 @@ public class RedisRecoverTransactionServiceImpl implements RecoverTransactionSer
 
     }
 
-    private String cacheKey(String keyPrefix, String id) {
+    private String cacheKey(final String keyPrefix, final String id) {
         return String.join(":", keyPrefix, id);
     }
 

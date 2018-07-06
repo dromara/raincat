@@ -25,25 +25,21 @@ import com.raincat.admin.vo.TxTransactionGroupVO;
 import java.util.List;
 
 /**
- * <p>Description: .</p>
- *
+ * TxTransactionGroupService.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/18 15:38
- * @since JDK 1.8
  */
 public interface TxTransactionGroupService {
 
     /**
-     * 分页获取事务组里面的事务信息
+     * 分页获取事务组里面的事务信息.
      *
      * @param txTransactionQuery 查询条件
-     * @return CommonPager<TxTransactionGroupVO>
+     * @return CommonPager TxTransactionGroupVO
      */
     CommonPager<TxTransactionGroupVO> listByPage(TxTransactionQuery txTransactionQuery);
 
     /**
-     * 批量删除事务信息
+     * 批量删除事务信息.
      *
      * @param txGroupIdList 事务组id集合
      * @return true 成功

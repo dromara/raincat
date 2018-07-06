@@ -36,18 +36,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * <p>Description: .</p>
- * 事务恢复controller
- *
+ * RecoverTransactionController.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/18 10:31
- * @since JDK 1.8
  */
 @RestController
 @RequestMapping("/recover")
 public class RecoverTransactionController {
-
 
     private final RecoverTransactionService recoverTransactionService;
 
@@ -57,23 +51,23 @@ public class RecoverTransactionController {
     private Integer recoverRetryMax;
 
     @Autowired
-    public RecoverTransactionController(RecoverTransactionService recoverTransactionService, RecoverApplicationNameService recoverApplicationNameService) {
+    public RecoverTransactionController(final RecoverTransactionService recoverTransactionService,
+                                        final RecoverApplicationNameService recoverApplicationNameService) {
         this.recoverTransactionService = recoverTransactionService;
         this.recoverApplicationNameService = recoverApplicationNameService;
     }
 
     @Permission
     @PostMapping(value = "/listPage")
-    public AjaxResponse listPage(@RequestBody RecoverTransactionQuery recoverQuery) {
+    public AjaxResponse listPage(final @RequestBody RecoverTransactionQuery recoverQuery) {
         final CommonPager<TransactionRecoverVO> pager =
                 recoverTransactionService.listByPage(recoverQuery);
         return AjaxResponse.success(pager);
     }
 
-
     @PostMapping(value = "/batchRemove")
     @Permission
-    public AjaxResponse batchRemove(@RequestBody RecoverDTO recoverDTO) {
+    public AjaxResponse batchRemove(final @RequestBody RecoverDTO recoverDTO) {
 
         final Boolean success = recoverTransactionService.batchRemove(recoverDTO.getIds(), recoverDTO.getApplicationName());
         return AjaxResponse.success(success);
@@ -82,7 +76,7 @@ public class RecoverTransactionController {
 
     @PostMapping(value = "/update")
     @Permission
-    public AjaxResponse update(@RequestBody RecoverDTO recoverDTO) {
+    public AjaxResponse update(final @RequestBody RecoverDTO recoverDTO) {
         if (recoverRetryMax < recoverDTO.getRetry()) {
             return AjaxResponse.error("重试次数超过最大设置，请您重新设置！");
         }
@@ -98,6 +92,5 @@ public class RecoverTransactionController {
         final List<String> list = recoverApplicationNameService.list();
         return AjaxResponse.success(list);
     }
-
 
 }

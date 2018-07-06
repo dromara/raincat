@@ -29,19 +29,17 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
- * <p>Description: .</p>
- *
+ * AuthInterceptor.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/23 20:08
- * @since JDK 1.8
  */
 public class AuthInterceptor extends HandlerInterceptorAdapter {
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(final HttpServletRequest request,
+                             final HttpServletResponse response,
+                             final Object handler) throws Exception {
         if (handler instanceof HandlerMethod) {
-            HandlerMethod handlerMethod = ((HandlerMethod) handler);
+            HandlerMethod handlerMethod = (HandlerMethod) handler;
             Method method = handlerMethod.getMethod();
             final Permission annotation = method.getAnnotation(Permission.class);
             if (Objects.isNull(annotation)) {
@@ -50,8 +48,8 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             final boolean login = annotation.isLogin();
             if (login) {
                 if (!LoginServiceImpl.LOGIN_SUCCESS) {
-                    request.setAttribute("code","404");
-                    request.setAttribute("msg", "请您先登录！");
+                    request.setAttribute("code", "404");
+                    request.setAttribute("msg", "please login！");
                     request.getRequestDispatcher("/").forward(request, response);
                     return Boolean.FALSE;
                 }
@@ -59,6 +57,5 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         }
         return super.preHandle(request, response, handler);
     }
-
 
 }

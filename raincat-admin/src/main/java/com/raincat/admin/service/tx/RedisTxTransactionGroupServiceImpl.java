@@ -43,13 +43,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * <p>Description: .</p>
- * redis实现，用了redis sortSet来进行分页
- *
+ * redis实现，用了redis sortSet来进行分页.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/18 15:58
- * @since JDK 1.8
  */
 @Service("txTransactionItemService")
 @SuppressWarnings("unchecked")
@@ -58,29 +53,21 @@ public class RedisTxTransactionGroupServiceImpl implements TxTransactionGroupSer
     private final RedisTemplate redisTemplate;
 
     @Autowired
-    public RedisTxTransactionGroupServiceImpl(RedisTemplate redisTemplate) {
+    public RedisTxTransactionGroupServiceImpl(final RedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
     @Override
-    public CommonPager<TxTransactionGroupVO> listByPage(TxTransactionQuery txTransactionQuery) {
+    public CommonPager<TxTransactionGroupVO> listByPage(final TxTransactionQuery txTransactionQuery) {
         CommonPager<TxTransactionGroupVO> commonPager = new CommonPager<>();
-
         final int currentPage = txTransactionQuery.getPageParameter().getCurrentPage();
         final int pageSize = txTransactionQuery.getPageParameter().getPageSize();
-
         int start = (currentPage - 1) * pageSize;
-
         int end = currentPage * pageSize;
-
         Set<String> keys;
-
         Set<String> rangeKeys;
-
-
         if (StringUtils.isNoneBlank(txTransactionQuery.getTxGroupId())) {
             keys = Sets.newHashSet(String.format(CommonConstant.REDIS_PRE_FIX, txTransactionQuery.getTxGroupId()));
-
             rangeKeys = Sets.newHashSet(txTransactionQuery.getTxGroupId());
         } else {
             keys = redisTemplate.keys(CommonConstant.REDIS_KEYS);
@@ -92,9 +79,7 @@ public class RedisTxTransactionGroupServiceImpl implements TxTransactionGroupSer
             return commonPager;
         }
         final int totalCount = keys.size();
-
         commonPager.setPage(PageHelper.buildPage(txTransactionQuery.getPageParameter(), totalCount));
-
         final List<TxTransactionGroupVO> groupVOS = rangeKeys.stream().map((String key) -> {
             final Map<Object, TxTransactionItem> entries = redisTemplate.opsForHash()
                     .entries(String.format(CommonConstant.REDIS_PRE_FIX, key));
@@ -123,19 +108,12 @@ public class RedisTxTransactionGroupServiceImpl implements TxTransactionGroupSer
             return groupVO;
 
         }).collect(Collectors.toList());
-
         commonPager.setDataList(groupVOS);
         return commonPager;
     }
 
-    /**
-     * 批量删除事务信息
-     *
-     * @param txGroupIdList 事务组id集合
-     * @return true 成功
-     */
     @Override
-    public Boolean batchRemove(List<String> txGroupIdList) {
+    public Boolean batchRemove(final List<String> txGroupIdList) {
         if (CollectionUtils.isEmpty(txGroupIdList)) {
             return false;
         }
@@ -151,9 +129,6 @@ public class RedisTxTransactionGroupServiceImpl implements TxTransactionGroupSer
             e.printStackTrace();
             return false;
         }
-
-
     }
-
 
 }

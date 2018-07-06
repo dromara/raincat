@@ -38,13 +38,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * <p>Description: .</p>
- * jdbc实现
- *
+ * jdbc impl.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/19 17:08
- * @since JDK 1.8
  */
 public class JdbcRecoverTransactionServiceImpl implements RecoverTransactionService {
 
@@ -53,64 +48,35 @@ public class JdbcRecoverTransactionServiceImpl implements RecoverTransactionServ
 
     private String dbType;
 
-
-    /**
-     * 分页获取补偿事务信息
-     *
-     * @param query 查询条件
-     * @return CommonPager<TransactionRecoverVO>
-     */
     @Override
-    public CommonPager<TransactionRecoverVO> listByPage(RecoverTransactionQuery query) {
+    public CommonPager<TransactionRecoverVO> listByPage(final RecoverTransactionQuery query) {
         final String tableName = RepositoryPathUtils.buildDbTableName(query.getApplicationName());
         final PageParameter pageParameter = query.getPageParameter();
-
         StringBuilder sqlBuilder = new StringBuilder();
-
-        sqlBuilder.append("select id,target_class,target_method," +
-                " retried_count,create_time,last_time,version,group_id,task_id from ")
+        sqlBuilder.append("select id,target_class,target_method,"
+                + " retried_count,create_time,last_time,version,group_id,task_id from ")
                 .append(tableName).append(" where 1= 1 ");
-
-
         if (StringUtils.isNoneBlank(query.getTxGroupId())) {
             sqlBuilder.append(" and group_id = ").append(query.getTxGroupId());
         }
-
         if (Objects.nonNull(query.getRetry())) {
-
             sqlBuilder.append(" and retried_count < ").append(query.getRetry());
         }
-
         final String sql = buildPageSql(sqlBuilder.toString(), pageParameter);
-
         CommonPager<TransactionRecoverVO> pager = new CommonPager<>();
-
-
         final List<Map<String, Object>> mapList = jdbcTemplate.queryForList(sql);
-
         if (CollectionUtils.isNotEmpty(mapList)) {
-
-            pager.setDataList(mapList.stream().map(this::buildByMap).collect(Collectors.toList()));
+            pager.setDataList(mapList.stream()
+                    .map(this::buildByMap).collect(Collectors.toList()));
         }
-
         final Integer totalCount =
-                jdbcTemplate.queryForObject("select count(1) from " + tableName, Integer.class);
-
-
+                jdbcTemplate.queryForObject(String.format("select count(1) from %s", tableName), Integer.class);
         pager.setPage(PageHelper.buildPage(pageParameter, totalCount));
-
         return pager;
     }
 
-    /**
-     * 批量删除补偿事务信息
-     *
-     * @param ids             ids 事务id集合
-     * @param applicationName 应用名称
-     * @return true 成功
-     */
     @Override
-    public Boolean batchRemove(List<String> ids, String applicationName) {
+    public Boolean batchRemove(final List<String> ids, final String applicationName) {
         if (CollectionUtils.isEmpty(ids) || StringUtils.isBlank(applicationName)) {
             return Boolean.FALSE;
         }
@@ -118,39 +84,25 @@ public class JdbcRecoverTransactionServiceImpl implements RecoverTransactionServ
         ids.stream()
                 .map(id -> buildDelSql(tableName, id))
                 .forEach(sql -> jdbcTemplate.execute(sql));
-
         return Boolean.TRUE;
     }
 
-    /**
-     * 更改恢复次数
-     *
-     * @param id              事务id
-     * @param retry           恢复次数
-     * @param applicationName 应用名称
-     * @return true 成功
-     */
     @Override
-    public Boolean updateRetry(String id, Integer retry, String applicationName) {
-        if (StringUtils.isBlank(id) || StringUtils.isBlank(applicationName) || Objects.isNull(retry)) {
+    public Boolean updateRetry(final String id, final Integer retry, final String applicationName) {
+        if (StringUtils.isBlank(id)
+                || StringUtils.isBlank(applicationName)
+                || Objects.isNull(retry)) {
             return false;
         }
         final String tableName = RepositoryPathUtils.buildDbTableName(applicationName);
-
-        StringBuilder sqlBuilder = new StringBuilder();
-
-        sqlBuilder.append("update ").append(tableName)
-                .append("  set retried_count = ")
-                .append(retry).append(",last_time= '")
-                .append(DateUtils.getCurrentDateTime()).append("'")
-                .append(" where id =").append(id);
-
-        jdbcTemplate.execute(sqlBuilder.toString());
+        String sqlBuilder =
+                String.format("update %s  set retried_count = \n%d,last_time= '%s' where id =%s",
+                        tableName, retry, DateUtils.getCurrentDateTime(), id);
+        jdbcTemplate.execute(sqlBuilder);
         return Boolean.TRUE;
     }
 
-
-    private TransactionRecoverVO buildByMap(Map<String, Object> map) {
+    private TransactionRecoverVO buildByMap(final Map<String, Object> map) {
         TransactionRecoverVO vo = new TransactionRecoverVO();
         vo.setId((String) map.get("id"));
         vo.setRetriedCount((Integer) map.get("retried_count"));
@@ -164,7 +116,7 @@ public class JdbcRecoverTransactionServiceImpl implements RecoverTransactionServ
         return vo;
     }
 
-    private String buildPageSql(String sql, PageParameter pageParameter) {
+    private String buildPageSql(final String sql, final PageParameter pageParameter) {
         switch (dbType) {
             case "mysql":
                 return PageHelper.buildPageSqlForMysql(sql, pageParameter).toString();
@@ -175,19 +127,13 @@ public class JdbcRecoverTransactionServiceImpl implements RecoverTransactionServ
             default:
                 return null;
         }
-
-
     }
 
-    public String getDbType() {
-        return dbType;
-    }
-
-    public void setDbType(String dbType) {
+    public void setDbType(final String dbType) {
         this.dbType = DbTypeUtils.buildByDriverClassName(dbType);
     }
 
-    private String buildDelSql(String tableName, String id) {
+    private String buildDelSql(final String tableName, final String id) {
         return "DELETE FROM " + tableName + " WHERE ID=" + id;
     }
 }

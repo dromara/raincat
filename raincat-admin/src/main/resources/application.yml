@@ -1,0 +1,21 @@
+server:
+   port: 8888
+   context-path: /admin
+
+spring:
+   application:
+      name: raincat-admin
+   profiles:
+     active: mongo
+
+tx:
+  admin :
+    userName : admin
+    password : admin
+  redis:
+    hostName: localhost
+    port : 6379
+    password:
+    cluster : false
+      # nodes: 127.0.0.1:70001;127.0.1:7002
+      # redirects: 20

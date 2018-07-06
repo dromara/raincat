@@ -25,27 +25,23 @@ import com.raincat.admin.vo.TransactionRecoverVO;
 import java.util.List;
 
 /**
- * <p>Description: .</p>
- *
+ * RecoverTransactionService.
  * @author xiaoyu(Myth)
- * @version 1.0
- * @date 2017/10/19 16:36
- * @since JDK 1.8
  */
 public interface RecoverTransactionService {
 
 
     /**
-     * 分页获取补偿事务信息
+     * 分页获取补偿事务信息.
      *
      * @param query 查询条件
-     * @return CommonPager<TransactionRecoverVO>
+     * @return CommonPager TransactionRecoverVO
      */
     CommonPager<TransactionRecoverVO> listByPage(RecoverTransactionQuery query);
 
 
     /**
-     * 批量删除补偿事务信息
+     * 批量删除补偿事务信息.
      *
      * @param ids             ids 事务id集合
      * @param applicationName 应用名称
@@ -55,7 +51,7 @@ public interface RecoverTransactionService {
 
 
     /**
-     * 更改恢复次数
+     * 更改恢复次数.
      *
      * @param id              事务id
      * @param retry           恢复次数
