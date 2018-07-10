@@ -5,7 +5,7 @@ import com.raincat.admin.service.apps.enums.AcceptApplicationNameEnum;
 import java.util.List;
 
 /**
- * @author chaoshen
+ * @author chaocoffee
  * @date 2018/7/5
  * @description 从注册中心获取参与分布式事务应用名称列表
  */
