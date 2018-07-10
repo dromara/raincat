@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * 客户端从注册中心获取应用名称-工厂类
  *
- * @author chaoshen
+ * @author chaoscoffee
  * @date 2018/7/6
  * @description
  */
@@ -30,7 +30,6 @@ public class AcceptApplicationNameFactory implements ApplicationContextAware {
     private String acceptType;
 
     private static AppsType types;
-
 
     private static Map<AcceptApplicationNameEnum, AcceptApplicationNameService> beanMap;
 

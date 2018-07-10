@@ -42,14 +42,11 @@ public class AcceptEurekaApplicationNameService implements AcceptApplicationName
     public <T> List<T> acceptAppNameList(List<T> apps) {
         Object updateTime = CACHE_MAP.get(UPDATE_TIME_KEY);
         if (updateTime == null) {
-            //CACHE_MAP.clear();
             log.info("首次加入 [参与分布式事务项目的应用名称] 缓存数据!");
             getEurekaAppList().stream().forEach(appName -> CACHE_MAP.put(appName, appName));
         } else {
             long dValue = System.currentTimeMillis() - (Long) updateTime;
             if (dValue > Long.valueOf(appIntervalTime) * 1000) {
-                //若在eureka里能获取到应用信息，说明已经用到分布式事务，所以不用删除旧的缓存数据?
-                //CACHE_MAP.clear();
                 log.info("刷新 [参与分布式事务项目的应用名称] 缓存数据!");
                 getEurekaAppList().stream().forEach(appName -> CACHE_MAP.put(appName, appName));
             }

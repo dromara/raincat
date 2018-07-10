@@ -3,15 +3,14 @@ package com.raincat.admin.service.apps.enums;
 import lombok.Getter;
 
 /**
- * @author chaoshen
+ * @author chaocoffee
  * @date 2018/7/5
  * @description
  */
 public enum AcceptApplicationNameEnum {
     EUREKA("eureka"),
-    ZOOKEEPER("zookeeper"),
-    DUBBO("dubbo"),
-    UNACCEPT("no");
+    PROPERTY("property"),
+    UNACCEPT("unaccept");
 
     @Getter
     private String name;

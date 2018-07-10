@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * @author chaoshen
+ * @author chaoscoffee
  * @date 2018/7/6
  * @description
  */
@@ -14,10 +14,10 @@ import java.util.List;
 public class AcceptApplicationNameExecutor {
 
     @Autowired
-    AcceptApplicationNameFactory acceptApplicationNameFactory;
+    private AcceptApplicationNameFactory acceptApplicationNameFactory;
 
     /**
-     * 执行任务
+     * 获取应用列表入口
      *
      * @param apps
      */

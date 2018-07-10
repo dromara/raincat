@@ -19,13 +19,13 @@ tx:
     cluster : false
       # nodes: 127.0.0.1:70001;127.0.1:7002
       # redirects: 20
-      
+
 accept:
   apps:
     server:
-     #type: rureka,no
-      type[0]: eureka
-      type[1]: unaccept
+      type[0]: property
+      type[1]: eureka
+      type[2]: unaccept
     eureka:
       url: http://localhost:8761/eureka
-      intervalTime: 30      
+      intervalTime: 30
