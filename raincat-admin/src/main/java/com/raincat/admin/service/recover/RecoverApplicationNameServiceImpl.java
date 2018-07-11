@@ -18,25 +18,29 @@
 
 package com.raincat.admin.service.recover;
 
-import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import com.raincat.admin.service.RecoverApplicationNameService;
-import org.springframework.beans.factory.annotation.Value;
+import com.raincat.admin.service.apps.AcceptApplicationNameExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * RecoverApplicationNameServiceImpl.
+ *
  * @author xiaoyu(Myth)
  */
 @Service("recoverApplicationNameService")
 public class RecoverApplicationNameServiceImpl implements RecoverApplicationNameService {
 
-    @Value("${recover.application.list}")
-    private String appNameList;
+    @Autowired
+    private AcceptApplicationNameExecutor executor;
 
     @Override
     public List<String> list() {
-        return Splitter.on(",").splitToList(appNameList);
+        List<String> apps = Lists.newArrayList();
+        executor.execute(apps);
+        return apps;
     }
 }
