@@ -60,7 +60,9 @@ public class BlockTask {
     public void await() {
         try {
             lock.lock();
-            condition.await();
+            if(!isNotify()) {
+                condition.await();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
