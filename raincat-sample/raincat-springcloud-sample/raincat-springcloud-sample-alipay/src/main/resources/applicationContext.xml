@@ -18,7 +18,6 @@
         <property name="txManagerUrl" value="http://192.168.1.109:8761"/>
         <property name="serializer" value="kryo"/>
         <property name="nettySerializer" value="kryo"/>
-        <property name="blockingQueueType" value="Linked"/>
         <property name="compensation" value="true"/>
         <property name="compensationCacheType" value="db"/>
         <property name="txDbConfig">
