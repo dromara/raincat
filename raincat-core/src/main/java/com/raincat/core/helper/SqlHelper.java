@@ -31,7 +31,7 @@ public class SqlHelper {
         String dbType = DbTypeUtils.buildByDriverClassName(driverClassName);
         switch (dbType) {
             case "mysql":
-                createTableSql = "CREATE TABLE `" + tableName + "` (\n" +
+                createTableSql = "CREATE TABLE IF NOT EXISTS `" + tableName + "` (\n" +
                         "  `id` varchar(64) NOT NULL,\n" +
                         "  `target_class` varchar(256) ,\n" +
                         "  `target_method` varchar(128) ,\n" +
