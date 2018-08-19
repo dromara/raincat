@@ -26,6 +26,7 @@ import com.raincat.common.netty.bean.TxTransactionGroup;
 import com.raincat.common.netty.bean.TxTransactionItem;
 import com.raincat.manager.config.Constant;
 import com.raincat.manager.service.TxManagerService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,19 +35,14 @@ import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * TxManagerServiceImpl.
  * @author xiaoyu
  */
 @Component
+@Slf4j
 @SuppressWarnings("unchecked")
 public class TxManagerServiceImpl implements TxManagerService {
 
@@ -70,6 +66,7 @@ public class TxManagerServiceImpl implements TxManagerService {
                 }
             }
         } catch (Exception e) {
+            log.error("添加事务组到redis失败，txTransactionGroup:{}，exception:{}",txTransactionGroup,e);
             return false;
         }
         return true;
@@ -80,6 +77,7 @@ public class TxManagerServiceImpl implements TxManagerService {
         try {
             redisTemplate.opsForHash().put(cacheKey(txGroupId), txTransactionItem.getTaskKey(), txTransactionItem);
         } catch (Exception e) {
+            log.error("添加事务到redis失败，txTransactionGroup:{}，exception:{}",txTransactionItem,e);
             return false;
         }
         return true;
