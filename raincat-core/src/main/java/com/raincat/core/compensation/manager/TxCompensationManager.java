@@ -24,6 +24,7 @@ import com.raincat.common.constant.CommonConstant;
 import com.raincat.common.enums.CompensationActionEnum;
 import com.raincat.common.enums.CompensationOperationTypeEnum;
 import com.raincat.common.enums.TransactionStatusEnum;
+import com.raincat.common.holder.IdWorkerUtils;
 import com.raincat.core.disruptor.publisher.TxTransactionEventPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,7 @@ public class TxCompensationManager {
         TransactionRecover recover = new TransactionRecover();
         recover.setRetriedCount(1);
         recover.setStatus(TransactionStatusEnum.BEGIN.getCode());
-        recover.setId(groupId);
+        recover.setId(String.valueOf(IdWorkerUtils.getInstance().randomUUID()));
         recover.setTransactionInvocation(invocation);
         recover.setGroupId(groupId);
         recover.setTaskId(taskId);
