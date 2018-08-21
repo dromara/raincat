@@ -79,6 +79,7 @@ public class NettyMessageServiceImpl implements TxManagerMessageService {
         heartBeat.setAction(NettyMessageActionEnum.GET_TRANSACTION_GROUP_STATUS.getCode());
         TxTransactionGroup txTransactionGroup = new TxTransactionGroup();
         txTransactionGroup.setId(txGroupId);
+        heartBeat.setTxTransactionGroup(txTransactionGroup);
         final Object object = nettyClientMessageHandler.sendTxManagerMessage(heartBeat);
         if (Objects.nonNull(object)) {
             return (Integer) object;
