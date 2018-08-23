@@ -49,7 +49,7 @@ public interface CommonConstant {
 
     String COMPENSATE_ID = "COMPENSATE_ID";
 
-    String TX_TRANSACTION_GROUP = "TX_TRANSACTION_GROUP";
+    String TX_TRANSACTION_GROUP = "Tx-Transaction-Group";
 
     String TX_MANAGER_PRE = "/tx/manager";
 
