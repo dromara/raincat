@@ -27,6 +27,7 @@ import com.lmax.disruptor.dsl.ProducerType;
 import com.raincat.common.bean.TransactionRecover;
 import com.raincat.common.enums.CompensationActionEnum;
 import com.raincat.common.holder.LogUtil;
+import com.raincat.core.concurrent.threadpool.TxTransactionThreadFactory;
 import com.raincat.core.disruptor.event.TxTransactionEvent;
 import com.raincat.core.disruptor.factory.TxTransactionEventFactory;
 import com.raincat.core.disruptor.handler.TxTransactionEventHandler;
@@ -37,6 +38,10 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -47,13 +52,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class TxTransactionEventPublisher implements DisposableBean {
 
-    /** logger */
     private static final Logger LOGGER = LoggerFactory.getLogger(TxTransactionEventPublisher.class);
+
+    private static final int MAX_THREAD = Runtime.getRuntime().availableProcessors() << 1;
+
+    private Executor executor;
 
     private Disruptor<TxTransactionEvent> disruptor;
 
+    private final TxTransactionEventHandler txTransactionEventHandler;
+
     @Autowired
-    private TxTransactionEventHandler txTransactionEventHandler;
+    public TxTransactionEventPublisher(TxTransactionEventHandler txTransactionEventHandler) {
+        this.txTransactionEventHandler = txTransactionEventHandler;
+    }
 
     /**
      * disruptor start.
@@ -69,20 +81,24 @@ public class TxTransactionEventPublisher implements DisposableBean {
         disruptor.setDefaultExceptionHandler(new ExceptionHandler<TxTransactionEvent>() {
             @Override
             public void handleEventException(Throwable ex, long sequence, TxTransactionEvent event) {
-                LogUtil.error(LOGGER,()-> "Disruptor handleEventException:"
-                        + event.getType() + event.getTransactionRecover().toString() );
+                LogUtil.error(LOGGER, () -> "Disruptor handleEventException:"
+                        + event.getType() + event.getTransactionRecover().toString());
             }
 
             @Override
             public void handleOnStartException(Throwable ex) {
-                LogUtil.error(LOGGER,()-> "Disruptor start exception");
+                LogUtil.error(LOGGER, () -> "Disruptor start exception");
             }
 
             @Override
             public void handleOnShutdownException(Throwable ex) {
-                LogUtil.error(LOGGER,()-> "Disruptor close Exception ");
+                LogUtil.error(LOGGER, () -> "Disruptor close Exception ");
             }
         });
+        executor = new ThreadPoolExecutor(MAX_THREAD, MAX_THREAD, 0, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(),
+                TxTransactionThreadFactory.create("raincat-log-disruptor", false),
+                new ThreadPoolExecutor.AbortPolicy());
         disruptor.start();
     }
 
@@ -93,8 +109,10 @@ public class TxTransactionEventPublisher implements DisposableBean {
      * @param type               {@linkplain CompensationActionEnum}
      */
     public void publishEvent(final TransactionRecover transactionRecover, final int type) {
-        final RingBuffer<TxTransactionEvent> ringBuffer = disruptor.getRingBuffer();
-        ringBuffer.publishEvent(new TxTransactionEventTranslator(type), transactionRecover);
+        executor.execute(() -> {
+            final RingBuffer<TxTransactionEvent> ringBuffer = disruptor.getRingBuffer();
+            ringBuffer.publishEvent(new TxTransactionEventTranslator(type), transactionRecover);
+        });
     }
 
     @Override
