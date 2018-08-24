@@ -19,12 +19,14 @@
 package com.raincat.springcloud.interceptor;
 
 import com.raincat.common.constant.CommonConstant;
+import com.raincat.common.holder.LogUtil;
 import com.raincat.core.concurrent.threadlocal.CompensationLocal;
 import com.raincat.core.interceptor.TxTransactionInterceptor;
 import com.raincat.core.service.AspectTransactionService;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
@@ -39,8 +41,9 @@ import javax.servlet.http.HttpServletRequest;
  * @author xiaoyu
  */
 @Component
-@Slf4j
 public class SpringCloudTxTransactionInterceptor implements TxTransactionInterceptor {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpringCloudTxTransactionInterceptor.class);
 
     private final AspectTransactionService aspectTransactionService;
 
@@ -57,10 +60,10 @@ public class SpringCloudTxTransactionInterceptor implements TxTransactionInterce
             //如果不是本地反射调用补偿
             try {
                 RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
-                HttpServletRequest request = requestAttributes == null ? null : ((ServletRequestAttributes) requestAttributes).getRequest();
-                groupId = request == null ? null : request.getHeader(CommonConstant.TX_TRANSACTION_GROUP);
+                HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+                groupId = request.getHeader(CommonConstant.TX_TRANSACTION_GROUP);
             } catch (IllegalStateException e) {
-                log.error("Not Http request ,can't get RequestContextHolder!", e);
+                LogUtil.error(LOGGER,"Not Http request ,can't get RequestContextHolder!", e::getMessage);
             }
         }
         return aspectTransactionService.invoke(groupId, pjp);
