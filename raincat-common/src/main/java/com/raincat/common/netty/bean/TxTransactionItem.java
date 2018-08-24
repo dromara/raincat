@@ -18,9 +18,12 @@
 
 package com.raincat.common.netty.bean;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.raincat.common.enums.TransactionRoleEnum;
 import com.raincat.common.enums.TransactionStatusEnum;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 
@@ -29,9 +32,14 @@ import java.io.Serializable;
  * @author xiaoyu
  */
 @Data
+@Slf4j
 public class TxTransactionItem implements Serializable {
 
     private static final long serialVersionUID = -983809184773470584L;
+    /**
+     *线程安全
+     */
+    private static final ObjectMapper OBJECT_MAPPER=new ObjectMapper();
 
     /**
      * taskKey.
@@ -97,5 +105,28 @@ public class TxTransactionItem implements Serializable {
      * 操作结果信息.
      */
     private Object message;
+
+
+    public void setMessage(Object message) {
+        if(message!=null && !( message instanceof String))
+        {
+            try
+            {
+                this.message=OBJECT_MAPPER.writeValueAsString(message);
+            }
+            catch (JsonProcessingException e)
+            {
+                this.message="internal server error,fail to parse object";
+                log.error("设置操作结果信息时出错，message:{}",message,e);
+            }
+
+        }
+        else
+        {
+            this.message = message;
+        }
+
+    }
+
 
 }
