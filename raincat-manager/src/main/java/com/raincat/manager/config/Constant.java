@@ -30,9 +30,9 @@ public interface Constant {
 
     String REDIS_KEYS = "transaction:group:*";
 
-    String HTTP_COMMIT = "http://%s/tx/manager/HTTP_COMMIT";
+    String HTTP_COMMIT = "http://%s/tx/manager/httpCommit";
 
-    String HTTP_ROLLBACK = "http://%s/tx/manager/HTTP_ROLLBACK";
+    String HTTP_ROLLBACK = "http://%s/tx/manager/httpRollBack";
 
 
 }
