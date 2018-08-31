@@ -148,6 +148,12 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
                 platformTransactionManager.rollback(transactionStatus);
                 //通知tm整个事务组失败，需要回滚，（回滚那些正常提交的模块，他们正在等待通知。。。。）
                 txManagerMessageService.rollBackTxTransaction(groupId);
+                //通知tm 自身事务回滚
+                CompletableFuture.runAsync(() ->
+                        txManagerMessageService
+                                .asyncCompleteCommit(groupId, waitKey,
+                                        TransactionStatusEnum.ROLLBACK.getCode(), null));
+
                 throwable.printStackTrace();
                 throw throwable;
             } finally {
