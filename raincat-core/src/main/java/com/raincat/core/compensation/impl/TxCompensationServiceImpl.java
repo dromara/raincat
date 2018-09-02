@@ -165,10 +165,10 @@ public class TxCompensationServiceImpl implements TxCompensationService {
                                 continue;
                             }
                             try {
-                                //判断任务是否执行完成
-                                if (!CommonConstant.TX_TRANSACTION_COMPLETE_FLAG_OK.equals(transactionRecover.getCompleteFlag())) {
+                               /* //判断任务是否执行完成
+                                if (CommonConstant.TX_TRANSACTION_COMPLETE_FLAG_OK.equals(transactionRecover.getCompleteFlag())) {
                                     continue;
-                                }
+                                }*/
                                 transactionRecover.setOperation(CompensationOperationTypeEnum.COMPENSATION.getCode());
                                 final int update = transactionRecoverRepository.update(transactionRecover);
                                 if (update > 0) {
@@ -190,6 +190,8 @@ public class TxCompensationServiceImpl implements TxCompensationService {
                                                     //自己的状态不是提交，那么就进行补偿
                                                     if (item.getStatus() != TransactionStatusEnum.COMMIT.getCode()) {
                                                         this.compensatoryTransfer(transactionRecover);
+                                                    }else if(item.getStatus() == TransactionStatusEnum.COMMIT.getCode()){
+                                                        remove(transactionRecover.getId());
                                                     }
                                                 }
                                             } else {

@@ -94,7 +94,7 @@ public class TxConfig {
 
 
     /**
-     * disroptor bufferSize.
+     * disruptor bufferSize.
      */
     private int bufferSize = 1024;
 

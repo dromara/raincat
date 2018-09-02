@@ -50,7 +50,7 @@ public class TxTransactionBootstrap extends TxConfig implements ApplicationConte
 
     private void start(final TxConfig txConfig) {
         if (!checkDataConfig(txConfig)) {
-            throw new TransactionRuntimeException("分布式事务配置信息不完整！");
+            throw new TransactionRuntimeException("please check you config！");
         }
         txTransactionInitialize.init(txConfig);
     }

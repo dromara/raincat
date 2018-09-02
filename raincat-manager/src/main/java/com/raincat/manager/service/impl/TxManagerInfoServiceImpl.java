@@ -46,20 +46,24 @@ import java.util.stream.Collectors;
 @Service("txManagerInfoService")
 public class TxManagerInfoServiceImpl implements TxManagerInfoService {
 
-    @Autowired(required = false)
-    private DiscoveryService discoveryService;
+    private final DiscoveryService discoveryService;
 
-    @Autowired
-    private NettyConfig nettyConfig;
+    private final NettyConfig nettyConfig;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     @Value("${redisSaveMaxTime}")
     private int redisSaveMaxTime;
 
     @Value("${transactionWaitMaxTime}")
     private int transactionWaitMaxTime;
+
+    @Autowired(required = false)
+    public TxManagerInfoServiceImpl(DiscoveryService discoveryService, NettyConfig nettyConfig, RestTemplate restTemplate) {
+        this.discoveryService = discoveryService;
+        this.nettyConfig = nettyConfig;
+        this.restTemplate = restTemplate;
+    }
 
     @Override
     public TxManagerServer findTxManagerServer() {

@@ -27,9 +27,9 @@ tx:
        heartTime : 20
     redis :
        cluster : false
-       hostName : 10.40.6.151
+       hostName : localhost
        port: 6379
-       password : 123456
+       #password : 123456
 
 
 

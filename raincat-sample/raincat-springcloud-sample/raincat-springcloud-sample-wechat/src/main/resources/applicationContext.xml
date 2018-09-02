@@ -15,7 +15,7 @@
     <context:component-scan base-package="com.raincat.*"/>
     <aop:aspectj-autoproxy expose-proxy="true"/>
     <bean id="txTransactionBootstrap" class="com.raincat.core.bootstrap.TxTransactionBootstrap">
-        <property name="txManagerUrl" value="http://192.168.1.109:8761"/>
+        <property name="txManagerUrl" value="http://127.0.0.1:8761"/>
         <property name="serializer" value="kryo"/>
         <property name="nettySerializer" value="kryo"/>
         <property name="compensationCacheType" value="db"/>
@@ -23,10 +23,10 @@
         <property name="txDbConfig">
             <bean class="com.raincat.common.config.TxDbConfig">
                 <property name="url"
-                          value="jdbc:mysql://192.168.1.68:3306/tx?useUnicode=true&amp;characterEncoding=utf8"/>
+                          value="jdbc:mysql://localhost:3306/tx?useUnicode=true&amp;characterEncoding=utf8"/>
                 <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-                <property name="username" value="xiaoyu"/>
-                <property name="password" value="Wgj@555888"/>
+                <property name="username" value="root"/>
+                <property name="password" value="123456"/>
             </bean>
         </property>
 
