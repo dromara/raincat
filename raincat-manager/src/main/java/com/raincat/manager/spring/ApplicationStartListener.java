@@ -18,13 +18,14 @@
 
 package com.raincat.manager.spring;
 
+import com.raincat.common.holder.LogUtil;
+import com.raincat.common.holder.NetUtils;
 import com.raincat.manager.config.Address;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 
 /**
@@ -33,7 +34,7 @@ import java.net.UnknownHostException;
  */
 @Component
 public class ApplicationStartListener implements ApplicationListener<EmbeddedServletContainerInitializedEvent> {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationStartListener.class);
     @Override
     public void onApplicationEvent(final EmbeddedServletContainerInitializedEvent event) {
         int port = event.getEmbeddedServletContainer().getPort();
@@ -42,14 +43,10 @@ public class ApplicationStartListener implements ApplicationListener<EmbeddedSer
                 .setHost(host)
                 .setPort(port)
                 .setDomain(String.join(":", host, String.valueOf(port)));
+        LogUtil.info(LOGGER,"bind host:port，{}",()->host+":"+port);
     }
 
     private String getHost() {
-        try {
-            return InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            return "127.0.0.1";
-        }
+        return NetUtils.getLocalAddress().getHostAddress();
     }
 }
