@@ -19,35 +19,43 @@
 
 package com.raincat.core.disruptor.handler;
 
-import com.lmax.disruptor.EventHandler;
+import com.lmax.disruptor.WorkHandler;
 import com.raincat.common.enums.CompensationActionEnum;
 import com.raincat.core.compensation.TxCompensationService;
 import com.raincat.core.disruptor.event.TxTransactionEvent;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+
+import java.util.concurrent.Executor;
 
 /**
- * Disroptor handler.
+ * disruptor handler.
  *
  * @author xiaoyu(Myth)
  */
-@Component
-public class TxTransactionEventHandler implements EventHandler<TxTransactionEvent> {
+public class TxTransactionEventHandler implements WorkHandler<TxTransactionEvent> {
 
-    @Autowired
-    private TxCompensationService txCompensationService;
+    private final TxCompensationService txCompensationService;
+
+    private final Executor executor;
+
+    public TxTransactionEventHandler(final Executor executor, final TxCompensationService txCompensationService) {
+        this.executor = executor;
+        this.txCompensationService = txCompensationService;
+    }
 
     @Override
-    public void onEvent(final TxTransactionEvent txTransactionEvent, final long sequence, final boolean endOfBatch) {
-        if (txTransactionEvent.getType() == CompensationActionEnum.SAVE.getCode()) {
-            txCompensationService.save(txTransactionEvent.getTransactionRecover());
-        } else if (txTransactionEvent.getType() == CompensationActionEnum.DELETE.getCode()) {
-            txCompensationService.remove(txTransactionEvent.getTransactionRecover().getId());
-        } else if (txTransactionEvent.getType() == CompensationActionEnum.UPDATE.getCode()) {
-            txCompensationService.update(txTransactionEvent.getTransactionRecover());
-        } else if (txTransactionEvent.getType() == CompensationActionEnum.COMPENSATE.getCode()) {
-            txCompensationService.compensation(txTransactionEvent.getTransactionRecover());
-        }
-        txTransactionEvent.clear();
+    public void onEvent(final TxTransactionEvent txTransactionEvent) {
+        executor.execute(() -> {
+            if (txTransactionEvent.getType() == CompensationActionEnum.SAVE.getCode()) {
+                txCompensationService.save(txTransactionEvent.getTransactionRecover());
+            } else if (txTransactionEvent.getType() == CompensationActionEnum.DELETE.getCode()) {
+                txCompensationService.remove(txTransactionEvent.getTransactionRecover().getId());
+            } else if (txTransactionEvent.getType() == CompensationActionEnum.UPDATE.getCode()) {
+                txCompensationService.update(txTransactionEvent.getTransactionRecover());
+            } else if (txTransactionEvent.getType() == CompensationActionEnum.COMPENSATE.getCode()) {
+                txCompensationService.compensation(txTransactionEvent.getTransactionRecover());
+            }
+            txTransactionEvent.clear();
+        });
+
     }
 }

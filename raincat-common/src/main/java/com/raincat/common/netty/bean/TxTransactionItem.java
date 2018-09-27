@@ -29,6 +29,7 @@ import java.io.Serializable;
 
 /**
  * TxTransactionItem.
+ *
  * @author xiaoyu
  */
 @Data
@@ -37,9 +38,9 @@ public class TxTransactionItem implements Serializable {
 
     private static final long serialVersionUID = -983809184773470584L;
     /**
-     *线程安全
+     * 线程安全
      */
-    private static final ObjectMapper OBJECT_MAPPER=new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     /**
      * taskKey.
@@ -108,24 +109,16 @@ public class TxTransactionItem implements Serializable {
 
 
     public void setMessage(Object message) {
-        if(message!=null && !( message instanceof String))
-        {
-            try
-            {
-                this.message=OBJECT_MAPPER.writeValueAsString(message);
+        if (message != null && !(message instanceof String)) {
+            try {
+                this.message = OBJECT_MAPPER.writeValueAsString(message);
+            } catch (JsonProcessingException e) {
+                this.message = "internal server error,fail to parse object";
+                log.error("设置操作结果信息时出错，message:{}", message, e);
             }
-            catch (JsonProcessingException e)
-            {
-                this.message="internal server error,fail to parse object";
-                log.error("设置操作结果信息时出错，message:{}",message,e);
-            }
-
-        }
-        else
-        {
+        } else {
             this.message = message;
         }
-
     }
 
 
