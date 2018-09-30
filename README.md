@@ -49,6 +49,13 @@ Raincat
 # Design
  ### [架构设计](https://github.com/yu199195/Raincat/wiki/design)
 
+# 视频源码分析
+ ###[环境搭建](http://www.iqiyi.com/w_19s0ngjah5.html)
+ ###[启动过程](http://www.iqiyi.com/w_19s0ndc5vh.html)
+ ###[事务提交](http://www.iqiyi.com/w_19s0ndc8f1.html)
+ ###[回滚恢复](http://www.iqiyi.com/w_19s0nmod9t.html)
+ ###[管理后台](http://www.iqiyi.com/w_19s0nj1bjx.html)
+ 
 # 流程图
 
  ![](https://yu199195.github.io/images/Raincat/2pc.png)

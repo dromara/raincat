@@ -56,7 +56,6 @@ public class TxConfig {
      */
     private int heartTime = 10;
 
-
     /**
      * txManagerUrl服务地址.
      */
@@ -92,12 +91,10 @@ public class TxConfig {
      */
     private int recoverDelayTime = 60;
 
-
     /**
-     * disroptor bufferSize.
+     * disruptor bufferSize.
      */
-    private int bufferSize = 1024;
-
+    private int bufferSize = 4096;
 
     /**
      * db存储方式时候 数据库配置信息.
