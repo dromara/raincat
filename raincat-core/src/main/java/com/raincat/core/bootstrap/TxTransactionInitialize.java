@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 public class TxTransactionInitialize {
 
     /**
-     * logger
+     * logger.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(TxTransactionInitialize.class);
 
@@ -46,10 +46,11 @@ public class TxTransactionInitialize {
     }
 
     /**
-     * 初始化服务
+     * inti service.
      */
     public void init(TxConfig txConfig) {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> LOGGER.error("raincat init error")));
+        Runtime.getRuntime().addShutdownHook(
+                new Thread(() -> LOGGER.error("raincat init error")));
         try {
             initService.initialization(txConfig);
         } catch (RuntimeException ex) {

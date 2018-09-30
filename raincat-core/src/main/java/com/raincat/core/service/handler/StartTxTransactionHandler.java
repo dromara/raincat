@@ -121,12 +121,10 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
                     //我觉得到这一步了，应该是切面走完，然后需要提交了，此时应该都是进行提交的
                     //提交事务
                     platformTransactionManager.commit(transactionStatus);
-                    commitStatus = CommonConstant.TX_TRANSACTION_COMMIT_STATUS_OK;
 
                     LOGGER.info("发起者提交本地事务,补偿Id:[{}]", compensateId);
 
-                    //删除补偿信息
-                    txCompensationManager.removeTxCompensation(compensateId);
+
                     //通知tm完成事务
                     CompletableFuture.runAsync(() ->
                             txManagerMessageService
@@ -139,6 +137,8 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
                     //txCompensationManager.removeTxCompensation(compensateId);
                     platformTransactionManager.rollback(transactionStatus);
                 }
+                //删除补偿信息
+                txCompensationManager.removeTxCompensation(compensateId);
                 LogUtil.info(LOGGER, "tx-transaction end, class：{}", () -> point.getTarget().getClass());
 
                 return res;
@@ -148,17 +148,24 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
                 platformTransactionManager.rollback(transactionStatus);
                 //通知tm整个事务组失败，需要回滚，（回滚那些正常提交的模块，他们正在等待通知。。。。）
                 txManagerMessageService.rollBackTxTransaction(groupId);
+                //通知tm 自身事务回滚
+                CompletableFuture.runAsync(() ->
+                        txManagerMessageService
+                                .asyncCompleteCommit(groupId, waitKey,
+                                        TransactionStatusEnum.ROLLBACK.getCode(), null));
+
                 throwable.printStackTrace();
                 throw throwable;
             } finally {
                 TxTransactionLocal.getInstance().removeTxGroupId();
+
                 /**
                  *  1. 若事务提交成功这里不进行处理，此时completeFlag="0" ,则异常情况下进入补偿的任务认为当前任务还在处理中，不对其进行补偿处理;
                  *  2. 若事务未提交,当前任务更新completeFlag="1" ，补偿任务可以继续向下执行补偿
                  */
-                if (CommonConstant.TX_TRANSACTION_COMMIT_STATUS_BAD.equals(commitStatus)) {
+                /*if (CommonConstant.TX_TRANSACTION_COMMIT_STATUS_BAD.equals(commitStatus)) {
                     txCompensationManager.updateTxCompensation(groupId);
-                }
+                }*/
             }
         } else {
             throw new TransactionRuntimeException("TxManager connection ex！");

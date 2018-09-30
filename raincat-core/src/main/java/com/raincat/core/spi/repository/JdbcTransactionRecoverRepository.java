@@ -148,6 +148,7 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
         recover.setTaskId((String) map.get("task_id"));
         recover.setGroupId((String) map.get("group_id"));
         recover.setVersion((Integer) map.get("version"));
+        recover.setCompleteFlag(String.valueOf(map.get("complete_flag")));
         byte[] bytes = (byte[]) map.get("invocation");
         try {
             final TransactionInvocation transactionInvocation = serializer.deSerialize(bytes, TransactionInvocation.class);
@@ -197,10 +198,9 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
                 return ps.executeUpdate();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             LOGGER.error("executeUpdate->" + e.getMessage());
+            throw new TransactionRuntimeException(e);
         }
-        return ROWS;
     }
 
     private List<Map<String, Object>> executeQuery(final String sql, final Object... params) {

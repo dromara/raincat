@@ -159,27 +159,27 @@ public class ActorTxTransactionHandler implements TxTransactionHandler {
                                 if (TransactionStatusEnum.COMMIT.getCode() == status) {
                                     //提交事务
                                     platformTransactionManager.commit(transactionStatus);
-                                    commitStatus = CommonConstant.TX_TRANSACTION_COMMIT_STATUS_OK;
 
                                     //通知tm 自身事务提交
                                     asyncComplete(info.getTxGroupId(), waitKey, TransactionStatusEnum.COMMIT.getCode(), res);
-                                    //删除补偿信息
-                                    txCompensationManager.removeTxCompensation(compensateId);
+
                                 } else {
                                     //回滚当前事务
                                     platformTransactionManager.rollback(transactionStatus);
                                     //通知tm 自身事务回滚
                                     asyncComplete(info.getTxGroupId(), waitKey, TransactionStatusEnum.ROLLBACK.getCode(), res);
                                 }
+                                //删除补偿信息
+                                txCompensationManager.removeTxCompensation(compensateId);
                             } catch (Throwable throwable) {
                                 platformTransactionManager.rollback(transactionStatus);
                                 throwable.printStackTrace();
                             } finally {
                                 BlockTaskHelper.getInstance().removeByKey(waitKey);
-                                // 更新补偿信息
+                               /* // 更新补偿信息
                                 if (CommonConstant.TX_TRANSACTION_COMMIT_STATUS_BAD.equals(commitStatus)) {
                                     txCompensationManager.updateTxCompensation(compensateId);
-                                }
+                                }*/
                             }
                         } else {
                             platformTransactionManager.rollback(transactionStatus);
