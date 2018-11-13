@@ -18,7 +18,11 @@
 package com.raincat.springcloud.feign;
 
 
+import com.raincat.common.constant.CommonConstant;
+import com.raincat.core.concurrent.threadlocal.TxTransactionLocal;
 import feign.Feign;
+import feign.RequestInterceptor;
+import feign.RequestTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -28,11 +32,24 @@ import org.springframework.context.annotation.Scope;
  */
 @Configuration
 public class RestTemplateConfiguration {
-
+/*
     @Bean
     @Scope("prototype")
     public Feign.Builder feignBuilder() {
         return Feign.builder().requestInterceptor(new RestTemplateInterceptor());
+    }*/
+
+    @Bean("txRequestInterceptor")
+    public RequestInterceptor txRequestInterceptor() {
+
+        return new RequestInterceptor() {
+            @Override
+            public void apply(RequestTemplate template) {
+                template.header(CommonConstant.TX_TRANSACTION_GROUP, TxTransactionLocal.getInstance().getTxGroupId());
+
+            }
+        };
     }
+
 
 }
