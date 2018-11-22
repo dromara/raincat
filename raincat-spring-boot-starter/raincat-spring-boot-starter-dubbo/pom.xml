@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>raincat-spring-boot-starter</artifactId>
-        <groupId>com.raincat</groupId>
+        <groupId>org.dromara</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -12,11 +12,11 @@
     <artifactId>raincat-spring-boot-starter-dubbo</artifactId>
     <dependencies>
         <dependency>
-            <groupId>com.raincat</groupId>
+            <groupId>org.dromara</groupId>
             <artifactId>raincat-spring-boot-starter-parent</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.raincat</groupId>
+            <groupId>org.dromara</groupId>
             <artifactId>raincat-dubbo</artifactId>
         </dependency>
     </dependencies>

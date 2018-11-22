@@ -11,8 +11,9 @@ spring:
         password: 123123
     application:
       name: order-service
-raincat:
-     tx :
+org:
+   dromara:
+     raincat:
        txManagerUrl: http://localhost:8761
        serializer: kroy
        nettySerializer: kroy

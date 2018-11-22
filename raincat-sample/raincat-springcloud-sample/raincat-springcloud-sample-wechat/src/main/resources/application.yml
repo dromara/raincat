@@ -14,7 +14,7 @@ spring:
       name: wechat-service
 
 mybatis:
-  type-aliases-package: com.raincat.springcloud.sample.wechat.entiy
+  type-aliases-package: org.dromara.raincat.springcloud.sample.wechat.entiy
 #${random.int[9000,9999]}
 eureka:
  client:
@@ -27,6 +27,6 @@ wechat-service :
 logging:
             level:
                 root: info
-                com.raincat.core : debug
+                org.dromara.raincat.core : debug
             path: "./logs"
 

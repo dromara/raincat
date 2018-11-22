@@ -17,8 +17,9 @@ mybatis:
   mapper-locations: classpath:mybatis/mapper/*.xml
 
 
-raincat:
-     tx :
+org:
+   dromara:
+     raincat :
        txManagerUrl: http://localhost:8761
        serializer: kroy
        nettySerializer: kroy

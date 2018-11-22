@@ -14,7 +14,7 @@ spring:
       name: alipay-service
 
 mybatis:
-  type-aliases-package: com.raincat.springcloud.sample.alipay.entiy
+  type-aliases-package: org.dromara.raincat.springcloud.sample.alipay.entiy
 #${random.int[9000,9999]}
 eureka:
  client:
@@ -27,6 +27,6 @@ alipay-service :
 logging:
             level:
                 root: info
-                com.raincat.core : debug
+                org.dromara.raincat.core : debug
             path: "./logs"
 

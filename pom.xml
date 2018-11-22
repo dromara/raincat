@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.raincat</groupId>
-    <artifactId>rain-cat</artifactId>
+    <groupId>org.dromara</groupId>
+    <artifactId>raincat</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
 
@@ -82,65 +82,65 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.raincat</groupId>
+                <groupId>org.dromara</groupId>
                 <artifactId>raincat-admin</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.raincat</groupId>
+                <groupId>org.dromara</groupId>
                 <artifactId>raincat-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.raincat</groupId>
+                <groupId>org.dromara</groupId>
                 <artifactId>raincat-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.raincat</groupId>
+                <groupId>org.dromara</groupId>
                 <artifactId>raincat-dubbo</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.raincat</groupId>
+                <groupId>org.dromara</groupId>
                 <artifactId>raincat-manager</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.raincat</groupId>
+                <groupId>org.dromara</groupId>
                 <artifactId>raincat-springcloud</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.raincat</groupId>
+                <groupId>org.dromara</groupId>
                 <artifactId>raincat-motan</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.raincat</groupId>
+                <groupId>org.dromara</groupId>
                 <artifactId>raincat-spring-boot-starter-parent</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.raincat</groupId>
+                <groupId>org.dromara</groupId>
                 <artifactId>raincat-spring-boot-starter-dubbo</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.raincat</groupId>
+                <groupId>org.dromara</groupId>
                 <artifactId>raincat-spring-boot-starter-springcloud</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.raincat</groupId>
+                <groupId>org.dromara</groupId>
                 <artifactId>raincat-spring-boot-starter-motan</artifactId>
                 <version>${project.version}</version>
             </dependency>
