@@ -126,5 +126,10 @@ public interface CommonConstant {
      */
     String TX_TRANSACTION_COMPLETE_FLAG_OK = "1";
 
+    /**
+     * The constant LINE_SEPARATOR.
+     */
+    String LINE_SEPARATOR = System.getProperty("line.separator");
+
 
 }

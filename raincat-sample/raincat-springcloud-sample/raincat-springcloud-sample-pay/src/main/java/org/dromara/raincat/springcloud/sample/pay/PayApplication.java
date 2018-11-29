@@ -27,6 +27,8 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.ImportResource;
 
 /**
+ * The type Pay application.
+ *
  * @author xiaoyu
  */
 @SpringBootApplication(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
@@ -36,6 +38,11 @@ import org.springframework.context.annotation.ImportResource;
 @MapperScan("org.dromara.raincat.springcloud.sample.pay.mapper")
 public class PayApplication {
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         SpringApplication.run(PayApplication.class, args);
     }

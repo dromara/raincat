@@ -15,6 +15,7 @@
  * along with this distribution; if not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package org.dromara.raincat.springcloud.sample.alipay;
 
 import org.mybatis.spring.annotation.MapperScan;
@@ -27,15 +28,22 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.ImportResource;
 
 /**
+ * The type Ali pay application.
+ *
  * @author xiaoyu
  */
 @SpringBootApplication(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 @EnableEurekaClient
 @EnableFeignClients
 @ImportResource({"classpath:applicationContext.xml"})
-@MapperScan("com.raincat.springcloud.sample.alipay.mapper")
+@MapperScan("org.dromara.raincat.springcloud.sample.alipay.mapper")
 public class AliPayApplication {
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         SpringApplication.run(AliPayApplication.class, args);
     }

@@ -22,13 +22,13 @@ import org.dromara.raincat.common.config.TxConfig;
 import org.dromara.raincat.common.enums.CompensationCacheTypeEnum;
 import org.dromara.raincat.common.enums.SerializeProtocolEnum;
 import org.dromara.raincat.common.exception.TransactionRuntimeException;
-import org.dromara.raincat.common.holder.LogUtil;
 import org.dromara.raincat.common.holder.ServiceBootstrap;
 import org.dromara.raincat.common.serializer.KryoSerializer;
 import org.dromara.raincat.common.serializer.ObjectSerializer;
 import org.dromara.raincat.core.compensation.TxCompensationService;
 import org.dromara.raincat.core.disruptor.publisher.TxTransactionEventPublisher;
 import org.dromara.raincat.core.helper.SpringBeanUtils;
+import org.dromara.raincat.core.logo.RaincatLogo;
 import org.dromara.raincat.core.netty.NettyClientService;
 import org.dromara.raincat.core.service.InitService;
 import org.dromara.raincat.core.spi.TransactionRecoverRepository;
@@ -77,8 +77,7 @@ public class InitServiceImpl implements InitService {
         } catch (Exception e) {
             throw new TransactionRuntimeException("tx transaction ex:{}：" + e.getMessage());
         }
-        LogUtil.info(LOGGER, () -> "tx transaction init success！");
-
+        new RaincatLogo().logo();
     }
 
     /**

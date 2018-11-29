@@ -27,6 +27,8 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.ImportResource;
 
 /**
+ * The type Wechat application.
+ *
  * @author xiaoyu
  */
 @SpringBootApplication(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
@@ -36,6 +38,11 @@ import org.springframework.context.annotation.ImportResource;
 @ImportResource({"classpath:applicationContext.xml"})
 public class WechatApplication {
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         SpringApplication.run(WechatApplication.class, args);
     }
