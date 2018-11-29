@@ -1,5 +1,10 @@
 Raincat
 ================
+[![Total lines](https://tokei.rs/b1/github/yu199195/raincat?category=lines)](https://github.com/yu199195/raincat)
+[![License](https://img.shields.io/cran/l/devtools.svg)](https://github.com/yu199195/Raincat/blob/master/LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/org.dromara/raincat.svg?label=maven%20central)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.dromara%22%20AND%20raincat)
+[![Javadocs](http://www.javadoc.io/badge/org.dromara/raincat.svg)](http://www.javadoc.io/doc/org.dromara/raincat)
+[![Build Status](https://travis-ci.org/yu199195/raincat.svg?branch=master)](https://travis-ci.org/yu199195/raincat)
 
 强一致性分布式事务，是基于二阶段提交+本地事务补偿机制来实现。[原理介绍](http://www.hollischuang.com/archives/681)
 
