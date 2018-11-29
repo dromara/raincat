@@ -45,6 +45,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * NettyServerServiceImpl.
+ *
  * @author xiaoyu
  */
 @Component
@@ -78,11 +79,11 @@ public class NettyServerServiceImpl implements NettyService, DisposableBean {
             maxThread = nettyConfig.getMaxThreads();
         }
         servletExecutor = new DefaultEventExecutorGroup(maxThread);
-            final SerializeProtocolEnum serializeProtocolEnum =
-                    SerializeProtocolEnum.acquireSerializeProtocol(nettyConfig.getSerialize());
-            nettyServerHandlerInitializer.setSerializeProtocolEnum(serializeProtocolEnum);
-            nettyServerHandlerInitializer.setServletExecutor(servletExecutor);
-            ServerBootstrap b = new ServerBootstrap();
+        final SerializeProtocolEnum serializeProtocolEnum =
+                SerializeProtocolEnum.acquireSerializeProtocol(nettyConfig.getSerialize());
+        nettyServerHandlerInitializer.setSerializeProtocolEnum(serializeProtocolEnum);
+        nettyServerHandlerInitializer.setServletExecutor(servletExecutor);
+        ServerBootstrap b = new ServerBootstrap();
         bossGroup = createEventLoopGroup();
         if (bossGroup instanceof EpollEventLoopGroup) {
             groupsEpoll(b, maxThread);
@@ -93,7 +94,7 @@ public class NettyServerServiceImpl implements NettyService, DisposableBean {
             LOGGER.info("netty service started on port: " + nettyConfig.getPort());
             ChannelFuture future = b.bind(nettyConfig.getPort()).sync();
             future.channel().closeFuture().sync();
-        }  finally {
+        } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
             servletExecutor.shutdownGracefully();
@@ -101,11 +102,10 @@ public class NettyServerServiceImpl implements NettyService, DisposableBean {
 
     }
 
-
     private EventLoopGroup createEventLoopGroup() {
         try {
             return new EpollEventLoopGroup(1);
-        } catch (final ExceptionInInitializerError ex) {
+        } catch (final Throwable ex) {
             return new NioEventLoopGroup(1);
         }
     }

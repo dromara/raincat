@@ -24,12 +24,20 @@ import org.springframework.context.annotation.ImportResource;
 
 
 /**
+ * The type Stock application.
+ *
  * @author xiaoyu
  */
 @SpringBootApplication
 @ImportResource({"classpath:applicationContext.xml"})
-@MapperScan("com.raincat.dubbo.sample.stock.mapper")
+@MapperScan("org.dromara.raincat.dubbo.sample.stock.mapper")
 public class StockApplication {
+
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         SpringApplication.run(StockApplication.class, args);
     }

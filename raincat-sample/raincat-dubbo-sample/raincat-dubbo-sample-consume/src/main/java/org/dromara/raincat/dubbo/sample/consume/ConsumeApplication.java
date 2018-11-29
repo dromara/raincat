@@ -23,12 +23,20 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportResource;
 
 /**
+ * The type Consume application.
+ *
  * @author xiaoyu
  */
 @SpringBootApplication
 @ImportResource({"classpath:spring-dubbo.xml"})
 @MapperScan("org.dromara.raincat.dubbo.sample.consume.mapper")
 public class ConsumeApplication {
+
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         SpringApplication.run(ConsumeApplication.class, args);
     }

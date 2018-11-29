@@ -46,7 +46,6 @@ import static com.google.common.collect.Lists.newArrayList;
 @EnableSwagger2
 public class SwaggerConfig {
 
-    private static final String SWAGGER_SCAN_BASE_PACKAGE = "com.happylifeplat.transaction.tx.dubbo.sample.consume.controller";
     private static final String VERSION = "1.0.0";
 
     /**

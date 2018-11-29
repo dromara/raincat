@@ -24,12 +24,20 @@ import org.springframework.context.annotation.ImportResource;
 
 
 /**
+ * The type Order application.
+ *
  * @author xiaoyu
  */
 @SpringBootApplication
 @ImportResource({"classpath:spring-dubbo.xml"})
 @MapperScan("org.dromara.raincat.dubbo.sample.order.mapper")
 public class OrderApplication {
+
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         SpringApplication.run(OrderApplication.class, args);
     }
