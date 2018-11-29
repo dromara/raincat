@@ -21,6 +21,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
+ * The type Tx transaction thread factory.
+ *
  * @author xiaoyu
  */
 public class TxTransactionThreadFactory implements ThreadFactory {
@@ -29,13 +31,13 @@ public class TxTransactionThreadFactory implements ThreadFactory {
 
     private static final ThreadGroup THREAD_GROUP = new ThreadGroup("txTransaction");
 
-    private static volatile boolean daemon;
+    private boolean daemon;
 
     private final String namePrefix;
 
     private TxTransactionThreadFactory(final String namePrefix, final boolean daemon) {
         this.namePrefix = namePrefix;
-        TxTransactionThreadFactory.daemon = daemon;
+        this.daemon = daemon;
     }
 
     /**

@@ -17,7 +17,15 @@
     <bean id="txTransactionBootstrap" class="org.dromara.raincat.core.bootstrap.TxTransactionBootstrap">
         <property name="txManagerUrl" value="http://localhost:8761"/>
         <property name="serializer" value="kryo"/>
+        <property name="delayTime" value="30"/>
+        <property name="heartTime" value="10"/>
+        <property name="recoverDelayTime" value="60"/>
+        <property name="bufferSize" value="4096"/>
+        <property name="nettyThreadMax" value="16"/>
         <property name="nettySerializer" value="kryo"/>
+        <property name="refreshInterval" value="30"/>
+        <property name="retryMax" value="3"/>
+        <property name="compensationRecoverTime" value="60"/>
         <property name="compensation" value="true"/>
         <property name="compensationCacheType" value="db"/>
         <property name="txDbConfig">

@@ -804,7 +804,6 @@ public class DateUtils {
      * 将数据库时间改成当前时区时间.
      * @param timestamp 时间
      * @return  time
-     * @date 2018/5/9 18:25
      */
     public static LocalDateTime toDefaultDateTime(final Timestamp timestamp) {
         return timestamp == null ? null : toDefaultDateTime(timestamp.toLocalDateTime());
