@@ -1,5 +1,6 @@
 Raincat
 ================
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c4faa432bca949b588871ad81b524a0d)](https://app.codacy.com/app/yu199195/Raincat?utm_source=github.com&utm_medium=referral&utm_content=yu199195/Raincat&utm_campaign=Badge_Grade_Dashboard)
 [![Total lines](https://tokei.rs/b1/github/yu199195/raincat?category=lines)](https://github.com/yu199195/raincat)
 [![License](https://img.shields.io/cran/l/devtools.svg)](https://github.com/yu199195/Raincat/blob/master/LICENSE)
 [![Maven Central](https://img.shields.io/maven-central/v/org.dromara/raincat.svg?label=maven%20central)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.dromara%22%20AND%20raincat)
