@@ -52,8 +52,15 @@ Raincat
      * 本地事务序列化保存，支持java，hessian，kryo，protostuff
      * netty通信序列化方式，支持 hessian，kryo，protostuff
 
-# Design
- ### [架构设计](https://github.com/yu199195/Raincat/wiki/design)
+
+# 官网
+
+ ## http://dromara.org  或者 https://dromara.org 有时候https打不开。
+ 
+
+# 文档 
+ 
+ ##  http://dromara.org/website/zh-cn/docs/raincat/index.html
 
 
 # 视频源码分析
@@ -71,50 +78,6 @@ Raincat
 # 流程图
 
  ![](https://yu199195.github.io/images/Raincat/2pc.png)
-
-#   Configuration
-
-  ###  [配置详解](https://github.com/yu199195/Raincat/wiki/configuration%EF%BC%88%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3%EF%BC%89)
-
-# Spring-Boot-Starter-Support
-
-   * ### [Spring-Boot-Starter](https://github.com/yu199195/Raincat/wiki/Spring-Boot-Starter)
-
-# Prerequisite
-
-  *   #### JDK 1.8+
-
-  *   #### Maven 3.2.x
-
-  *   #### Git
-
-  *   ####  RPC framework dubbo or motan or springcloud。
-
-# Quick Start
-
-   * ### Clone & Build
-      ```
-      > git clone https://github.com/yu199195/Raincat.git
-
-      > cd Raincat
-
-      > mvn -DskipTests clean install -U
-      ```
-
-   ### [快速体验(dubbo)](https://github.com/yu199195/Raincat/wiki/quick-start-%EF%BC%88dubbo%EF%BC%89)
-
-   ### [快速体验(springcloud)](https://github.com/yu199195/Raincat/wiki/quick-start-%EF%BC%88springcloud%EF%BC%89)
-
-
-# User Guide
-
-###  [dubbo 用户](https://github.com/yu199195/Raincat/wiki/dubbo%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97)
-
-###  [springcloud 用户](https://github.com/yu199195/Raincat/wiki/springcloud%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97)
-
-
-
-
 
 
 # FAQ
