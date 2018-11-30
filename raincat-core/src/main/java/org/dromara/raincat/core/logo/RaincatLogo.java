@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RaincatLogo {
 
-    private static final String HMILY_LOGO = "\n" +
+    private static final String RAINCAT_LOGO = "\n" +
             "            _                 _   \n" +
             "           (_)               | |  \n" +
             "  _ __ __ _ _ _ __   ___ __ _| |_ \n" +
@@ -57,7 +57,7 @@ public class RaincatLogo {
     private String buildBannerText() {
         return CommonConstant.LINE_SEPARATOR
                 + CommonConstant.LINE_SEPARATOR
-                + HMILY_LOGO
+                + RAINCAT_LOGO
                 + CommonConstant.LINE_SEPARATOR
                 + " :: raincat :: (v" + VersionUtils.getVersion(getClass(), "1.0.0") + ")"
                 + CommonConstant.LINE_SEPARATOR;
