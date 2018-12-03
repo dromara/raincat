@@ -18,22 +18,21 @@
 
 package org.dromara.raincat.springcloud.feign;
 
-import feign.Feign;
+import feign.RequestInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 
 /**
  * RestTemplateConfiguration.
+ *
  * @author xiaoyu
  */
 @Configuration
 public class RestTemplateConfiguration {
 
     @Bean
-    @Scope("prototype")
-    public Feign.Builder feignBuilder() {
-        return Feign.builder().requestInterceptor(new RestTemplateInterceptor());
+    public RequestInterceptor requestInterceptor() {
+        return new RestTemplateInterceptor();
     }
 
 }
