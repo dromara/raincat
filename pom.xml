@@ -8,16 +8,36 @@
     <artifactId>raincat</artifactId>
     <packaging>pom</packaging>
     <version>2.0.1-SNAPSHOT</version>
-
-    <scm>
-        <url>https://github.com/yu199195/Raincat.git</url>
-    </scm>
-
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.0.2.RELEASE</version>
     </parent>
+
+    <organization>
+        <name>dromara</name>
+        <url>http://www.dromara.org</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License</name>
+            <url>https://www.gnu.org/licenses/lgpl-3.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/yu199195/Raincat.git</url>
+        <connection>scm:git:https://github.com/yu199195/Raincat</connection>
+        <developerConnection>scm:git:git@github.com:yu199195/Raincat</developerConnection>
+        <tag>${project.version}</tag>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/yu199195/Raincat/issues</url>
+    </issueManagement>
 
     <modules>
         <module>raincat-core</module>
@@ -505,11 +525,5 @@
         </plugins>
     </build>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>spring-releases</id>
-            <url>https://repo.spring.io/libs-release</url>
-        </pluginRepository>
-    </pluginRepositories>
 
 </project>
