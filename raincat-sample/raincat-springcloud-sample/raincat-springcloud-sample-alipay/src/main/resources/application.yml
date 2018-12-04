@@ -1,6 +1,7 @@
 server:
   port: 8882
-  contextPath: /alipay-service
+  servlet:
+      context-path: /alipay-service
   address: 0.0.0.0
 
 

@@ -1,7 +1,8 @@
 server:
   port: 8883
-  contextPath: /wechat-service
   address: 0.0.0.0
+  servlet:
+    context-path: /wechat-service
 
 
 spring:

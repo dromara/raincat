@@ -7,7 +7,7 @@
     <groupId>org.dromara</groupId>
     <artifactId>raincat</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.0-RELEASE</version>
+    <version>2.0.1-SNAPSHOT</version>
 
     <scm>
         <url>https://github.com/yu199195/Raincat.git</url>
@@ -16,7 +16,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.4.RELEASE</version>
+        <version>2.0.2.RELEASE</version>
     </parent>
 
     <modules>
@@ -55,8 +55,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
-        <spring.version>4.3.9.RELEASE</spring.version>
-        <spring-cloud.version>Dalston.SR1</spring-cloud.version>
+        <spring.version>5.0.7.RELEASE</spring.version>
+        <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
         <dubbo.version>2.5.3</dubbo.version>
         <mongo.driver.version>3.5.0</mongo.driver.version>
         <mysql-connector-java>5.1.40</mysql-connector-java>
@@ -342,15 +342,6 @@
                 <version>${spring.version}</version>
             </dependency>
 
-
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
@@ -392,12 +383,12 @@
                 <artifactId>hessian</artifactId>
                 <version>${hessian.version}</version>
             </dependency>
-          <!--  <dependency>
-                <groupId>com.esotericsoftware</groupId>
-                <artifactId>kryo</artifactId>
-                <version>${kryo.version}</version>
-            </dependency>
--->
+            <!--  <dependency>
+                  <groupId>com.esotericsoftware</groupId>
+                  <artifactId>kryo</artifactId>
+                  <version>${kryo.version}</version>
+              </dependency>
+  -->
             <dependency>
                 <groupId>com.esotericsoftware</groupId>
                 <artifactId>kryo-shaded</artifactId>
@@ -451,6 +442,15 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
         </dependencies>

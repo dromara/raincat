@@ -19,7 +19,7 @@
 package org.dromara.raincat.manager.spring;
 
 import org.dromara.raincat.manager.config.Address;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
+import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
@@ -29,14 +29,15 @@ import java.net.UnknownHostException;
 
 /**
  * ApplicationStartListener.
+ *
  * @author xiaoyu
  */
 @Component
-public class ApplicationStartListener implements ApplicationListener<EmbeddedServletContainerInitializedEvent> {
+public class ApplicationStartListener implements ApplicationListener<WebServerInitializedEvent> {
 
     @Override
-    public void onApplicationEvent(final EmbeddedServletContainerInitializedEvent event) {
-        int port = event.getEmbeddedServletContainer().getPort();
+    public void onApplicationEvent(final WebServerInitializedEvent event) {
+        int port = event.getWebServer().getPort();
         final String host = getHost();
         Address.getInstance()
                 .setHost(host)
