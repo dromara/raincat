@@ -6,7 +6,7 @@ Raincat
 [![Maven Central](https://img.shields.io/maven-central/v/org.dromara/raincat.svg?label=maven%20central)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.dromara%22%20AND%20raincat)
 [![Javadocs](http://www.javadoc.io/badge/org.dromara/raincat.svg)](http://www.javadoc.io/doc/org.dromara/Raincat)
 [![Build Status](https://travis-ci.org/yu199195/Raincat.svg?branch=master)](https://travis-ci.org/yu199195/Raincat)
-
+[![QQ群](https://img.shields.io/badge/chat-on%20QQ-ff69b4.svg?style=flat-square)](https://shang.qq.com/wpa/qunwpa?idkey=2e9e353fa10924812bc58c10ab46de0ca6bef80e34168bccde275f7ca0cafd85)
 强一致性分布式事务，是基于二阶段提交+本地事务补偿机制来实现。[原理介绍](http://www.hollischuang.com/archives/681)
 
 基于java语言来开发（JDK1.8），支持dubbo,motan,springcloud进行分布式事务。
