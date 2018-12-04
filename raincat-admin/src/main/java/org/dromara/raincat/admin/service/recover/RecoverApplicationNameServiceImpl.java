@@ -18,10 +18,10 @@
 
 package org.dromara.raincat.admin.service.recover;
 
-import com.google.common.collect.Lists;
+import com.google.common.base.Splitter;
+import org.apache.commons.lang3.StringUtils;
 import org.dromara.raincat.admin.service.RecoverApplicationNameService;
-import org.dromara.raincat.admin.service.apps.AcceptApplicationNameExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,13 +34,12 @@ import java.util.List;
 @Service("recoverApplicationNameService")
 public class RecoverApplicationNameServiceImpl implements RecoverApplicationNameService {
 
-    @Autowired
-    private AcceptApplicationNameExecutor executor;
+    @Value("${recover.application.list}")
+    private String appNameList;
+
 
     @Override
     public List<String> list() {
-        List<String> apps = Lists.newArrayList();
-        executor.execute(apps);
-        return apps;
+        return Splitter.on(",").splitToList(appNameList);
     }
 }

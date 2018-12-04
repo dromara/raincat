@@ -33,6 +33,7 @@ import org.dromara.raincat.admin.service.recover.RedisRecoverTransactionServiceI
 import org.dromara.raincat.admin.service.recover.ZookeeperRecoverTransactionServiceImpl;
 import org.dromara.raincat.common.jedis.JedisClient;
 import org.dromara.raincat.common.jedis.JedisClientCluster;
+import org.dromara.raincat.common.jedis.JedisClientSentinel;
 import org.dromara.raincat.common.jedis.JedisClientSingle;
 import org.dromara.raincat.common.serializer.ObjectSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +48,11 @@ import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.JedisSentinelPool;
 
 import javax.sql.DataSource;
 import java.net.InetSocketAddress;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -58,6 +61,7 @@ import java.util.stream.Collectors;
 
 /**
  * RecoverConfiguration.
+ *
  * @author xiaoyu
  */
 @Configuration
@@ -128,17 +132,31 @@ public class RecoverConfiguration {
             JedisPool jedisPool;
             JedisPoolConfig config = new JedisPoolConfig();
             JedisClient jedisClient;
-            final Boolean cluster = env.getProperty("recover.redis.cluster", Boolean.class);
+            final Boolean cluster = env.getProperty("recover.redis.cluster", Boolean.class, Boolean.FALSE);
+
+            final Boolean sentinel = env.getProperty("recover.redis.sentinel", Boolean.class, Boolean.FALSE);
+            final String password = env.getProperty("recover.redis.password");
             if (cluster) {
                 final String clusterUrl = env.getProperty("recover.redis.clusterUrl");
-                final Set<HostAndPort> hostAndPorts = Splitter.on(clusterUrl)
-                        .splitToList(";").stream()
+                assert clusterUrl != null;
+                final Set<HostAndPort> hostAndPorts = Splitter.on(";")
+                        .splitToList(clusterUrl).stream()
                         .map(HostAndPort::parseString).collect(Collectors.toSet());
                 JedisCluster jedisCluster = new JedisCluster(hostAndPorts, config);
                 jedisClient = new JedisClientCluster(jedisCluster);
+            } else if (sentinel) {
+                final String sentinelUrl = env.getProperty("recover.redis.sentinelUrl");
+                assert sentinelUrl != null;
+                final Set<String> hostAndPorts =
+                        new HashSet<>(Splitter.on(";")
+                                .splitToList(sentinelUrl));
+                final String master = env.getProperty("recover.redis.master");
+                JedisSentinelPool pool =
+                        new JedisSentinelPool(master, hostAndPorts,
+                                config, password);
+                jedisClient = new JedisClientSentinel(pool);
             } else {
-                final String password = env.getProperty("recover.redis.password");
-                final String port = env.getProperty("recover.redis.port");
+                final String port = env.getProperty("recover.redis.port", "6379");
                 final String hostName = env.getProperty("recover.redis.hostName");
                 if (StringUtils.isNoneBlank(password)) {
                     jedisPool = new JedisPool(config, hostName,
@@ -148,7 +166,6 @@ public class RecoverConfiguration {
                             Integer.parseInt(port), 30);
                 }
                 jedisClient = new JedisClientSingle(jedisPool);
-
             }
             return new RedisRecoverTransactionServiceImpl(jedisClient, objectSerializer);
         }
