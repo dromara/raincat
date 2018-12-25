@@ -41,6 +41,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * TxManagerLocator.
+ *
  * @author xiaoyu
  */
 public final class TxManagerLocator {
@@ -60,7 +61,8 @@ public final class TxManagerLocator {
     private TxManagerLocator() {
         List<TxManagerServiceDTO> initial = Lists.newArrayList();
         listAtomicReference = new AtomicReference<>(initial);
-        type = new TypeToken<List<TxManagerServiceDTO>>() { }.getType();
+        type = new TypeToken<List<TxManagerServiceDTO>>() {
+        }.getType();
         this.scheduledExecutorService = new ScheduledThreadPoolExecutor(1,
                 TxTransactionThreadFactory.create("TxManagerLocator", true));
     }
@@ -128,7 +130,6 @@ public final class TxManagerLocator {
                 listAtomicReference.set(serviceDTOList);
                 return;
             } catch (Throwable ex) {
-                ex.printStackTrace();
                 LogUtil.error(LOGGER, "updateTxManagerServices fail exception:{}", ex::getMessage);
             }
         }
