@@ -18,58 +18,79 @@
 
 package org.dromara.raincat.common.holder;
 
-import java.util.UUID;
+import java.util.Random;
 
 /**
  * IdWorkerUtils.
+ *
  * @author xiaoyu
  */
 public final class IdWorkerUtils {
 
-    private final long twepoch = 1288834974657L;
-    private final long workerIdBits = 5L;
-    private final long datacenterIdBits = 5L;
-    private final long maxWorkerId = -1L ^ (-1L << workerIdBits);
-    private final long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
-    private final long sequenceBits = 12L;
-    private final long workerIdShift = sequenceBits;
-    private final long datacenterIdShift = sequenceBits + workerIdBits;
-    private final long timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;
-    private final long sequenceMask = -1L ^ (-1L << sequenceBits);
+    private static final Random RANDOM = new Random();
 
-    private long workerId = 0;
-    private long datacenterId = 0;
-    private long sequence = 0L;
-    private long lastTimestamp = -1L;
+    private static final long WORKER_ID_BITS = 5L;
+
+    private static final long DATACENTERIDBITS = 5L;
+
+    private static final long MAX_WORKER_ID = ~(-1L << WORKER_ID_BITS);
+
+    private static final long MAX_DATACENTER_ID = ~(-1L << DATACENTERIDBITS);
+
+    private static final long SEQUENCE_BITS = 12L;
+
+    private static final long WORKER_ID_SHIFT = SEQUENCE_BITS;
+
+    private static final long DATACENTER_ID_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS;
+
+    private static final long TIMESTAMP_LEFT_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS + DATACENTERIDBITS;
+
+    private static final long SEQUENCE_MASK = ~(-1L << SEQUENCE_BITS);
 
     private static final IdWorkerUtils ID_WORKER_UTILS = new IdWorkerUtils();
 
-    public static IdWorkerUtils getInstance() {
-        return ID_WORKER_UTILS;
-    }
+    private long workerId;
+
+    private long datacenterId;
+
+    private long idepoch;
+
+    private long sequence = '0';
+
+    private long lastTimestamp = -1L;
 
     private IdWorkerUtils() {
-
+        this(RANDOM.nextInt((int) MAX_WORKER_ID), RANDOM.nextInt((int) MAX_DATACENTER_ID), 1288834974657L);
     }
 
-    private IdWorkerUtils(long workerId, long datacenterId) {
-        if (workerId > maxWorkerId || workerId < 0) {
-            throw new IllegalArgumentException(String.format("worker Id can't be greater than %d or less than 0", maxWorkerId));
+    private IdWorkerUtils(final long workerId, final long datacenterId, final long idepoch) {
+        if (workerId > MAX_WORKER_ID || workerId < 0) {
+            throw new IllegalArgumentException(String.format("worker Id can't be greater than %d or less than 0", MAX_WORKER_ID));
         }
-        if (datacenterId > maxDatacenterId || datacenterId < 0) {
-            throw new IllegalArgumentException(String.format("datacenter Id can't be greater than %d or less than 0", maxDatacenterId));
+        if (datacenterId > MAX_DATACENTER_ID || datacenterId < 0) {
+            throw new IllegalArgumentException(String.format("datacenter Id can't be greater than %d or less than 0", MAX_DATACENTER_ID));
         }
         this.workerId = workerId;
         this.datacenterId = datacenterId;
+        this.idepoch = idepoch;
+    }
+
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
+    public static IdWorkerUtils getInstance() {
+        return ID_WORKER_UTILS;
     }
 
     private synchronized long nextId() {
         long timestamp = timeGen();
         if (timestamp < lastTimestamp) {
-            throw new RuntimeException(String.format("Clock    moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
+            throw new RuntimeException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
         }
         if (lastTimestamp == timestamp) {
-            sequence = (sequence + 1) & sequenceMask;
+            sequence = (sequence + 1) & SEQUENCE_MASK;
             if (sequence == 0) {
                 timestamp = tilNextMillis(lastTimestamp);
             }
@@ -79,10 +100,12 @@ public final class IdWorkerUtils {
 
         lastTimestamp = timestamp;
 
-        return ((timestamp - twepoch) << timestampLeftShift) | (datacenterId << datacenterIdShift) | (workerId << workerIdShift) | sequence;
+        return ((timestamp - idepoch) << TIMESTAMP_LEFT_SHIFT)
+                | (datacenterId << DATACENTER_ID_SHIFT)
+                | (workerId << WORKER_ID_SHIFT) | sequence;
     }
 
-    private long tilNextMillis(long lastTimestamp) {
+    private long tilNextMillis(final long lastTimestamp) {
         long timestamp = timeGen();
         while (timestamp <= lastTimestamp) {
             timestamp = timeGen();
@@ -94,34 +117,48 @@ public final class IdWorkerUtils {
         return System.currentTimeMillis();
     }
 
+    /**
+     * Build part number string.
+     *
+     * @return the string
+     */
     public String buildPartNumber() {
         return "P" + ID_WORKER_UTILS.nextId();
     }
 
-    public String buildSkuCode() {
-        return "S" + ID_WORKER_UTILS.nextId();
-    }
-
+    /**
+     * Create task key string.
+     *
+     * @return the string
+     */
     public String createTaskKey() {
-        return String.valueOf(UUID.randomUUID().hashCode() & 0x7fffffff);
+        return String.valueOf(ID_WORKER_UTILS.nextId());
     }
 
-
+    /**
+     * Create uuid string.
+     *
+     * @return the string
+     */
     public String createUUID() {
-        return String.valueOf(UUID.randomUUID().hashCode() & 0x7fffffff);
+        return String.valueOf(ID_WORKER_UTILS.nextId());
     }
 
-
+    /**
+     * Create group id string.
+     *
+     * @return the string
+     */
     public String createGroupId() {
-        return String.valueOf(UUID.randomUUID().hashCode() & 0x7fffffff);
+        return String.valueOf(ID_WORKER_UTILS.nextId());
     }
 
+    /**
+     * Random uuid long.
+     *
+     * @return the long
+     */
     public long randomUUID() {
         return ID_WORKER_UTILS.nextId();
-    }
-
-
-    public static void main(String[] args) {
-
     }
 }
