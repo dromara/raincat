@@ -33,6 +33,7 @@ import org.dromara.raincat.core.concurrent.task.BlockTask;
 import org.dromara.raincat.core.concurrent.task.BlockTaskHelper;
 import org.dromara.raincat.core.concurrent.threadlocal.TxTransactionLocal;
 import org.dromara.raincat.core.concurrent.threadpool.TxTransactionThreadPool;
+import org.dromara.raincat.core.helper.TransactionManagerHelper;
 import org.dromara.raincat.core.service.TxManagerMessageService;
 import org.dromara.raincat.core.service.TxTransactionHandler;
 import org.slf4j.Logger;
@@ -63,15 +64,11 @@ public class ActorTxTransactionHandler implements TxTransactionHandler {
 
     private final TxCompensationManager txCompensationManager;
 
-    private final PlatformTransactionManager platformTransactionManager;
-
     @Autowired
     public ActorTxTransactionHandler(final TxCompensationManager txCompensationManager,
-                                     final PlatformTransactionManager platformTransactionManager,
                                      final TxTransactionThreadPool txTransactionThreadPool,
                                      final TxManagerMessageService txManagerMessageService) {
         this.txCompensationManager = txCompensationManager;
-        this.platformTransactionManager = platformTransactionManager;
         this.txTransactionThreadPool = txTransactionThreadPool;
         this.txManagerMessageService = txManagerMessageService;
     }
@@ -91,6 +88,8 @@ public class ActorTxTransactionHandler implements TxTransactionHandler {
                     String commitStatus = CommonConstant.TX_TRANSACTION_COMMIT_STATUS_BAD;
 
                     final BlockTask waitTask = BlockTaskHelper.getInstance().getTask(waitKey);
+                    PlatformTransactionManager platformTransactionManager =
+                            TransactionManagerHelper.getTransactionManager(info.getTransactionManager());
                     DefaultTransactionDefinition def = new DefaultTransactionDefinition();
                     def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
                     TransactionStatus transactionStatus = platformTransactionManager.getTransaction(def);

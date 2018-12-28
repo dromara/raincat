@@ -44,4 +44,11 @@ public @interface TxTransaction {
      * @return 多少秒
      */
     int waitMaxTime() default 60;
+
+    /**
+     * 事务管理器名称
+     *
+     * @return 如果为空，则取默认的
+     */
+    String transactionManager() default "";
 }

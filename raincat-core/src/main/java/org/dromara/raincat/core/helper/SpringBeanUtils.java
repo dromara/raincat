@@ -55,6 +55,18 @@ public final class SpringBeanUtils {
     }
 
     /**
+     * acquire spring bean by bean name and type.
+     *
+     * @param beanName bean name
+     * @param type type
+     * @param <T>  class
+     * @return bean
+     */
+    public <T> T getBean(final String beanName, final Class<T> type) {
+        return cfgContext.getBean(beanName, type);
+    }
+
+    /**
      * register bean in spring ioc.
      * @param beanName bean name
      * @param obj bean

@@ -57,10 +57,11 @@ public class AspectTransactionServiceImpl implements AspectTransactionService {
         Method thisMethod = clazz.getMethod(method.getName(), method.getParameterTypes());
         final String compensationId = CompensationLocal.getInstance().getCompensationId();
         final TxTransaction txTransaction = method.getAnnotation(TxTransaction.class);
+        final String transactionManager = txTransaction.transactionManager();
         final int waitMaxTime = txTransaction.waitMaxTime();
         final PropagationEnum propagation = txTransaction.propagation();
         TransactionInvocation invocation = new TransactionInvocation(clazz, thisMethod.getName(), args, method.getParameterTypes());
-        TxTransactionInfo info = new TxTransactionInfo(invocation, transactionGroupId, compensationId, waitMaxTime, propagation);
+        TxTransactionInfo info = new TxTransactionInfo(invocation, transactionGroupId, compensationId, waitMaxTime, propagation, transactionManager);
         final Class css = txTransactionFactoryService.factoryOf(info);
         final TxTransactionHandler txTransactionHandler =
                 (TxTransactionHandler) SpringBeanUtils.getInstance().getBean(css);

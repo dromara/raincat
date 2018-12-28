@@ -32,6 +32,7 @@ import org.dromara.raincat.common.netty.bean.TxTransactionGroup;
 import org.dromara.raincat.common.netty.bean.TxTransactionItem;
 import org.dromara.raincat.core.compensation.manager.TxCompensationManager;
 import org.dromara.raincat.core.concurrent.threadlocal.TxTransactionLocal;
+import org.dromara.raincat.core.helper.TransactionManagerHelper;
 import org.dromara.raincat.core.service.TxManagerMessageService;
 import org.dromara.raincat.core.service.TxTransactionHandler;
 import org.slf4j.Logger;
@@ -61,15 +62,11 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
 
     private final TxCompensationManager txCompensationManager;
 
-    private final PlatformTransactionManager platformTransactionManager;
-
     @Autowired(required = false)
     public StartTxTransactionHandler(final TxManagerMessageService txManagerMessageService,
-                                     final TxCompensationManager txCompensationManager,
-                                     final PlatformTransactionManager platformTransactionManager) {
+                                     final TxCompensationManager txCompensationManager) {
         this.txManagerMessageService = txManagerMessageService;
         this.txCompensationManager = txCompensationManager;
-        this.platformTransactionManager = platformTransactionManager;
     }
 
     @Override
@@ -108,6 +105,8 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
                     throw throwable;
                 }
             }
+            PlatformTransactionManager platformTransactionManager =
+                    TransactionManagerHelper.getTransactionManager(info.getTransactionManager());
             DefaultTransactionDefinition def = new DefaultTransactionDefinition();
             def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
             TransactionStatus transactionStatus = platformTransactionManager.getTransaction(def);

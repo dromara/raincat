@@ -56,5 +56,11 @@ public class TxTransactionInfo {
     @Getter
     private PropagationEnum propagationEnum;
 
+    /**
+     * 事务管理器名称
+     */
+    @Getter
+    private String transactionManager;
+
 
 }
