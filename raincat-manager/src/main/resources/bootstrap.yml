@@ -20,7 +20,7 @@ eureka:
 logging:
             level:
                 root: info
-                com.raincat.manager : debug
+                org.dromara.raincat.manager : debug
             path: "./logs"
 
 

@@ -1,11 +1,15 @@
 Raincat
 ================
-
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/5873cc1f5e2f44979aa1f64696fecb40)](https://www.codacy.com/app/yu199195/Raincat?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yu199195/Raincat&amp;utm_campaign=Badge_Grade)
+[![Total lines](https://tokei.rs/b1/github/yu199195/raincat?category=lines)](https://github.com/yu199195/raincat)
+[![License](https://img.shields.io/cran/l/devtools.svg)](https://github.com/yu199195/Raincat/blob/master/LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/org.dromara/raincat.svg?label=maven%20central)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.dromara%22%20AND%20raincat)
+[![Javadocs](http://www.javadoc.io/badge/org.dromara/raincat.svg)](http://www.javadoc.io/doc/org.dromara/Raincat)
+[![Build Status](https://travis-ci.org/yu199195/Raincat.svg?branch=master)](https://travis-ci.org/yu199195/Raincat)
+[![QQ群](https://img.shields.io/badge/chat-on%20QQ-ff69b4.svg?style=flat-square)](https://shang.qq.com/wpa/qunwpa?idkey=2e9e353fa10924812bc58c10ab46de0ca6bef80e34168bccde275f7ca0cafd85)
 强一致性分布式事务，是基于二阶段提交+本地事务补偿机制来实现。[原理介绍](http://www.hollischuang.com/archives/681)
 
 基于java语言来开发（JDK1.8），支持dubbo,motan,springcloud进行分布式事务。
-
-#####  因为文件名太长，大家在拉取代码的时候执git命令：git config --global core.longpaths true
 
  # Features
 
@@ -46,56 +50,31 @@ Raincat
      * 本地事务序列化保存，支持java，hessian，kryo，protostuff
      * netty通信序列化方式，支持 hessian，kryo，protostuff
 
-# Design
- ### [架构设计](https://github.com/yu199195/Raincat/wiki/design)
 
+# 官网
+
+ ## http://dromara.org  或者 https://dromara.org 有时候https打不开。
+ 
+
+# 文档 
+ 
+ ##  http://dromara.org/website/zh-cn/docs/raincat/index.html
+
+# 视频源码分析
+
+ ### [环境搭建](http://www.iqiyi.com/w_19s0ngjah5.html)
+ 
+ ### [启动过程](http://www.iqiyi.com/w_19s0ndc5vh.html)
+ 
+ ### [事务提交](http://www.iqiyi.com/w_19s0ndc8f1.html)
+ 
+ ### [回滚恢复](http://www.iqiyi.com/w_19s0nmod9t.html)
+ 
+ ### [管理后台](http://www.iqiyi.com/w_19s0nj1bjx.html)
+ 
 # 流程图
 
  ![](https://yu199195.github.io/images/Raincat/2pc.png)
-
-#   Configuration
-
-  ###  [配置详解](https://github.com/yu199195/Raincat/wiki/configuration%EF%BC%88%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3%EF%BC%89)
-
-# Spring-Boot-Starter-Support
-
-   * ### [Spring-Boot-Starter](https://github.com/yu199195/Raincat/wiki/Spring-Boot-Starter)
-
-# Prerequisite
-
-  *   #### JDK 1.8+
-
-  *   #### Maven 3.2.x
-
-  *   #### Git
-
-  *   ####  RPC framework dubbo or motan or springcloud。
-
-# Quick Start
-
-   * ### Clone & Build
-      ```
-      > git clone https://github.com/yu199195/Raincat.git
-
-      > cd Raincat
-
-      > mvn -DskipTests clean install -U
-      ```
-
-   ### [快速体验(dubbo)](https://github.com/yu199195/Raincat/wiki/quick-start-%EF%BC%88dubbo%EF%BC%89)
-
-   ### [快速体验(springcloud)](https://github.com/yu199195/Raincat/wiki/quick-start-%EF%BC%88springcloud%EF%BC%89)
-
-
-# User Guide
-
-###  [dubbo 用户](https://github.com/yu199195/Raincat/wiki/dubbo%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97)
-
-###  [springcloud 用户](https://github.com/yu199195/Raincat/wiki/springcloud%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97)
-
-
-
-
 
 
 # FAQ

@@ -1,0 +1,5 @@
+org.dromara.raincat.core.spi.repository.JdbcTransactionRecoverRepository
+org.dromara.raincat.core.spi.repository.FileTransactionRecoverRepository
+org.dromara.raincat.core.spi.repository.MongoTransactionRecoverRepository
+org.dromara.raincat.core.spi.repository.RedisTransactionRecoverRepository
+org.dromara.raincat.core.spi.repository.ZookeeperTransactionRecoverRepository

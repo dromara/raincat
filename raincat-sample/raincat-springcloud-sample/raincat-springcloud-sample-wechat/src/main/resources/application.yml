@@ -1,20 +1,21 @@
 server:
   port: 8883
-  contextPath: /wechat-service
   address: 0.0.0.0
+  servlet:
+    context-path: /wechat-service
 
 
 spring:
     datasource:
         driver-class-name:  com.mysql.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/wechat?useUnicode=true&characterEncoding=utf8
+        url: jdbc:mysql://192.168.1.98:3306/wechat?useUnicode=true&characterEncoding=utf8
         username: root
         password: 123456
     application:
       name: wechat-service
 
 mybatis:
-  type-aliases-package: com.raincat.springcloud.sample.wechat.entiy
+  type-aliases-package: org.dromara.raincat.springcloud.sample.wechat.entiy
 #${random.int[9000,9999]}
 eureka:
  client:
@@ -27,6 +28,6 @@ wechat-service :
 logging:
             level:
                 root: info
-                com.raincat.core : debug
+                org.dromara.raincat.core : debug
             path: "./logs"
 

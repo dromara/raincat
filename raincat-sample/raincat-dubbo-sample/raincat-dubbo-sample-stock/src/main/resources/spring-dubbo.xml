@@ -14,7 +14,7 @@
     <dubbo:protocol accesslog="true" name="dubbo" port="20882" host="localhost"/>
 
 
-    <dubbo:service interface="com.raincat.dubbo.sample.stock.api.service.StockService"
+    <dubbo:service interface="org.dromara.raincat.dubbo.sample.stock.api.service.StockService"
                    ref="stockService"/>
 
 

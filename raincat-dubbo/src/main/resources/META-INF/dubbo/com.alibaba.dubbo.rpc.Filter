@@ -1,1 +1,1 @@
-TxTransactionFilter=com.raincat.dubbo.filter.DubboTxTransactionFilter
+TxTransactionFilter=org.dromara.raincat.dubbo.filter.DubboTxTransactionFilter

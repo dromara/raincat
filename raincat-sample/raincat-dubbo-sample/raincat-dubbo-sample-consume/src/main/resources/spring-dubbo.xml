@@ -16,11 +16,11 @@
 
 
     <dubbo:reference timeout="5000"
-                     interface="com.raincat.dubbo.sample.stock.api.service.StockService"
+                     interface="org.dromara.raincat.dubbo.sample.stock.api.service.StockService"
                      id="stockService"
                      retries="0" check="false"/>
     <dubbo:reference timeout="5000"
-                     interface="com.raincat.dubbo.sample.order.api.service.OrderService"
+                     interface="org.dromara.raincat.dubbo.sample.order.api.service.OrderService"
                      id="orderService"
                      retries="0" check="false"/>
 

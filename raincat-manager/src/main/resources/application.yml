@@ -6,11 +6,19 @@ spring:
   thymeleaf:
     cache: true
     encoding: utf-8
-    content-type: text/html
     enabled: true
     prefix: classpath:/html/
     suffix: .html
-
+  redis:
+    password: foobaredbbexONE123
+    sentinel:
+       master: mymaster
+       nodes:
+             - 192.168.1.91:26379
+             - 192.168.1.92:26379
+             - 192.168.1.93:26379
+  # host: 192.168.1.91
+  # port: 6379
 
 
 transactionWaitMaxTime: 500
@@ -25,11 +33,6 @@ tx:
        maxThreads : 16
        delayTime : 5
        heartTime : 20
-    redis :
-       cluster : false
-       hostName : localhost
-       port: 6379
-       #password : 123456
 
 
 

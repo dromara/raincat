@@ -6,13 +6,14 @@ server:
 spring:
     datasource:
         driver-class-name:  com.mysql.jdbc.Driver
-        url: jdbc:mysql://10.4.4.202:3306/order?useUnicode=true&characterEncoding=utf8
+        url: jdbc:mysql://192.168.1.98:3306/order?useUnicode=true&characterEncoding=utf8
         username: root
-        password: 123123
+        password: 123456
     application:
       name: order-service
-raincat:
-     tx :
+org:
+   dromara:
+     raincat:
        txManagerUrl: http://localhost:8761
        serializer: kroy
        nettySerializer: kroy
@@ -20,11 +21,11 @@ raincat:
        compensationCacheType : db
        txDbConfig :
               driverClassName  : com.mysql.jdbc.Driver
-              url :  jdbc:mysql://10.4.4.202:3306/tx?useUnicode=true&amp;characterEncoding=utf8
+              url :  jdbc:mysql://192.168.1.98:3306/tx?useUnicode=true&amp;characterEncoding=utf8
               username : root
-              password : 123123
+              password : 123456
 mybatis:
-  type-aliases-package: com.raincat.dubbo.sample.order.api.entity
+  type-aliases-package: org.dromara.raincat.dubbo.sample.order.api.entity
   config-location: classpath:mybatis/mybatis-config.xml
   mapper-locations: classpath:mybatis/mapper/*.xml
 
@@ -34,9 +35,9 @@ logging:
         root: error
         org.springframework.web: info
         org.apache.ibatis: info
-        com.raincat.bonuspoint: info
-        com.raincat.lottery: debug
-        com.raincat: debug
+        org.dromara.raincat.bonuspoint: info
+        org.dromara.raincat.lottery: debug
+        org.dromara.raincat: debug
         io.netty: info
 
     path: "./logs"

@@ -15,7 +15,7 @@
     <dubbo:protocol accesslog="true" name="dubbo" port="20883"/>
 
 
-    <dubbo:service interface="com.raincat.dubbo.sample.order.api.service.OrderService"
+    <dubbo:service interface="org.dromara.raincat.dubbo.sample.order.api.service.OrderService"
                    ref="orderService"/>
 
 

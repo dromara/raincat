@@ -1,20 +1,21 @@
 server:
   port: 8881
-  contextPath: /pay-service
   address: 0.0.0.0
+  servlet:
+    context-path: /pay-service
 
 
 spring:
     datasource:
         driver-class-name:  com.mysql.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/pay?useUnicode=true&characterEncoding=utf8
+        url: jdbc:mysql://192.168.1.98:3306/pay?useUnicode=true&characterEncoding=utf8
         username: root
         password: 123456
     application:
       name: pay-service
 
 mybatis:
-  type-aliases-package: com.raincat.springcloud.sample.pay.entiy
+  type-aliases-package: org.dromara.raincat.springcloud.sample.pay.entiy
 #${random.int[9000,9999]}
 eureka:
  client:
@@ -30,5 +31,5 @@ pay-service :
 logging:
             level:
                 root: info
-                com.raincat.core : debug
+                org.dromara.raincat.core : debug
             path: "./logs"
