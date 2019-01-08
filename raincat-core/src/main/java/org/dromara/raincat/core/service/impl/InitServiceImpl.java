@@ -26,15 +26,12 @@ import org.dromara.raincat.common.holder.ServiceBootstrap;
 import org.dromara.raincat.common.serializer.KryoSerializer;
 import org.dromara.raincat.common.serializer.ObjectSerializer;
 import org.dromara.raincat.core.compensation.TxCompensationService;
-import org.dromara.raincat.core.disruptor.publisher.TxTransactionEventPublisher;
 import org.dromara.raincat.core.helper.SpringBeanUtils;
 import org.dromara.raincat.core.logo.RaincatLogo;
 import org.dromara.raincat.core.netty.NettyClientService;
 import org.dromara.raincat.core.service.InitService;
 import org.dromara.raincat.core.spi.TransactionRecoverRepository;
 import org.dromara.raincat.core.spi.repository.JdbcTransactionRecoverRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -50,21 +47,16 @@ import java.util.stream.StreamSupport;
 @Component
 public class InitServiceImpl implements InitService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(InitServiceImpl.class);
-
     private final NettyClientService nettyClientService;
 
     private final TxCompensationService txCompensationService;
 
-    private final TxTransactionEventPublisher txTransactionEventPublisher;
 
     @Autowired
     public InitServiceImpl(final NettyClientService nettyClientService,
-                           final TxCompensationService txCompensationService,
-                           final TxTransactionEventPublisher txTransactionEventPublisher) {
+                           final TxCompensationService txCompensationService) {
         this.nettyClientService = nettyClientService;
         this.txCompensationService = txCompensationService;
-        this.txTransactionEventPublisher = txTransactionEventPublisher;
     }
 
     @Override
@@ -73,7 +65,6 @@ public class InitServiceImpl implements InitService {
             loadSpi(txConfig);
             nettyClientService.start(txConfig);
             txCompensationService.start(txConfig);
-            txTransactionEventPublisher.start(txConfig.getBufferSize());
         } catch (Exception e) {
             throw new TransactionRuntimeException("tx transaction ex:{}：" + e.getMessage());
         }

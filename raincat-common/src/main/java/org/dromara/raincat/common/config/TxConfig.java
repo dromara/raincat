@@ -24,6 +24,7 @@ import org.dromara.raincat.common.enums.SerializeProtocolEnum;
 
 /**
  * TxConfig.
+ *
  * @author xiaoyu
  */
 @Data
@@ -64,7 +65,7 @@ public class TxConfig {
     /**
      * 是否需要补偿.
      */
-    private Boolean compensation = false;
+    private Boolean compensation = true;
 
     /**
      * 补偿存储类型. {@linkplain CompensationCacheTypeEnum}
@@ -95,6 +96,12 @@ public class TxConfig {
      * disruptor bufferSize.
      */
     private int bufferSize = 4096;
+
+    /**
+     * this is disruptor consumerThreads.
+     */
+    private int consumerThreads = Runtime.getRuntime().availableProcessors() << 1;
+
 
     /**
      * db存储方式时候 数据库配置信息.
@@ -136,16 +143,16 @@ public class TxConfig {
     public void builder(final Builder builder) {
         this.serializer = builder.serializer;
         this.nettySerializer = builder.nettySerializer;
-        this.delayTime=builder.delayTime;
-        this.nettyThreadMax=builder.nettyThreadMax;
-        this.heartTime=builder.heartTime;
-        this.txManagerUrl=builder.txManagerUrl;
+        this.delayTime = builder.delayTime;
+        this.nettyThreadMax = builder.nettyThreadMax;
+        this.heartTime = builder.heartTime;
+        this.txManagerUrl = builder.txManagerUrl;
         this.repositorySuffix = builder.repositorySuffix;
         this.compensationCacheType = builder.compensationCacheType;
         this.compensation = builder.compensation;
         this.retryMax = builder.retryMax;
         this.recoverDelayTime = builder.recoverDelayTime;
-        this.refreshInterval=builder.refreshInterval;
+        this.refreshInterval = builder.refreshInterval;
         this.bufferSize = builder.bufferSize;
         this.txDbConfig = builder.txDbConfig;
         this.txMongoConfig = builder.txMongoConfig;
@@ -240,7 +247,6 @@ public class TxConfig {
             this.txManagerUrl = txManagerUrl;
             return this;
         }
-
 
 
         public Builder setCompensationCacheType(String compensationCacheType) {

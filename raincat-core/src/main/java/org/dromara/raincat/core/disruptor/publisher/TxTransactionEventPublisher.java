@@ -25,6 +25,7 @@ import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import org.dromara.raincat.common.bean.TransactionRecover;
+import org.dromara.raincat.common.config.TxConfig;
 import org.dromara.raincat.common.enums.CompensationActionEnum;
 import org.dromara.raincat.core.compensation.TxCompensationService;
 import org.dromara.raincat.core.concurrent.threadpool.TxTransactionThreadFactory;
@@ -34,13 +35,15 @@ import org.dromara.raincat.core.disruptor.handler.TxTransactionEventHandler;
 import org.dromara.raincat.core.disruptor.translator.TxTransactionEventTranslator;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * event publisher.
@@ -48,37 +51,41 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author xiaoyu(Myth)
  */
 @Component
-public class TxTransactionEventPublisher implements DisposableBean {
+public class TxTransactionEventPublisher implements DisposableBean, ApplicationListener<ContextRefreshedEvent> {
 
-    private static final int MAX_THREAD = Runtime.getRuntime().availableProcessors() << 1;
+    private static final AtomicLong INDEX = new AtomicLong(1);
 
     private Disruptor<TxTransactionEvent> disruptor;
 
     private final TxCompensationService txCompensationService;
 
+    private final TxConfig txConfig;
+
     @Autowired
-    public TxTransactionEventPublisher(final TxCompensationService txCompensationService) {
+    public TxTransactionEventPublisher(final TxCompensationService txCompensationService,
+                                       final TxConfig txConfig) {
         this.txCompensationService = txCompensationService;
+        this.txConfig = txConfig;
     }
 
     /**
      * disruptor start.
      *
      * @param bufferSize this is disruptor buffer size.
+     * @param threads this is disruptor consumer thread size.
      */
-    public void start(final int bufferSize) {
+    private void start(final int bufferSize, final int threads) {
         disruptor = new Disruptor<>(new TxTransactionEventFactory(), bufferSize, r -> {
-            AtomicInteger index = new AtomicInteger(1);
-            return new Thread(null, r, "disruptor-thread-" + index.getAndIncrement());
+            return new Thread(null, r, "disruptor-thread-" + INDEX.getAndIncrement());
         }, ProducerType.MULTI, new BlockingWaitStrategy());
 
-        final Executor executor = new ThreadPoolExecutor(MAX_THREAD, MAX_THREAD, 0, TimeUnit.MILLISECONDS,
+        final Executor executor = new ThreadPoolExecutor(threads, threads, 0, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(),
                 TxTransactionThreadFactory.create("raincat-log-disruptor", false),
                 new ThreadPoolExecutor.AbortPolicy());
 
-        TxTransactionEventHandler[] consumers = new TxTransactionEventHandler[MAX_THREAD];
-        for (int i = 0; i < MAX_THREAD; i++) {
+        TxTransactionEventHandler[] consumers = new TxTransactionEventHandler[threads];
+        for (int i = 0; i < threads; i++) {
             consumers[i] = new TxTransactionEventHandler(executor, txCompensationService);
         }
         disruptor.handleEventsWithWorkerPool(consumers);
@@ -93,8 +100,10 @@ public class TxTransactionEventPublisher implements DisposableBean {
      * @param type               {@linkplain CompensationActionEnum}
      */
     public void publishEvent(final TransactionRecover transactionRecover, final int type) {
-        final RingBuffer<TxTransactionEvent> ringBuffer = disruptor.getRingBuffer();
-        ringBuffer.publishEvent(new TxTransactionEventTranslator(type), transactionRecover);
+        if (txConfig.getCompensation()) {
+            final RingBuffer<TxTransactionEvent> ringBuffer = disruptor.getRingBuffer();
+            ringBuffer.publishEvent(new TxTransactionEventTranslator(type), transactionRecover);
+        }
     }
 
     @Override
@@ -102,4 +111,8 @@ public class TxTransactionEventPublisher implements DisposableBean {
         disruptor.shutdown();
     }
 
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        start(txConfig.getBufferSize(), txConfig.getConsumerThreads());
+    }
 }
