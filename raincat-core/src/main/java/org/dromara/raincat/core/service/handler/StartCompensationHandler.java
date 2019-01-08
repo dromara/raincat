@@ -23,6 +23,7 @@ import org.dromara.raincat.common.bean.TxTransactionInfo;
 import org.dromara.raincat.common.constant.CommonConstant;
 import org.dromara.raincat.core.concurrent.threadlocal.CompensationLocal;
 import org.dromara.raincat.core.concurrent.threadlocal.TxTransactionLocal;
+import org.dromara.raincat.core.helper.TransactionManagerHelper;
 import org.dromara.raincat.core.service.TxTransactionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,13 +39,6 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 @Component
 public class StartCompensationHandler implements TxTransactionHandler {
 
-    private final PlatformTransactionManager platformTransactionManager;
-
-    @Autowired
-    public StartCompensationHandler(final PlatformTransactionManager platformTransactionManager) {
-        this.platformTransactionManager = platformTransactionManager;
-    }
-
     /**
      * 补偿的时候，不走分布式事务处理.
      *
@@ -56,6 +50,9 @@ public class StartCompensationHandler implements TxTransactionHandler {
     @Override
     public Object handler(final ProceedingJoinPoint point, final TxTransactionInfo info) throws Throwable {
         TxTransactionLocal.getInstance().setTxGroupId(CommonConstant.COMPENSATE_ID);
+
+        PlatformTransactionManager platformTransactionManager =
+                TransactionManagerHelper.getTransactionManager(info.getTransactionManager());
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
         TransactionStatus transactionStatus = platformTransactionManager.getTransaction(def);

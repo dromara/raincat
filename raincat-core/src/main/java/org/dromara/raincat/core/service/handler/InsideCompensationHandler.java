@@ -19,6 +19,7 @@
 package org.dromara.raincat.core.service.handler;
 
 import org.dromara.raincat.common.bean.TxTransactionInfo;
+import org.dromara.raincat.core.helper.TransactionManagerHelper;
 import org.dromara.raincat.core.service.TxTransactionHandler;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +36,6 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 @Component
 public class InsideCompensationHandler implements TxTransactionHandler {
 
-    private final PlatformTransactionManager platformTransactionManager;
-
-    @Autowired
-    public InsideCompensationHandler(final PlatformTransactionManager platformTransactionManager) {
-        this.platformTransactionManager = platformTransactionManager;
-    }
-
     /**
      * 处理补偿内嵌的远程方法的时候，不提交，只调用.
      *
@@ -54,6 +48,8 @@ public class InsideCompensationHandler implements TxTransactionHandler {
     public Object handler(final ProceedingJoinPoint point, final TxTransactionInfo info) throws Throwable {
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        PlatformTransactionManager platformTransactionManager =
+                TransactionManagerHelper.getTransactionManager(info.getTransactionManager());
         TransactionStatus transactionStatus = platformTransactionManager.getTransaction(def);
         try {
             return point.proceed();
