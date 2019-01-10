@@ -25,6 +25,7 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dromara.raincat.common.enums.NettyMessageActionEnum;
 import org.dromara.raincat.common.enums.NettyResultEnum;
 import org.dromara.raincat.common.holder.LogUtil;
@@ -129,6 +130,10 @@ public class NettyServerMessageHandler extends ChannelInboundHandlerAdapter {
                         txManagerService.updateTxTransactionItemStatus(txTransactionGroup.getId(),
                                 item.getTaskKey(),
                                 item.getStatus(), item.getMessage());
+                        //异步的情况下，就不要返回消息了（key为空就是异步）
+                        if(StringUtils.isNotBlank(hb.getKey())){
+                            ctx.writeAndFlush(buildSendMessage(hb.getKey(), true));
+                        }
                     }
                     break;
                 default:
