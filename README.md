@@ -55,6 +55,8 @@ Raincat
 
  ## http://dromara.org  或者 https://dromara.org 有时候https打不开。
  
+# Stargazers over time
+[![Stargazers over time](https://starchart.cc/yu199195/Raincat.svg)](https://starchart.cc/yu199195/Raincat)
 
 # 文档 
  
