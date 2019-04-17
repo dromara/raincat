@@ -7,7 +7,7 @@
     <groupId>org.dromara</groupId>
     <artifactId>raincat</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.0.1-RELEASE</version>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
