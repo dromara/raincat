@@ -17,6 +17,7 @@
 
 package org.dromara.raincat.common.serializer;
 
+import org.dromara.raincat.annotation.RaincatSPI;
 import org.dromara.raincat.common.enums.SerializeProtocolEnum;
 import org.dromara.raincat.common.exception.TransactionException;
 
@@ -33,6 +34,7 @@ import java.io.ObjectOutputStream;
  * @author xiaoyu
  */
 @SuppressWarnings("unchecked")
+@RaincatSPI("jdk")
 public class JavaSerializer implements ObjectSerializer {
 
     @Override
@@ -53,15 +55,5 @@ public class JavaSerializer implements ObjectSerializer {
         } catch (IOException | ClassNotFoundException e) {
             throw new TransactionException("java deSerialize error " + e.getMessage());
         }
-    }
-
-    /**
-     * 设置scheme.
-     *
-     * @return scheme 命名
-     */
-    @Override
-    public String getScheme() {
-        return SerializeProtocolEnum.JDK.getSerializeProtocol();
     }
 }

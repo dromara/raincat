@@ -15,38 +15,28 @@
  * limitations under the License.
  */
 
-package org.dromara.raincat.common.serializer;
+package org.dromara.raincat.annotation;
 
-
-import org.dromara.raincat.annotation.RaincatSPI;
-import org.dromara.raincat.common.exception.TransactionException;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * ObjectSerializer.
+ * The interface Hmily spi.
  *
  * @author xiaoyu
  */
-@RaincatSPI
-public interface ObjectSerializer {
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
+public @interface RaincatSPI {
 
     /**
-     * Serialize byte [ ].
+     * Value string.
      *
-     * @param obj the obj
-     * @return the byte [ ]
-     * @throws TransactionException the transaction exception
+     * @return the string
      */
-    byte[] serialize(Object obj) throws TransactionException;
-
-    /**
-     * De serialize t.
-     *
-     * @param <T>   the type parameter
-     * @param param the param
-     * @param clazz the clazz
-     * @return the t
-     * @throws TransactionException the transaction exception
-     */
-    <T> T deSerialize(byte[] param, Class<T> clazz) throws TransactionException;
-
+    String value() default "";
 }

@@ -16,9 +16,7 @@
  *
  */
 
-package org.dromara.raincat.core.annotation;
-
-import org.dromara.raincat.common.enums.PropagationEnum;
+package org.dromara.raincat.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -26,29 +24,31 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 二阶段分布式事务注解.
+ * The interface Tx transaction.
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TxTransaction {
 
+
     /**
-     * 事务传播.
-     * @return {@linkplain PropagationEnum}
+     * Propagation propagation enum.
+     *
+     * @return the propagation enum
      */
     PropagationEnum propagation() default PropagationEnum.PROPAGATION_REQUIRES_NEW;
 
     /**
-     * 事务等待的最大时间 单位秒.
+     * Wait max time int.
      *
-     * @return 多少秒
+     * @return the int
      */
     int waitMaxTime() default 60;
 
     /**
-     * 事务管理器名称
+     * Transaction manager string.
      *
-     * @return 如果为空，则取默认的
+     * @return the string
      */
     String transactionManager() default "";
 }

@@ -18,22 +18,32 @@
 
 package org.dromara.raincat.springcloud.service;
 
+import org.apache.commons.lang3.RandomUtils;
 import org.dromara.raincat.core.service.RpcApplicationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * SpringCloudRpcApplicationServiceImpl.
+ *
  * @author xiaoyu
  */
 @Service("rpcApplicationService")
 public class SpringCloudRpcApplicationServiceImpl implements RpcApplicationService {
 
+    private static final String DEFAULT_APPLICATION_NAME = "raincat-springCloud";
+
     @Value("${spring.application.name}")
-    private String modelName;
+    private String appName;
 
     @Override
     public String findModelName() {
-        return modelName;
+        return Optional.ofNullable(appName).orElse(buildDefaultApplicationName());
+    }
+
+    private String buildDefaultApplicationName() {
+        return DEFAULT_APPLICATION_NAME + RandomUtils.nextInt(1, 10);
     }
 }

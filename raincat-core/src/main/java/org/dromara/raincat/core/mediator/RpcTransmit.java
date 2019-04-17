@@ -15,38 +15,21 @@
  * limitations under the License.
  */
 
-package org.dromara.raincat.common.serializer;
-
-
-import org.dromara.raincat.annotation.RaincatSPI;
-import org.dromara.raincat.common.exception.TransactionException;
+package org.dromara.raincat.core.mediator;
 
 /**
- * ObjectSerializer.
+ * The interface Rpc mediator.
  *
- * @author xiaoyu
+ * @author xiaoyu(Myth)
  */
-@RaincatSPI
-public interface ObjectSerializer {
+public interface RpcTransmit {
 
     /**
-     * Serialize byte [ ].
+     * Transmit.
      *
-     * @param obj the obj
-     * @return the byte [ ]
-     * @throws TransactionException the transaction exception
+     * @param key   the key
+     * @param value the value
      */
-    byte[] serialize(Object obj) throws TransactionException;
-
-    /**
-     * De serialize t.
-     *
-     * @param <T>   the type parameter
-     * @param param the param
-     * @param clazz the clazz
-     * @return the t
-     * @throws TransactionException the transaction exception
-     */
-    <T> T deSerialize(byte[] param, Class<T> clazz) throws TransactionException;
+    void transmit(String key, String value);
 
 }

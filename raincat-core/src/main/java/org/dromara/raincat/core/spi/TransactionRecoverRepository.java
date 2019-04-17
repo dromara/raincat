@@ -18,6 +18,7 @@
 
 package org.dromara.raincat.core.spi;
 
+import org.dromara.raincat.annotation.RaincatSPI;
 import org.dromara.raincat.common.bean.TransactionRecover;
 import org.dromara.raincat.common.config.TxConfig;
 import org.dromara.raincat.common.exception.TransactionRuntimeException;
@@ -30,6 +31,7 @@ import java.util.List;
  * TransactionRecoverRepository.
  * @author xiaoyu
  */
+@RaincatSPI
 public interface TransactionRecoverRepository {
 
     int ROWS = 1;
@@ -96,14 +98,6 @@ public interface TransactionRecoverRepository {
      * @throws Exception ex
      */
     void init(String appName, TxConfig txConfig) throws Exception;
-
-    /**
-     * get scheme.
-     *
-     * @return scheme
-     */
-    String getScheme();
-
 
     /**
      * set objectSerializer spi.

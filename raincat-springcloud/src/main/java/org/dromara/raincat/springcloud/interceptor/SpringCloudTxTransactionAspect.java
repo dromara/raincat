@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * SpringCloudTxTransactionAspect.
+ *
  * @author xiaoyu
  */
 @Aspect
@@ -33,6 +34,11 @@ import org.springframework.stereotype.Component;
 public class SpringCloudTxTransactionAspect extends AbstractTxTransactionAspect implements Ordered {
 
 
+    /**
+     * Instantiates a new Spring cloud tx transaction aspect.
+     *
+     * @param springCloudTxTransactionInterceptor the spring cloud tx transaction interceptor
+     */
     @Autowired
     public SpringCloudTxTransactionAspect(final SpringCloudTxTransactionInterceptor springCloudTxTransactionInterceptor) {
         this.setTxTransactionInterceptor(springCloudTxTransactionInterceptor);

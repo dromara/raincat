@@ -20,10 +20,10 @@ package org.dromara.raincat.springcloud.interceptor;
 
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.dromara.raincat.common.constant.CommonConstant;
 import org.dromara.raincat.common.holder.LogUtil;
 import org.dromara.raincat.core.concurrent.threadlocal.CompensationLocal;
 import org.dromara.raincat.core.interceptor.TxTransactionInterceptor;
+import org.dromara.raincat.core.mediator.RpcMediator;
 import org.dromara.raincat.core.service.AspectTransactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,9 +61,9 @@ public class SpringCloudTxTransactionInterceptor implements TxTransactionInterce
             try {
                 RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
                 HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-                groupId = request.getHeader(CommonConstant.TX_TRANSACTION_GROUP);
+                groupId = RpcMediator.getInstance().acquire(request::getHeader);
             } catch (IllegalStateException e) {
-                LogUtil.error(LOGGER,"Not Http request ,can't get RequestContextHolder!", e::getMessage);
+                LogUtil.error(LOGGER, "Not Http request ,can't get RequestContextHolder!", e::getMessage);
             }
         }
         return aspectTransactionService.invoke(groupId, pjp);

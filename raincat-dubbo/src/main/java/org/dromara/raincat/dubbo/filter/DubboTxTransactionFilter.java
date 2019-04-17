@@ -28,6 +28,8 @@ import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.RpcException;
 import org.dromara.raincat.common.constant.CommonConstant;
 import org.dromara.raincat.core.concurrent.threadlocal.TxTransactionLocal;
+import org.dromara.raincat.core.mediator.RpcMediator;
+import org.dromara.raincat.core.mediator.RpcTransmit;
 
 /**
  * DubboTxTransactionFilter.
@@ -39,8 +41,7 @@ public class DubboTxTransactionFilter implements Filter {
     @Override
     public Result invoke(final Invoker<?> invoker, final Invocation invocation) throws RpcException {
         if (RpcContext.getContext().isConsumerSide()) {
-            RpcContext.getContext().setAttachment(CommonConstant.TX_TRANSACTION_GROUP,
-                    TxTransactionLocal.getInstance().getTxGroupId());
+            RpcMediator.getInstance().transmit(RpcContext.getContext()::setAttachment);
         }
         return invoker.invoke(invocation);
     }

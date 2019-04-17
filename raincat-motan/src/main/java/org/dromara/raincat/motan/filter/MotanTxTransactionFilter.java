@@ -28,6 +28,7 @@ import com.weibo.api.motan.rpc.Request;
 import com.weibo.api.motan.rpc.Response;
 import org.dromara.raincat.common.constant.CommonConstant;
 import org.dromara.raincat.core.concurrent.threadlocal.TxTransactionLocal;
+import org.dromara.raincat.core.mediator.RpcMediator;
 
 
 /**
@@ -41,7 +42,7 @@ public class MotanTxTransactionFilter implements Filter {
 
     @Override
     public Response filter(final Caller<?> caller, final Request request) {
-        request.setAttachment(CommonConstant.TX_TRANSACTION_GROUP, TxTransactionLocal.getInstance().getTxGroupId());
+        RpcMediator.getInstance().transmit(request::setAttachment);
         return caller.call(request);
     }
 }

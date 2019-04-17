@@ -20,10 +20,10 @@ package org.dromara.raincat.core.service.impl;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.dromara.raincat.annotation.PropagationEnum;
+import org.dromara.raincat.annotation.TxTransaction;
 import org.dromara.raincat.common.bean.TransactionInvocation;
 import org.dromara.raincat.common.bean.TxTransactionInfo;
-import org.dromara.raincat.common.enums.PropagationEnum;
-import org.dromara.raincat.core.annotation.TxTransaction;
 import org.dromara.raincat.core.concurrent.threadlocal.CompensationLocal;
 import org.dromara.raincat.core.helper.SpringBeanUtils;
 import org.dromara.raincat.core.service.AspectTransactionService;

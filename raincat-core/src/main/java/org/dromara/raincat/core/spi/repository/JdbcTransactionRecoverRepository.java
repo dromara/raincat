@@ -20,16 +20,16 @@ package org.dromara.raincat.core.spi.repository;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.google.common.collect.Maps;
-import org.apache.commons.collections.CollectionUtils;
+import org.dromara.raincat.annotation.RaincatSPI;
 import org.dromara.raincat.common.bean.TransactionInvocation;
 import org.dromara.raincat.common.bean.TransactionRecover;
 import org.dromara.raincat.common.config.TxConfig;
 import org.dromara.raincat.common.config.TxDbConfig;
 import org.dromara.raincat.common.constant.CommonConstant;
-import org.dromara.raincat.common.enums.CompensationCacheTypeEnum;
 import org.dromara.raincat.common.enums.CompensationOperationTypeEnum;
 import org.dromara.raincat.common.exception.TransactionException;
 import org.dromara.raincat.common.exception.TransactionRuntimeException;
+import org.dromara.raincat.common.holder.CollectionUtils;
 import org.dromara.raincat.common.holder.RepositoryPathUtils;
 import org.dromara.raincat.common.serializer.ObjectSerializer;
 import org.dromara.raincat.core.helper.SqlHelper;
@@ -54,6 +54,7 @@ import java.util.stream.Collectors;
  *
  * @author xiaoyu
  */
+@RaincatSPI("db")
 public class JdbcTransactionRecoverRepository implements TransactionRecoverRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JdbcTransactionRecoverRepository.class);
@@ -186,11 +187,6 @@ public class JdbcTransactionRecoverRepository implements TransactionRecoverRepos
         dataSource.setMaxPoolPreparedStatementPerConnectionSize(txDbConfig.getMaxPoolPreparedStatementPerConnectionSize());
         this.tableName = RepositoryPathUtils.buildDbTableName(appName);
         executeUpdate(SqlHelper.buildCreateTableSql(tableName, txDbConfig.getDriverClassName()));
-    }
-
-    @Override
-    public String getScheme() {
-        return CompensationCacheTypeEnum.DB.getCompensationCacheType();
     }
 
     private int executeUpdate(final String sql, final Object... params) {

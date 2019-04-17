@@ -19,7 +19,6 @@
 package org.dromara.raincat.core.spi.repository;
 
 import com.google.common.collect.Lists;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -27,15 +26,16 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
+import org.dromara.raincat.annotation.RaincatSPI;
 import org.dromara.raincat.common.bean.TransactionRecover;
 import org.dromara.raincat.common.config.TxConfig;
 import org.dromara.raincat.common.config.TxZookeeperConfig;
 import org.dromara.raincat.common.constant.CommonConstant;
-import org.dromara.raincat.common.enums.CompensationCacheTypeEnum;
 import org.dromara.raincat.common.enums.CompensationOperationTypeEnum;
 import org.dromara.raincat.common.exception.TransactionException;
 import org.dromara.raincat.common.exception.TransactionIoException;
 import org.dromara.raincat.common.exception.TransactionRuntimeException;
+import org.dromara.raincat.common.holder.CollectionUtils;
 import org.dromara.raincat.common.holder.LogUtil;
 import org.dromara.raincat.common.holder.RepositoryPathUtils;
 import org.dromara.raincat.common.holder.TransactionRecoverUtils;
@@ -54,6 +54,7 @@ import java.util.stream.Collectors;
  *
  * @author xiaoyu
  */
+@RaincatSPI("zookeeper")
 public class ZookeeperTransactionRecoverRepository implements TransactionRecoverRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ZookeeperTransactionRecoverRepository.class);
@@ -187,11 +188,6 @@ public class ZookeeperTransactionRecoverRepository implements TransactionRecover
         } catch (Exception e) {
             throw new TransactionIoException(e);
         }
-    }
-
-    @Override
-    public String getScheme() {
-        return CompensationCacheTypeEnum.ZOOKEEPER.getCompensationCacheType();
     }
 
     @Override

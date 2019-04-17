@@ -18,7 +18,6 @@
 
 package org.dromara.raincat.core.compensation.impl;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.dromara.raincat.common.bean.TransactionInvocation;
 import org.dromara.raincat.common.bean.TransactionRecover;
@@ -26,6 +25,7 @@ import org.dromara.raincat.common.config.TxConfig;
 import org.dromara.raincat.common.constant.CommonConstant;
 import org.dromara.raincat.common.enums.CompensationOperationTypeEnum;
 import org.dromara.raincat.common.enums.TransactionStatusEnum;
+import org.dromara.raincat.common.holder.CollectionUtils;
 import org.dromara.raincat.common.holder.LogUtil;
 import org.dromara.raincat.common.netty.bean.TxTransactionGroup;
 import org.dromara.raincat.common.netty.bean.TxTransactionItem;

@@ -20,11 +20,11 @@ package org.dromara.raincat.core.service.impl;
 
 import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
-import org.apache.commons.collections.CollectionUtils;
 import org.dromara.raincat.common.config.TxConfig;
 import org.dromara.raincat.common.constant.CommonConstant;
 import org.dromara.raincat.common.entity.TxManagerServer;
 import org.dromara.raincat.common.entity.TxManagerServiceDTO;
+import org.dromara.raincat.common.holder.CollectionUtils;
 import org.dromara.raincat.common.holder.LogUtil;
 import org.dromara.raincat.common.holder.httpclient.OkHttpTools;
 import org.dromara.raincat.core.concurrent.threadpool.TxTransactionThreadFactory;

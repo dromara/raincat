@@ -18,12 +18,12 @@
 
 package org.dromara.raincat.motan.interceptor;
 
-import org.dromara.raincat.common.constant.CommonConstant;
-import org.dromara.raincat.core.interceptor.TxTransactionInterceptor;
-import org.dromara.raincat.core.service.AspectTransactionService;
 import com.weibo.api.motan.rpc.Request;
 import com.weibo.api.motan.rpc.RpcContext;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.dromara.raincat.core.interceptor.TxTransactionInterceptor;
+import org.dromara.raincat.core.mediator.RpcMediator;
+import org.dromara.raincat.core.service.AspectTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +32,7 @@ import java.util.Objects;
 
 /**
  * MotanTxTransactionInterceptor.
+ *
  * @author xiaoyu
  */
 @Component
@@ -51,7 +52,8 @@ public class MotanTxTransactionInterceptor implements TxTransactionInterceptor {
         if (Objects.nonNull(request)) {
             final Map<String, String> attachments = request.getAttachments();
             if (attachments != null && !attachments.isEmpty()) {
-                groupId = attachments.get(CommonConstant.TX_TRANSACTION_GROUP);
+                groupId = RpcMediator.getInstance().acquire(attachments::get);
+
             }
         }
         return aspectTransactionService.invoke(groupId, pjp);

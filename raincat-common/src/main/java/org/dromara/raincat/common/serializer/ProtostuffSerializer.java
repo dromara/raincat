@@ -20,7 +20,7 @@ package org.dromara.raincat.common.serializer;
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
-import org.dromara.raincat.common.enums.SerializeProtocolEnum;
+import org.dromara.raincat.annotation.RaincatSPI;
 import org.dromara.raincat.common.exception.TransactionException;
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
@@ -31,9 +31,11 @@ import java.io.IOException;
 
 /**
  * ProtostuffSerializer.
+ *
  * @author xiaoyu
  */
 @SuppressWarnings("unchecked")
+@RaincatSPI("protostuff")
 public class ProtostuffSerializer implements ObjectSerializer {
 
     private static final SchemaCache CACHED_SCHEMA = SchemaCache.getInstance();
@@ -70,15 +72,6 @@ public class ProtostuffSerializer implements ObjectSerializer {
         } catch (IOException e) {
             throw new TransactionException(e.getMessage(), e);
         }
-    }
-
-    /**
-     * 设置scheme.
-     * @return scheme 命名
-     */
-    @Override
-    public String getScheme() {
-        return SerializeProtocolEnum.PROTOSTUFF.getSerializeProtocol();
     }
 }
 

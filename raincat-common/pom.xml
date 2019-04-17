@@ -14,9 +14,8 @@
     <dependencies>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
+            <groupId>org.dromara</groupId>
+            <artifactId>raincat-annotation</artifactId>
         </dependency>
 
         <dependency>

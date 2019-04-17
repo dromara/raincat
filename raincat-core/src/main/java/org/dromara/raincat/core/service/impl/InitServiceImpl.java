@@ -19,11 +19,8 @@
 package org.dromara.raincat.core.service.impl;
 
 import org.dromara.raincat.common.config.TxConfig;
-import org.dromara.raincat.common.enums.CompensationCacheTypeEnum;
-import org.dromara.raincat.common.enums.SerializeProtocolEnum;
 import org.dromara.raincat.common.exception.TransactionRuntimeException;
-import org.dromara.raincat.common.holder.ServiceBootstrap;
-import org.dromara.raincat.common.serializer.KryoSerializer;
+import org.dromara.raincat.common.holder.extension.ExtensionLoader;
 import org.dromara.raincat.common.serializer.ObjectSerializer;
 import org.dromara.raincat.core.compensation.TxCompensationService;
 import org.dromara.raincat.core.helper.SpringBeanUtils;
@@ -31,13 +28,8 @@ import org.dromara.raincat.core.logo.RaincatLogo;
 import org.dromara.raincat.core.netty.NettyClientService;
 import org.dromara.raincat.core.service.InitService;
 import org.dromara.raincat.core.spi.TransactionRecoverRepository;
-import org.dromara.raincat.core.spi.repository.JdbcTransactionRecoverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Objects;
-import java.util.ServiceLoader;
-import java.util.stream.StreamSupport;
 
 /**
  * tx transaction init.
@@ -77,27 +69,12 @@ public class InitServiceImpl implements InitService {
      * @param txConfig {@linkplain TxConfig}
      */
     private void loadSpi(final TxConfig txConfig) {
-        //spi  serialize
-        final SerializeProtocolEnum serializeProtocolEnum
-                = SerializeProtocolEnum.acquireSerializeProtocol(txConfig.getSerializer());
-        final ServiceLoader<ObjectSerializer> objectSerializers
-                = ServiceBootstrap.loadAll(ObjectSerializer.class);
-        final ObjectSerializer serializer =
-                StreamSupport.stream(objectSerializers.spliterator(), false)
-                        .filter(s -> Objects.equals(s.getScheme(), serializeProtocolEnum.getSerializeProtocol()))
-                        .findFirst().orElse(new KryoSerializer());
-
-        //spi  RecoverRepository support
-        final CompensationCacheTypeEnum compensationCacheTypeEnum
-                = CompensationCacheTypeEnum.acquireCompensationCacheType(txConfig.getCompensationCacheType());
-
-        final ServiceLoader<TransactionRecoverRepository> recoverRepositories
-                = ServiceBootstrap.loadAll(TransactionRecoverRepository.class);
-        final TransactionRecoverRepository repository =
-                StreamSupport.stream(recoverRepositories.spliterator(), false)
-                        .filter(r -> Objects.equals(r.getScheme(), compensationCacheTypeEnum.getCompensationCacheType()))
-                        .findFirst().orElse(new JdbcTransactionRecoverRepository());
-        //将compensationCache实现注入到spring容器
+        //spi serialize
+        final ObjectSerializer serializer = ExtensionLoader.getExtensionLoader(ObjectSerializer.class)
+                .getActivateExtension(txConfig.getSerializer());
+        //spi repository
+        final TransactionRecoverRepository repository = ExtensionLoader.getExtensionLoader(TransactionRecoverRepository.class)
+                .getActivateExtension(txConfig.getCompensationCacheType());
         repository.setSerializer(serializer);
         SpringBeanUtils.getInstance().registerBean(TransactionRecoverRepository.class.getName(), repository);
     }

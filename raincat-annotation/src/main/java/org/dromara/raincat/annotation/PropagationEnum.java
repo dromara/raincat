@@ -16,7 +16,7 @@
  *
  */
 
-package org.dromara.raincat.common.enums;
+package org.dromara.raincat.annotation;
 
 /**
  * PropagationEnum.

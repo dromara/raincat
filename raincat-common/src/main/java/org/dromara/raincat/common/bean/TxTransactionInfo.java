@@ -20,7 +20,7 @@ package org.dromara.raincat.common.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.dromara.raincat.common.enums.PropagationEnum;
+import org.dromara.raincat.annotation.PropagationEnum;
 
 /**
  * TxTransactionInfo.

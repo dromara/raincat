@@ -22,18 +22,20 @@ import org.aspectj.lang.ProceedingJoinPoint;
 
 /**
  * AspectTransactionService.
+ *
  * @author xiaoyu
  */
 @FunctionalInterface
 public interface AspectTransactionService {
 
+
     /**
-     * 切面方法调用.
+     * Invoke object.
      *
-     * @param transactionGroupId 事务组id
-     * @param point              切点
-     * @return Object
-     * @throws Throwable 异常信息
+     * @param transactionGroupId the transaction group id
+     * @param point              the point
+     * @return the object
+     * @throws Throwable the throwable
      */
     Object invoke(String transactionGroupId, ProceedingJoinPoint point) throws Throwable;
 }

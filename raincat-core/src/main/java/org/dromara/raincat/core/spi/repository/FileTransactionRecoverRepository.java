@@ -19,10 +19,10 @@
 package org.dromara.raincat.core.spi.repository;
 
 import com.google.common.collect.Lists;
+import org.dromara.raincat.annotation.RaincatSPI;
 import org.dromara.raincat.common.bean.TransactionRecover;
 import org.dromara.raincat.common.config.TxConfig;
 import org.dromara.raincat.common.constant.CommonConstant;
-import org.dromara.raincat.common.enums.CompensationCacheTypeEnum;
 import org.dromara.raincat.common.enums.CompensationOperationTypeEnum;
 import org.dromara.raincat.common.exception.TransactionRuntimeException;
 import org.dromara.raincat.common.holder.RepositoryPathUtils;
@@ -44,7 +44,8 @@ import java.util.stream.Collectors;
  *
  * @author xiaoyu
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("all")
+@RaincatSPI("file")
 public class FileTransactionRecoverRepository implements TransactionRecoverRepository {
 
     private static volatile boolean initialized;
@@ -138,11 +139,6 @@ public class FileTransactionRecoverRepository implements TransactionRecoverRepos
             file.getParentFile().mkdirs();
             file.mkdirs();
         }
-    }
-
-    @Override
-    public String getScheme() {
-        return CompensationCacheTypeEnum.FILE.getCompensationCacheType();
     }
 
     private void writeFile(final TransactionRecover transaction) {

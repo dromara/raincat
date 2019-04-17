@@ -19,15 +19,17 @@
 package org.dromara.raincat.dubbo.interceptor;
 
 import com.alibaba.dubbo.rpc.RpcContext;
-import org.dromara.raincat.common.constant.CommonConstant;
-import org.dromara.raincat.core.interceptor.TxTransactionInterceptor;
-import org.dromara.raincat.core.service.AspectTransactionService;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.dromara.raincat.core.interceptor.TxTransactionInterceptor;
+import org.dromara.raincat.core.mediator.RpcMediator;
+import org.dromara.raincat.core.service.AspectTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+
 /**
  * DubboTxTransactionInterceptor.
+ *
  * @author xiaoyu
  */
 @Component
@@ -42,7 +44,8 @@ public class DubboTxTransactionInterceptor implements TxTransactionInterceptor {
 
     @Override
     public Object interceptor(final ProceedingJoinPoint pjp) throws Throwable {
-        String groupId = RpcContext.getContext().getAttachment(CommonConstant.TX_TRANSACTION_GROUP);
+        String groupId = RpcMediator.getInstance()
+                .acquire(RpcContext.getContext()::getAttachment);
         return aspectTransactionService.invoke(groupId, pjp);
     }
 

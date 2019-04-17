@@ -23,11 +23,6 @@ import org.dromara.raincat.springcloud.sample.pay.client.WechatClient;
 import org.dromara.raincat.springcloud.sample.pay.entiy.Pay;
 import org.dromara.raincat.springcloud.sample.pay.mapper.PayMapper;
 import org.dromara.raincat.springcloud.sample.pay.service.PayService;
-import org.dromara.raincat.springcloud.sample.pay.client.AlipayClient;
-import org.dromara.raincat.springcloud.sample.pay.client.WechatClient;
-import org.dromara.raincat.springcloud.sample.pay.entiy.Pay;
-import org.dromara.raincat.springcloud.sample.pay.mapper.PayMapper;
-import org.dromara.raincat.springcloud.sample.pay.service.PayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

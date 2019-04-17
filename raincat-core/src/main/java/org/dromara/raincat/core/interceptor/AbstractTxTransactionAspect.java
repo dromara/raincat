@@ -25,6 +25,7 @@ import org.aspectj.lang.annotation.Pointcut;
 
 /**
  * AbstractTxTransactionAspect.
+ *
  * @author xiaoyu
  */
 @Aspect
@@ -32,15 +33,30 @@ public abstract class AbstractTxTransactionAspect {
 
     private TxTransactionInterceptor txTransactionInterceptor;
 
+    /**
+     * Sets tx transaction interceptor.
+     *
+     * @param txTransactionInterceptor the tx transaction interceptor
+     */
     public void setTxTransactionInterceptor(final TxTransactionInterceptor txTransactionInterceptor) {
         this.txTransactionInterceptor = txTransactionInterceptor;
     }
 
-    @Pointcut("@annotation(org.dromara.raincat.core.annotation.TxTransaction)")
+    /**
+     * Tx transaction interceptor.
+     */
+    @Pointcut("@annotation(org.dromara.raincat.annotation.TxTransaction)")
     public void txTransactionInterceptor() {
 
     }
 
+    /**
+     * Intercept tx transaction object.
+     *
+     * @param proceedingJoinPoint the proceeding join point
+     * @return the object
+     * @throws Throwable the throwable
+     */
     @Around("txTransactionInterceptor()")
     public Object interceptTxTransaction(final ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         return txTransactionInterceptor.interceptor(proceedingJoinPoint);
@@ -48,7 +64,8 @@ public abstract class AbstractTxTransactionAspect {
 
     /**
      * spring bean order.
-     * @return order
+     *
+     * @return order order
      */
     public abstract int getOrder();
 }

@@ -19,6 +19,7 @@ package org.dromara.raincat.common.serializer;
 
 import com.caucho.hessian.io.Hessian2Input;
 import com.caucho.hessian.io.Hessian2Output;
+import org.dromara.raincat.annotation.RaincatSPI;
 import org.dromara.raincat.common.enums.SerializeProtocolEnum;
 import org.dromara.raincat.common.exception.TransactionException;
 
@@ -31,6 +32,7 @@ import java.io.IOException;
  * @author xiaoyu
  */
 @SuppressWarnings("unchecked")
+@RaincatSPI("hessian")
 public class HessianSerializer implements ObjectSerializer {
 
     @Override

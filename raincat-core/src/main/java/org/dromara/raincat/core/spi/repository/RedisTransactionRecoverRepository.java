@@ -21,11 +21,11 @@ package org.dromara.raincat.core.spi.repository;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
+import org.dromara.raincat.annotation.RaincatSPI;
 import org.dromara.raincat.common.bean.TransactionRecover;
 import org.dromara.raincat.common.config.TxConfig;
 import org.dromara.raincat.common.config.TxRedisConfig;
 import org.dromara.raincat.common.constant.CommonConstant;
-import org.dromara.raincat.common.enums.CompensationCacheTypeEnum;
 import org.dromara.raincat.common.enums.CompensationOperationTypeEnum;
 import org.dromara.raincat.common.exception.TransactionIoException;
 import org.dromara.raincat.common.exception.TransactionRuntimeException;
@@ -58,6 +58,7 @@ import java.util.stream.Collectors;
  *
  * @author xiaoyu
  */
+@RaincatSPI("redis")
 public class RedisTransactionRecoverRepository implements TransactionRecoverRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisTransactionRecoverRepository.class);
@@ -155,11 +156,6 @@ public class RedisTransactionRecoverRepository implements TransactionRecoverRepo
         } catch (Exception e) {
             LogUtil.error(LOGGER, "redis init exception please check your config :{}", e::getMessage);
         }
-    }
-
-    @Override
-    public String getScheme() {
-        return CompensationCacheTypeEnum.REDIS.getCompensationCacheType();
     }
 
     @Override

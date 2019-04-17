@@ -3,7 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>org.dromara</groupId>
     <artifactId>raincat</artifactId>
     <packaging>pom</packaging>
@@ -45,10 +44,10 @@
         <module>raincat-dubbo</module>
         <module>raincat-springcloud</module>
         <module>raincat-common</module>
-        <module>raincat-sample</module>
         <module>raincat-admin</module>
         <module>raincat-motan</module>
         <module>raincat-spring-boot-starter</module>
+        <module>raincat-annotation</module>
     </modules>
 
     <developers>
@@ -77,7 +76,7 @@
         <jdk.version>1.8</jdk.version>
         <spring.version>5.0.7.RELEASE</spring.version>
         <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
-        <dubbo.version>2.5.3</dubbo.version>
+        <dubbo.version>2.6.2</dubbo.version>
         <mongo.driver.version>3.5.0</mongo.driver.version>
         <mysql-connector-java>5.1.40</mysql-connector-java>
         <commons-lang3.version>3.3.2</commons-lang3.version>
@@ -104,6 +103,12 @@
             <dependency>
                 <groupId>org.dromara</groupId>
                 <artifactId>raincat-admin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.dromara</groupId>
+                <artifactId>raincat-annotation</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

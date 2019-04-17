@@ -20,7 +20,7 @@ package org.dromara.raincat.common.serializer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import org.dromara.raincat.common.enums.SerializeProtocolEnum;
+import org.dromara.raincat.annotation.RaincatSPI;
 import org.dromara.raincat.common.exception.TransactionException;
 
 import java.io.ByteArrayInputStream;
@@ -29,15 +29,16 @@ import java.io.IOException;
 
 /**
  * KryoSerializer.
+ *
  * @author xiaoyu
  */
+@RaincatSPI("kryo")
 public class KryoSerializer implements ObjectSerializer {
 
     @Override
     public byte[] serialize(final Object obj) throws TransactionException {
         byte[] bytes;
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); Output output = new Output(outputStream)) {
-            //获取kryo对象
             Kryo kryo = new Kryo();
             kryo.writeObject(output, obj);
             bytes = output.toBytes();
@@ -60,15 +61,5 @@ public class KryoSerializer implements ObjectSerializer {
             throw new TransactionException("kryo deSerialize error" + e.getMessage());
         }
         return object;
-    }
-
-    /**
-     * 设置scheme.
-     *
-     * @return scheme 命名
-     */
-    @Override
-    public String getScheme() {
-        return SerializeProtocolEnum.KRYO.getSerializeProtocol();
     }
 }

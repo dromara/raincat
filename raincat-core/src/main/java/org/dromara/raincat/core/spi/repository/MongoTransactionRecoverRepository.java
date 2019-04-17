@@ -22,23 +22,23 @@ import com.google.common.base.Splitter;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteResult;
+import org.dromara.raincat.annotation.RaincatSPI;
 import org.dromara.raincat.common.bean.TransactionInvocation;
 import org.dromara.raincat.common.bean.TransactionRecover;
 import org.dromara.raincat.common.bean.adapter.MongoAdapter;
 import org.dromara.raincat.common.config.TxConfig;
 import org.dromara.raincat.common.config.TxMongoConfig;
 import org.dromara.raincat.common.constant.CommonConstant;
-import org.dromara.raincat.common.enums.CompensationCacheTypeEnum;
 import org.dromara.raincat.common.enums.CompensationOperationTypeEnum;
 import org.dromara.raincat.common.enums.TransactionStatusEnum;
 import org.dromara.raincat.common.exception.TransactionException;
 import org.dromara.raincat.common.exception.TransactionRuntimeException;
 import org.dromara.raincat.common.holder.Assert;
+import org.dromara.raincat.common.holder.CollectionUtils;
 import org.dromara.raincat.common.holder.LogUtil;
 import org.dromara.raincat.common.holder.RepositoryPathUtils;
 import org.dromara.raincat.common.serializer.ObjectSerializer;
 import org.dromara.raincat.core.spi.TransactionRecoverRepository;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoClientFactoryBean;
@@ -56,6 +56,7 @@ import java.util.stream.Collectors;
  * mongo db impl.
  * @author xiaoyu
  */
+@RaincatSPI("mongo")
 public class MongoTransactionRecoverRepository implements TransactionRecoverRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoTransactionRecoverRepository.class);
@@ -181,6 +182,7 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void init(final String appName, final TxConfig txConfig) {
         collectionName = RepositoryPathUtils.buildMongoTableName(appName);
         final TxMongoConfig txMongoConfig = txConfig.getTxMongoConfig();
@@ -208,11 +210,6 @@ public class MongoTransactionRecoverRepository implements TransactionRecoverRepo
 
         clientFactoryBean.setReplicaSetSeeds(serverAddresses);
         return clientFactoryBean;
-    }
-
-    @Override
-    public String getScheme() {
-        return CompensationCacheTypeEnum.MONGODB.getCompensationCacheType();
     }
 
     @Override

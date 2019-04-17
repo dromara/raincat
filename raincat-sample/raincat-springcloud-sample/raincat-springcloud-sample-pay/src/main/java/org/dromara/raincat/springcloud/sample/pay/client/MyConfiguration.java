@@ -20,7 +20,7 @@ package org.dromara.raincat.springcloud.sample.pay.client;
 import feign.Feign;
 import feign.Request;
 import feign.Retryer;
-import org.dromara.raincat.springcloud.feign.RestTemplateInterceptor;
+import org.dromara.raincat.springcloud.feign.RaincatFeignInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -34,7 +34,7 @@ public class MyConfiguration {
     @Bean
     @Scope("prototype")
     public Feign.Builder feignBuilder() {
-        return Feign.builder().requestInterceptor(new RestTemplateInterceptor());
+        return Feign.builder().requestInterceptor(new RaincatFeignInterceptor());
     }
 
     @Bean

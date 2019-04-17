@@ -16,9 +16,13 @@
  *
  */
 
-package org.dromara.raincat.springcloud.feign;
+package org.dromara.raincat.springcloud.configuration;
 
+import com.netflix.hystrix.strategy.concurrency.HystrixConcurrencyStrategy;
 import feign.RequestInterceptor;
+import org.dromara.raincat.springcloud.feign.RaincatFeignInterceptor;
+import org.dromara.raincat.springcloud.hystrix.RaincatHystrixConcurrencyStrategy;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,11 +32,27 @@ import org.springframework.context.annotation.Configuration;
  * @author xiaoyu
  */
 @Configuration
-public class RestTemplateConfiguration {
+public class RaincatFeignConfiguration {
 
+    /**
+     * Request interceptor request interceptor.
+     *
+     * @return the request interceptor
+     */
     @Bean
     public RequestInterceptor requestInterceptor() {
-        return new RestTemplateInterceptor();
+        return new RaincatFeignInterceptor();
+    }
+
+    /**
+     * Hystrix concurrency strategy hystrix concurrency strategy.
+     *
+     * @return the hystrix concurrency strategy
+     */
+    @Bean
+    @ConditionalOnProperty(name = "feign.hystrix.enabled")
+    public HystrixConcurrencyStrategy hystrixConcurrencyStrategy() {
+        return new RaincatHystrixConcurrencyStrategy();
     }
 
 }

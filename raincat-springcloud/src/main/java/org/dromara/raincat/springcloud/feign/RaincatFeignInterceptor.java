@@ -16,7 +16,22 @@
  *
  */
 
-package org.dromara.raincat.core;
+package org.dromara.raincat.springcloud.feign;
 
-public class AtomicReferenceTest {
+import feign.RequestInterceptor;
+import feign.RequestTemplate;
+import org.dromara.raincat.core.mediator.RpcMediator;
+
+/**
+ * RestTemplateInterceptor.
+ *
+ * @author xiaoyu
+ */
+public class RaincatFeignInterceptor implements RequestInterceptor {
+
+    @Override
+    public void apply(final RequestTemplate requestTemplate) {
+        RpcMediator.getInstance().transmit(requestTemplate::header);
+    }
+
 }
