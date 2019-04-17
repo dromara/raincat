@@ -19,9 +19,9 @@
 package org.dromara.raincat.core.service.handler;
 
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.dromara.raincat.annotation.PropagationEnum;
 import org.dromara.raincat.common.bean.TxTransactionInfo;
 import org.dromara.raincat.common.constant.CommonConstant;
-import org.dromara.raincat.common.enums.PropagationEnum;
 import org.dromara.raincat.common.enums.TransactionRoleEnum;
 import org.dromara.raincat.common.enums.TransactionStatusEnum;
 import org.dromara.raincat.common.exception.TransactionRuntimeException;

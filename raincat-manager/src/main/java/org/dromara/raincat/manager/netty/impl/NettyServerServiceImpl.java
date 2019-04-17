@@ -129,7 +129,7 @@ public class NettyServerServiceImpl implements NettyService, DisposableBean {
                 .channel(NioServerSocketChannel.class)
                 .option(EpollChannelOption.TCP_CORK, true)
                 .option(EpollChannelOption.SO_KEEPALIVE, true)
-                .option(EpollChannelOption.SO_BACKLOG, 100)
+                .option(EpollChannelOption.SO_BACKLOG, 1024)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 100)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)

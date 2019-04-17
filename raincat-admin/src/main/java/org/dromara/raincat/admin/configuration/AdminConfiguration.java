@@ -22,9 +22,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.dromara.raincat.admin.interceptor.AuthInterceptor;
-import org.dromara.raincat.common.enums.SerializeProtocolEnum;
-import org.dromara.raincat.common.holder.ServiceBootstrap;
-import org.dromara.raincat.common.serializer.KryoSerializer;
+import org.dromara.raincat.common.holder.extension.ExtensionLoader;
 import org.dromara.raincat.common.serializer.ObjectSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,10 +37,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-
-import java.util.Objects;
-import java.util.ServiceLoader;
-import java.util.stream.StreamSupport;
 
 /**
  * AdminConfiguration.
@@ -75,17 +69,9 @@ public class AdminConfiguration {
 
         @Bean
         public ObjectSerializer objectSerializer() {
-
-            final SerializeProtocolEnum serializeProtocolEnum =
-                    SerializeProtocolEnum.acquireSerializeProtocol(env.getProperty("recover.serializer.support"));
-            final ServiceLoader<ObjectSerializer> objectSerializers =
-                    ServiceBootstrap.loadAll(ObjectSerializer.class);
-            return StreamSupport.stream(objectSerializers.spliterator(), false)
-                    .filter(objectSerializer ->
-                            Objects.equals(objectSerializer.getScheme(),
-                                    serializeProtocolEnum.getSerializeProtocol())).findFirst().orElse(new KryoSerializer());
+            return ExtensionLoader.getExtensionLoader(ObjectSerializer.class)
+                    .getActivateExtension(env.getProperty("recover.serializer.support"));
         }
-
     }
 
     @Bean

@@ -59,14 +59,4 @@ public class HessianSerializer implements ObjectSerializer {
             throw new TransactionException("Hessian deSerialize error " + e.getMessage());
         }
     }
-
-    /**
-     * 设置scheme.
-     *
-     * @return scheme 命名
-     */
-    @Override
-    public String getScheme() {
-        return SerializeProtocolEnum.HESSIAN.getSerializeProtocol();
-    }
 }
