@@ -17,7 +17,7 @@
  */
 package org.dromara.raincat.dubbo.sample.order.service.impl;
 
-import org.dromara.raincat.core.annotation.TxTransaction;
+import org.dromara.raincat.annotation.TxTransaction;
 import org.dromara.raincat.dubbo.sample.order.api.entity.Order;
 import org.dromara.raincat.dubbo.sample.order.api.service.OrderService;
 import org.dromara.raincat.dubbo.sample.order.mapper.OrderMapper;

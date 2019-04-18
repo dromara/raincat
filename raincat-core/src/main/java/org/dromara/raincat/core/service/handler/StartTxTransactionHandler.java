@@ -120,10 +120,6 @@ public class StartTxTransactionHandler implements TxTransactionHandler {
                     //我觉得到这一步了，应该是切面走完，然后需要提交了，此时应该都是进行提交的
                     //提交事务
                     platformTransactionManager.commit(transactionStatus);
-
-                    LOGGER.info("发起者提交本地事务,补偿Id:[{}]", compensateId);
-
-
                     //通知tm完成事务
                     CompletableFuture.runAsync(() ->
                             txManagerMessageService

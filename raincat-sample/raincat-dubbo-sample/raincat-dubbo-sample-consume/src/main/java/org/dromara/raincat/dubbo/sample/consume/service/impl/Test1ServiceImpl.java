@@ -17,8 +17,8 @@
  */
 package org.dromara.raincat.dubbo.sample.consume.service.impl;
 
+import org.dromara.raincat.annotation.TxTransaction;
 import org.dromara.raincat.common.holder.IdWorkerUtils;
-import org.dromara.raincat.core.annotation.TxTransaction;
 import org.dromara.raincat.dubbo.sample.consume.entity.Test1;
 import org.dromara.raincat.dubbo.sample.consume.mapper.Test1Mapper;
 import org.dromara.raincat.dubbo.sample.consume.service.Test1Service;

@@ -17,7 +17,7 @@
  */
 package org.dromara.raincat.springcloud.sample.alipay.service.impl;
 
-import org.dromara.raincat.core.annotation.TxTransaction;
+import org.dromara.raincat.annotation.TxTransaction;
 import org.dromara.raincat.springcloud.sample.alipay.entity.Alipay;
 import org.dromara.raincat.springcloud.sample.alipay.mapper.AlipayMapper;
 import org.dromara.raincat.springcloud.sample.alipay.service.AlipayService;

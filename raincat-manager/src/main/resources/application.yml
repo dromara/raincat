@@ -27,7 +27,7 @@ redisSaveMaxTime: 3000
 tx:
   manager:
     netty :
-       port: 9998
+       port: 9988
        serialize: kryo
        maxConnection: 100
        maxThreads : 16

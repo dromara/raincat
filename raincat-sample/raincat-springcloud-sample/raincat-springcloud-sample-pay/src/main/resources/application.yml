@@ -6,6 +6,8 @@ server:
 
 
 spring:
+    main:
+        allow-bean-definition-overriding: true
     datasource:
         driver-class-name:  com.mysql.jdbc.Driver
         url: jdbc:mysql://192.168.1.98:3306/pay?useUnicode=true&characterEncoding=utf8
@@ -21,6 +23,10 @@ eureka:
  client:
      serviceUrl:
        defaultZone: http://localhost:8761/eureka/
+
+feign:
+  hystrix:
+     enabled : false
 
 pay-service :
    ribbon :

@@ -36,7 +36,6 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
  * AdminConfiguration.
@@ -49,7 +48,7 @@ public class AdminConfiguration {
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
+        return new WebMvcConfigurer() {
             @Override
             public void addInterceptors(final InterceptorRegistry registry) {
                 registry.addInterceptor(new AuthInterceptor()).addPathPatterns("/**");
@@ -75,7 +74,6 @@ public class AdminConfiguration {
     }
 
     @Bean
-    @SuppressWarnings("unchecked")
     public RedisTemplate redisTemplate(@Qualifier("redisConnectionFactory")
                                                RedisConnectionFactory redisConnectionFactory) {
 

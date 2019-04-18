@@ -48,6 +48,9 @@ public class RaincatHystrixConcurrencyStrategy extends HystrixConcurrencyStrateg
 
     private HystrixConcurrencyStrategy delegate;
 
+    /**
+     * Instantiates a new Raincat hystrix concurrency strategy.
+     */
     public RaincatHystrixConcurrencyStrategy() {
         try {
             this.delegate = HystrixPlugins.getInstance().getConcurrencyStrategy();

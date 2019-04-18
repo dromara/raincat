@@ -17,7 +17,7 @@
  */
 package org.dromara.raincat.springcloud.sample.wechat.service.impl;
 
-import org.dromara.raincat.core.annotation.TxTransaction;
+import org.dromara.raincat.annotation.TxTransaction;
 import org.dromara.raincat.springcloud.sample.wechat.entity.Wechat;
 import org.dromara.raincat.springcloud.sample.wechat.mapper.WechatMapper;
 import org.dromara.raincat.springcloud.sample.wechat.service.WechatService;

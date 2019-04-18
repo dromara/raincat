@@ -1,5 +1,5 @@
 server:
-  port: 8086
+  port: 8099
   contextPath: /
   address: 0.0.0.0
 
@@ -15,8 +15,8 @@ org:
    dromara:
      raincat:
        txManagerUrl: http://localhost:8761
-       serializer: kroy
-       nettySerializer: kroy
+       serializer: kryo
+       nettySerializer: kryo
        compensation: true
        compensationCacheType : db
        txDbConfig :

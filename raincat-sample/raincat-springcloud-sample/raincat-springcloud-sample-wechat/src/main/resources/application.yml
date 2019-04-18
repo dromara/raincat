@@ -6,6 +6,8 @@ server:
 
 
 spring:
+    main:
+        allow-bean-definition-overriding: true
     datasource:
         driver-class-name:  com.mysql.jdbc.Driver
         url: jdbc:mysql://192.168.1.98:3306/wechat?useUnicode=true&characterEncoding=utf8

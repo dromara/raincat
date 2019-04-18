@@ -17,7 +17,7 @@
  */
 package org.dromara.raincat.dubbo.sample.stock.service.impl;
 
-import org.dromara.raincat.core.annotation.TxTransaction;
+import org.dromara.raincat.annotation.TxTransaction;
 import org.dromara.raincat.dubbo.sample.stock.api.entity.Stock;
 import org.dromara.raincat.dubbo.sample.stock.api.service.StockService;
 import org.dromara.raincat.dubbo.sample.stock.mapper.StockMapper;
