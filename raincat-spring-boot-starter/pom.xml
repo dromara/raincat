@@ -15,9 +15,7 @@
         <module>raincat-spring-boot-starter-parent</module>
         <module>raincat-spring-boot-starter-dubbo</module>
         <module>raincat-spring-boot-starter-springcloud</module>
-<!--
         <module>raincat-spring-boot-starter-motan</module>
--->
     </modules>
 
     <dependencies>
