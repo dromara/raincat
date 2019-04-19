@@ -90,20 +90,17 @@
 
   If you want to use it or get a quick look at it. [Quick Start](http://dromara.org/website/zh-cn/docs/raincat/index.html)
 
-
-
-# Stargazers over time
+# Stargazers 
 [![Stargazers over time](https://starchart.cc/yu199195/Raincat.svg)](https://starchart.cc/yu199195/Raincat)
 
  
-# 流程图
+# Flow 
 
  ![](https://yu199195.github.io/images/Raincat/2pc.png)
 
 
 # Support
-
-  ![](https://yu199195.github.io/images/qq.png)
+  ![](https://yu199195.github.io/images/qq.png)  ![](https://yu199195.github.io/images/public.jpg)
    
-  ![](https://yu199195.github.io/images/public.jpg)
+ 
 
