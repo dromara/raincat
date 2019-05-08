@@ -45,7 +45,7 @@ public class Test1ServiceImpl implements Test1Service {
 
     private final StockService stockService;
 
-    @Autowired
+    @Autowired(required = false)
     public Test1ServiceImpl(Test1Mapper test1Mapper, OrderService orderService, StockService stockService) {
         this.test1Mapper = test1Mapper;
         this.orderService = orderService;
