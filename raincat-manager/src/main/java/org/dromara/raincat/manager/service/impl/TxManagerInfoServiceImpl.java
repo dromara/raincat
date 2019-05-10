@@ -23,11 +23,14 @@ import com.netflix.eureka.EurekaServerContextHolder;
 import org.apache.commons.collections.CollectionUtils;
 import org.dromara.raincat.common.entity.TxManagerServer;
 import org.dromara.raincat.common.entity.TxManagerServiceDTO;
+import org.dromara.raincat.common.holder.LogUtil;
 import org.dromara.raincat.manager.config.NettyConfig;
 import org.dromara.raincat.manager.entity.TxManagerInfo;
 import org.dromara.raincat.manager.eureka.DiscoveryService;
 import org.dromara.raincat.manager.service.TxManagerInfoService;
 import org.dromara.raincat.manager.socket.SocketManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -58,6 +61,8 @@ public class TxManagerInfoServiceImpl implements TxManagerInfoService {
     @Value("${transactionWaitMaxTime}")
     private int transactionWaitMaxTime;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TxManagerInfoServiceImpl.class);
+
     @Autowired(required = false)
     public TxManagerInfoServiceImpl(DiscoveryService discoveryService, NettyConfig nettyConfig, RestTemplate restTemplate) {
         this.discoveryService = discoveryService;
@@ -69,8 +74,16 @@ public class TxManagerInfoServiceImpl implements TxManagerInfoService {
     public TxManagerServer findTxManagerServer() {
         final List<String> eurekaService = findEurekaService();
         if (CollectionUtils.isNotEmpty(eurekaService)) {
-            final List<TxManagerInfo> txManagerList = eurekaService.stream().map(url ->
-                    restTemplate.getForObject(url + "/tx/manager/findTxManagerInfo", TxManagerInfo.class))
+            final List<TxManagerInfo> txManagerList = eurekaService.stream()
+                    .map(url ->{
+                        TxManagerInfo txManagerInfo=null;
+                        try{
+                            txManagerInfo=restTemplate.getForObject(url + "/tx/manager/findTxManagerInfo", TxManagerInfo.class);
+                        }catch (Exception e){
+                            LogUtil.error(LOGGER, "查找TxManager的信息失败，将剔除该出错的实例，url:{}",url::toString);
+                        }
+                        return txManagerInfo;
+                    }).filter(e->Objects.nonNull(e))
                     .collect(Collectors.toList());
             if (CollectionUtils.isNotEmpty(txManagerList)) {
                 //获取连接数最多的服务  想要把所有的业务长连接，连接到同一个tm，但是又不能超过最大的连接
