@@ -55,9 +55,9 @@
             <id>xiaoyu</id>
             <name>xiaoyu(Myth)</name>
             <email>549477611@qq.com</email>
-            <organization>free</organization>
+            <organization>org.dromara</organization>
             <roles>
-                <role>Developer</role>
+                <role>PPMC</role>
             </roles>
         </developer>
         <developer>
@@ -66,7 +66,7 @@
             <email>1991wangliang@gmail.com</email>
             <organization>free</organization>
             <roles>
-                <role>Developer</role>
+                <role>PPMC</role>
             </roles>
         </developer>
     </developers>
@@ -86,7 +86,7 @@
         <protostuff.version>1.0.8</protostuff.version>
         <kryo.version>4.0.0</kryo.version>
         <curator.version>2.9.1</curator.version>
-        <netty.version>4.1.16.Final</netty.version>
+        <netty.version>4.1.24.Final</netty.version>
         <commons.httpclient.version>3.0.1</commons.httpclient.version>
         <httpclient.version>4.5.1</httpclient.version>
         <okhttp.version>3.7.0</okhttp.version>
