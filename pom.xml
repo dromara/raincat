@@ -88,7 +88,7 @@
         <curator.version>2.9.1</curator.version>
         <netty.version>4.1.42.Final</netty.version>
         <commons.httpclient.version>3.0.1</commons.httpclient.version>
-        <httpclient.version>4.5.1</httpclient.version>
+        <httpclient.version>4.5.13</httpclient.version>
         <okhttp.version>3.7.0</okhttp.version>
         <gson.verions>2.6.2</gson.verions>
         <druid.version>1.0.29</druid.version>
