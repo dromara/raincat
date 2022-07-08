@@ -74,7 +74,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
-        <spring.version>5.0.7.RELEASE</spring.version>
+        <spring.version>5.2.21.RELEASE</spring.version>
         <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
         <dubbo.version>2.6.2</dubbo.version>
         <mongo.driver.version>3.5.0</mongo.driver.version>
