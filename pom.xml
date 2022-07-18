@@ -90,7 +90,7 @@
         <commons.httpclient.version>3.0.1</commons.httpclient.version>
         <httpclient.version>4.5.1</httpclient.version>
         <okhttp.version>3.7.0</okhttp.version>
-        <gson.verions>2.6.2</gson.verions>
+        <gson.verions>2.8.9</gson.verions>
         <druid.version>1.0.29</druid.version>
         <springfox.version>2.6.1</springfox.version>
         <lombok.version>1.16.14</lombok.version>
